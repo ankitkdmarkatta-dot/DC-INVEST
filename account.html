@@ -36,24 +36,19 @@
         .brand-name { font-weight: 800; color: var(--primary); font-size: 16px; }
 
         .profile-hero {
-            background: var(--primary); padding: 40px 20px 60px;
+            background: var(--primary); padding: 50px 20px 60px;
             text-align: center; color: white;
             border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
         }
 
-        .avatar-wrapper { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; }
+        /* --- User Photo with Logo.png (No Upload) --- */
         .avatar-main {
-            width: 100%; height: 100%; border-radius: 50%;
-            border: 3px solid var(--accent); background: white; overflow: hidden;
-        }
-        .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
-        .upload-badge {
-            position: absolute; bottom: 0; right: 0;
-            background: var(--accent); color: var(--primary);
-            width: 30px; height: 30px; border-radius: 50%;
+            width: 100px; height: 100px; border-radius: 50%;
+            border: 3px solid var(--accent); background: white; 
+            margin: 0 auto 15px; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            border: 2px solid var(--primary); cursor: pointer;
         }
+        .avatar-main img { width: 80%; height: auto; }
 
         .action-buttons { display: flex; gap: 15px; max-width: 500px; margin: -35px auto 20px; padding: 0 20px; }
         .action-btn {
@@ -69,22 +64,26 @@
 
         .settings-container { max-width: 500px; margin: 0 auto; padding: 0 20px; }
         .group-box { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #f1f1f1; cursor: pointer; }
+        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid #f1f1f1; cursor: pointer; }
+        .item-info { display: flex; align-items: center; gap: 15px; }
+        .item-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
-        /* Security Modal Styling */
+        /* Security Modal */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+            width: 100%; height: 100%; background: rgba(0,0,0,0.8);
             align-items: center; justify-content: center; padding: 20px;
         }
         .modal-content {
-            background: white; width: 100%; max-width: 400px;
+            background: white; width: 100%; max-width: 350px;
             border-radius: 25px; padding: 25px; animation: pop 0.3s ease;
         }
         .modal-input {
             width: 100%; padding: 12px; border: 1px solid #ddd;
-            border-radius: 12px; margin: 15px 0; outline: none; font-weight: 600;
+            border-radius: 12px; margin: 15px 0; outline: none;
         }
+
+        .logout-btn { width: 100%; background: #fff; color: var(--danger); border: none; padding: 15px; border-radius: 15px; font-weight: 700; margin-top: 10px; cursor: pointer; }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -92,11 +91,11 @@
             justify-content: space-around; align-items: center;
             box-shadow: 0 -5px 25px rgba(0,0,0,0.08);
         }
-        .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; }
+        .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; font-size: 11px; }
+        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-link.active { color: var(--primary); }
-        .logout-btn { width: 100%; background: #fff; color: var(--danger); border: none; padding: 15px; border-radius: 15px; font-weight: 700; margin-top: 10px; }
 
-        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -110,77 +109,57 @@
     </header>
 
     <div class="profile-hero">
-        <div class="avatar-wrapper">
-            <div class="avatar-main">
-                <img id="user-photo" src="https://via.placeholder.com/150" alt="Profile">
-            </div>
-            <label for="photo-upload" class="upload-badge"><i class="fa-solid fa-camera"></i></label>
-            <input type="file" id="photo-upload" style="display:none;" accept="image/*">
+        <div class="avatar-main">
+            <img src="logo.png" alt="User" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
         </div>
         <h3 id="user-display-name">...</h3>
-        <p id="user-display-id" style="font-size: 12px; opacity: 0.7;">ID: ...</p>
+        <p id="user-display-id" style="font-size: 13px; opacity: 0.8; letter-spacing: 1px;">ID: ...</p>
     </div>
 
     <div class="action-buttons">
-        <button class="action-btn btn-deposit" onclick="window.location.href='deposit.html'">
-            <i class="fa-solid fa-plus-circle"></i> DEPOSIT
-        </button>
-        <button class="action-btn btn-withdraw" onclick="window.location.href='withdraw.html'">
-            <i class="fa-solid fa-arrow-up-from-bracket"></i> WITHDRAW
-        </button>
+        <button class="action-btn btn-deposit" onclick="window.location.href='deposit.html'"><i class="fa-solid fa-plus-circle"></i> DEPOSIT</button>
+        <button class="action-btn btn-withdraw" onclick="window.location.href='withdraw.html'"><i class="fa-solid fa-arrow-up-from-bracket"></i> WITHDRAW</button>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card">
-            <i class="fa-solid fa-wallet" style="color: var(--accent);"></i>
-            <h4 id="user-balance">₹ 0.00</h4>
-            <p style="font-size: 10px; color: #888;">WALLET BALANCE</p>
+            <h4 id="user-balance" style="color: var(--primary);">₹ 0.00</h4>
+            <p style="font-size: 10px; color: #888; font-weight: 600;">WALLET BALANCE</p>
         </div>
         <div class="stat-card">
-            <i class="fa-solid fa-chart-line" style="color: var(--success);"></i>
-            <h4 id="user-earnings">₹ 0.00</h4>
-            <p style="font-size: 10px; color: #888;">TOTAL EARNINGS</p>
+            <h4 id="user-earnings" style="color: var(--success);">₹ 0.00</h4>
+            <p style="font-size: 10px; color: #888; font-weight: 600;">TOTAL EARNINGS</p>
         </div>
     </div>
 
     <div class="settings-container">
         <div class="group-box">
-            <div class="list-item" onclick="openDetails()">
-                <div class="item-info">
-                    <div class="item-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-user"></i></div>
-                    <div class="item-text"><b>Personal Details</b><span>View Account Info</span></div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
-            </div>
-        </div>
-
-        <div class="group-box">
             <div class="list-item" onclick="openPassModal()">
                 <div class="item-info">
-                    <div class="item-icon" style="background:#fef9c3; color:#ca8a04;"><i class="fa-solid fa-shield"></i></div>
-                    <div class="item-text"><b>Security</b><span>Change Password</span></div>
+                    <div class="item-icon" style="background:#fff7ed; color:#ea580c;"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="item-text"><b style="display:block; font-size:14px;">Security</b><span style="font-size:11px; color:#999;">Change Account Password</span></div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
             </div>
             <div class="list-item" onclick="window.location.href='history.html'">
                 <div class="item-info">
-                    <div class="item-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                    <div class="item-text"><b>Transaction History</b><span>Deposits & Withdrawals</span></div>
+                    <div class="item-icon" style="background:#f0f9ff; color:#0284c7;"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="item-text"><b style="display:block; font-size:14px;">Transaction History</b><span style="font-size:11px; color:#999;">All Deposits & Withdrawals</span></div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
             </div>
         </div>
 
-        <button class="logout-btn" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> LOGOUT ACCOUNT</button>
+        <button class="logout-btn" id="logout-btn"><i class="fa-solid fa-power-off"></i> LOGOUT ACCOUNT</button>
     </div>
 
     <div class="modal" id="pass-modal">
         <div class="modal-content">
-            <h3 style="color: var(--primary);">Update Security</h3>
-            <p style="font-size: 12px; color: #666;">Enter a new password (min. 6 chars)</p>
-            <input type="password" id="new-pass-inp" class="modal-input" placeholder="New Password">
-            <button class="action-btn btn-deposit" style="width: 100%;" onclick="saveNewPass()">CHANGE PASSWORD</button>
-            <button style="width: 100%; border: none; background: none; margin-top: 15px; color: #999;" onclick="document.getElementById('pass-modal').style.display='none'">CANCEL</button>
+            <h3 style="color: var(--primary); font-weight: 800;">Security Update</h3>
+            <p style="font-size: 12px; color: #666; margin-top: 5px;">Set a strong new password</p>
+            <input type="password" id="new-pass-inp" class="modal-input" placeholder="Enter New Password">
+            <button class="action-btn btn-deposit" style="width: 100%;" onclick="saveNewPass()">UPDATE NOW</button>
+            <button style="width: 100%; border: none; background: none; margin-top: 15px; color: #999; font-weight: 600;" onclick="document.getElementById('pass-modal').style.display='none'">CANCEL</button>
         </div>
     </div>
 
@@ -194,7 +173,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -209,54 +188,37 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Instant Recovery from LocalStorage
-        if(localStorage.getItem('cached_name')) document.getElementById('user-display-name').innerText = localStorage.getItem('cached_name');
-        if(localStorage.getItem('cached_pic')) document.getElementById('user-photo').src = localStorage.getItem('cached_pic');
+        // Instant Caching for fast load
+        if(localStorage.getItem('user_name')) document.getElementById('user-display-name').innerText = localStorage.getItem('user_name');
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                // Show User ID (First 8 chars)
+                document.getElementById('user-display-id').innerText = "ID: " + user.uid.substring(0, 8).toUpperCase();
+                
                 const userRef = doc(db, "users", user.uid);
                 onSnapshot(userRef, (snap) => {
                     if(snap.exists()){
                         const d = snap.data();
                         document.getElementById('user-display-name').innerText = d.name || "User";
-                        document.getElementById('user-display-id').innerText = "ID: " + user.uid.substring(0,8).toUpperCase();
                         document.getElementById('user-balance').innerText = "₹ " + (d.balance || 0).toFixed(2);
                         document.getElementById('user-earnings').innerText = "₹ " + (d.totalEarnings || 0).toFixed(2);
-                        
-                        if(d.photoURL) {
-                            document.getElementById('user-photo').src = d.photoURL;
-                            localStorage.setItem('cached_pic', d.photoURL);
-                        }
-                        localStorage.setItem('cached_name', d.name);
+                        localStorage.setItem('user_name', d.name);
                     }
                 });
             } else { window.location.href = "login.html"; }
         });
 
-        // Photo Upload with Fix
-        document.getElementById('photo-upload').onchange = (e) => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = async () => {
-                const base64 = reader.result;
-                document.getElementById('user-photo').src = base64;
-                localStorage.setItem('cached_pic', base64);
-                await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: base64 });
-            };
-            reader.readAsDataURL(file);
-        };
-
         window.openPassModal = () => document.getElementById('pass-modal').style.display='flex';
         
         window.saveNewPass = async () => {
             const p = document.getElementById('new-pass-inp').value;
-            if(p.length < 6) return alert("Weak Password!");
+            if(p.length < 6) return alert("Min 6 characters!");
             try {
                 await updatePassword(auth.currentUser, p);
-                alert("Success! Password Changed.");
+                alert("Password Changed!");
                 document.getElementById('pass-modal').style.display='none';
-            } catch(err) { alert("Please Re-login to change password."); }
+            } catch(e) { alert("Please login again to change password."); }
         };
 
         document.getElementById('logout-btn').onclick = () => {
