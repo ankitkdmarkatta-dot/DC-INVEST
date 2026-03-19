@@ -30,9 +30,8 @@
             text-align: center; position: relative;
         }
 
-        /* --- LOGO (FULL ROUND & NO ROTATE) --- */
         .logo-container {
-            width: 100px; height: 100px; margin: 0 auto 20px;
+            width: 80px; height: 80px; margin: 0 auto 20px;
             padding: 3px; border-radius: 50%;
             background: var(--accent);
         }
@@ -42,11 +41,7 @@
             align-items: center; justify-content: center; 
             overflow: hidden; border: 2px solid #fff;
         }
-        .logo-inner img { 
-            width: 100%; height: 100%; 
-            object-fit: cover; 
-            border-radius: 50%; 
-        }
+        .logo-inner b { color: var(--primary); font-size: 24px; }
 
         h2 { color: var(--primary); margin-bottom: 5px; font-size: 26px; }
         p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
@@ -54,6 +49,7 @@
         .form-group { margin-bottom: 15px; text-align: left; }
         label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; margin-left: 5px; }
         input { width: 100%; padding: 12px 15px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--accent); }
 
         .terms-check-area {
             display: flex; align-items: center; gap: 10px;
@@ -64,11 +60,11 @@
 
         .btn-signup {
             width: 100%; padding: 14px; background: var(--primary); color: white;
-            border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
+        .btn-signup:hover { background: #1a3a5f; }
         .btn-signup:disabled { background: #95a5a6; cursor: not-allowed; }
 
-        /* --- MODAL --- */
         .modal {
             display: none; position: fixed; z-index: 1000; left: 0; top: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.7);
@@ -88,12 +84,11 @@
 <body>
     <div class="signup-card">
         <div class="logo-container">
-            <div class="logo-inner">
-                <img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'">
-            </div>
+            <div class="logo-inner"><b>DC</b></div>
         </div>
         <h2>Create Account</h2>
         <p class="subtitle">Join DC INVEST & Start Growing Wealth</p>
+        
         <form id="signup-form">
             <div class="form-group">
                 <label>Full Name</label>
@@ -113,6 +108,7 @@
             </div>
             <button type="submit" class="btn-signup" id="submit-btn" disabled>Sign Up Now</button>
         </form>
+
         <div style="margin-top:20px; font-size:14px; color:#666;">
             Already have an account? <a href="login.html" style="color:var(--primary); font-weight:bold; text-decoration:none;">Login</a>
         </div>
@@ -121,7 +117,12 @@
     <div class="modal" id="terms-modal">
         <div class="modal-content">
             <h3>DC INVEST - Terms & Conditions</h3>
-            <p><strong>1. Age:</strong> 18+ only. <strong>2. Security:</strong> One account per user. <strong>3. Risk:</strong> Market risks apply.</p>
+            <p style="margin-top:10px; font-size:14px; line-height:1.6;">
+                1. Age: 18+ only. <br>
+                2. Security: One account per user. <br>
+                3. Risk: Investment is subject to market risks. <br>
+                4. Deposits: UTR must be valid for balance addition.
+            </p>
             <button class="close-modal-btn" id="close-terms">I Accept & Close</button>
         </div>
     </div>
@@ -129,7 +130,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -144,6 +145,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- UI Interactions ---
         const modal = document.getElementById('terms-modal');
         const openBtn = document.getElementById('open-terms');
         const closeBtn = document.getElementById('close-terms');
@@ -155,21 +157,37 @@
         closeBtn.onclick = () => { modal.style.display = "none"; };
         window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; };
 
+        // --- Registration Logic ---
         document.getElementById('signup-form').onsubmit = async (e) => {
             e.preventDefault();
+            
+            const name = document.getElementById('user-name').value;
+            const email = document.getElementById('signup-email').value;
+            const pass = document.getElementById('signup-password').value;
+
             submitBtn.disabled = true;
-            submitBtn.innerText = "Processing...";
+            submitBtn.innerText = "Creating Account...";
+
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, document.getElementById('signup-email').value, document.getElementById('signup-password').value);
-                await setDoc(doc(db, "users", userCredential.user.uid), {
-                    fullName: document.getElementById('user-name').value,
-                    balance: 0,
-                    joinedAt: new Date().toISOString()
+                // 1. Create User in Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                const user = userCredential.user;
+
+                // 2. Create User Document in Firestore (FIXED LOGIC)
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,            // Ye field zaroori hai admin panel ke liye
+                    fullName: name,
+                    email: email,
+                    balance: 0,               // Initial balance hamesha 0 rahega
+                    joinedAt: serverTimestamp() // Sahi date format
                 });
-                alert("Account Created!");
+
+                alert("Registration Successful! Please login.");
                 window.location.href = "login.html";
+
             } catch (err) {
-                alert(err.message);
+                console.error(err);
+                alert("Error: " + err.message);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Sign Up Now";
             }
