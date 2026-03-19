@@ -28,7 +28,6 @@
         }
         .header-left { display: flex; align-items: center; gap: 10px; }
         
-        /* --- Perfect Round Header Logo --- */
         .logo-round {
             width: 40px; height: 40px; border-radius: 50%;
             border: 2px solid var(--accent);
@@ -39,14 +38,13 @@
         .brand-name { font-weight: 800; color: var(--primary); font-size: 16px; }
 
         .profile-hero {
-            background: var(--primary); padding: 50px 20px 60px;
+            background: var(--primary); padding: 40px 20px 60px;
             text-align: center; color: white;
             border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
         }
 
-        /* --- Full Round Profile Logo --- */
         .avatar-main {
-            width: 110px; height: 110px; border-radius: 50%;
+            width: 100px; height: 100px; border-radius: 50%;
             border: 4px solid var(--accent); background: white; 
             margin: 0 auto 15px; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
@@ -54,7 +52,22 @@
         }
         .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
 
-        .action-buttons { display: flex; gap: 15px; max-width: 500px; margin: -35px auto 20px; padding: 0 20px; }
+        /* --- CLAIM BOX --- */
+        .claim-card {
+            background: white; max-width: 500px; margin: -30px auto 20px;
+            padding: 20px; border-radius: 25px; display: flex;
+            justify-content: space-between; align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 1.5px solid var(--accent);
+            width: 90%;
+        }
+        #claim-btn {
+            background: var(--accent); color: var(--primary);
+            border: none; padding: 12px 25px; border-radius: 15px;
+            font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+        #claim-btn:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+
+        .action-buttons { display: flex; gap: 15px; max-width: 500px; margin: 0 auto 20px; padding: 0 20px; }
         .action-btn {
             flex: 1; padding: 15px; border: none; border-radius: 18px;
             font-weight: 700; display: flex; align-items: center; justify-content: center;
@@ -72,7 +85,6 @@
         .item-info { display: flex; align-items: center; gap: 15px; }
         .item-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
-        /* Security Modal */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.85);
@@ -82,10 +94,7 @@
             background: white; width: 100%; max-width: 350px;
             border-radius: 25px; padding: 25px; animation: pop 0.3s ease;
         }
-        .modal-input {
-            width: 100%; padding: 12px; border: 1px solid #ddd;
-            border-radius: 12px; margin: 15px 0; outline: none; font-size: 14px;
-        }
+        .modal-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; margin: 15px 0; outline: none; }
 
         .logout-btn { width: 100%; background: #fff; color: var(--danger); border: none; padding: 15px; border-radius: 15px; font-weight: 700; margin-top: 10px; cursor: pointer; border: 1px solid #fee2e2; }
 
@@ -117,7 +126,15 @@
             <img src="logo.png" alt="User Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
         </div>
         <h3 id="user-display-name">...</h3>
-        <p id="user-display-id" style="font-size: 13px; opacity: 0.8; letter-spacing: 1px; font-weight: 600;">ID: ...</p>
+        <p id="user-display-id" style="font-size: 12px; opacity: 0.8; letter-spacing: 1px;">ID: ...</p>
+    </div>
+
+    <div class="claim-card">
+        <div>
+            <p style="font-size: 10px; color: #888; font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Daily Income</p>
+            <h3 id="ready-profit" style="color: var(--primary);">₹ 0.00</h3>
+        </div>
+        <button id="claim-btn" onclick="processClaim()">CLAIM</button>
     </div>
 
     <div class="action-buttons">
@@ -160,13 +177,10 @@
 
     <div class="modal" id="pass-modal">
         <div class="modal-content">
-            <h3 style="color: var(--primary); font-weight: 800; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-user-shield" style="color: var(--accent);"></i> Security
-            </h3>
-            <p style="font-size: 12px; color: #666; margin-top: 8px;">Enter your new secure password</p>
+            <h3><i class="fa-solid fa-user-shield" style="color: var(--accent);"></i> Security</h3>
             <input type="password" id="new-pass-inp" class="modal-input" placeholder="New Password (min 6 chars)">
-            <button class="action-btn btn-deposit" style="width: 100%;" onclick="saveNewPass()">UPDATE PASSWORD</button>
-            <button style="width: 100%; border: none; background: none; margin-top: 15px; color: #999; font-weight: 600; cursor: pointer;" onclick="document.getElementById('pass-modal').style.display='none'">CANCEL</button>
+            <button class="action-btn btn-deposit" style="width: 100%;" onclick="saveNewPass()">UPDATE</button>
+            <button style="width: 100%; border: none; background: none; margin-top: 15px; color: #999; cursor: pointer;" onclick="document.getElementById('pass-modal').style.display='none'">CANCEL</button>
         </div>
     </div>
 
@@ -180,7 +194,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -195,28 +209,67 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Instant Cache
-        if(localStorage.getItem('user_name')) document.getElementById('user-display-name').innerText = localStorage.getItem('user_name');
+        let userData = null;
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('user-display-id').innerText = "ID: " + user.uid.substring(0, 8).toUpperCase();
-                
                 const userRef = doc(db, "users", user.uid);
+
                 onSnapshot(userRef, (snap) => {
                     if(snap.exists()){
-                        const d = snap.data();
-                        document.getElementById('user-display-name').innerText = d.name || "User";
-                        document.getElementById('user-balance').innerText = "₹ " + (d.balance || 0).toFixed(2);
-                        document.getElementById('user-earnings').innerText = "₹ " + (d.totalEarnings || 0).toFixed(2);
-                        localStorage.setItem('user_name', d.name);
+                        userData = snap.data();
+                        document.getElementById('user-display-name').innerText = userData.name || "User";
+                        document.getElementById('user-balance').innerText = "₹ " + (userData.balance || 0).toFixed(2);
+                        document.getElementById('user-earnings').innerText = "₹ " + (userData.totalEarnings || 0).toFixed(2);
+                        
+                        // Calculate ready profit
+                        const today = new Date().toDateString();
+                        const btn = document.getElementById('claim-btn');
+                        
+                        if(userData.activePlans && userData.activePlans.length > 0) {
+                            let totalDaily = 0;
+                            userData.activePlans.forEach(p => totalDaily += parseFloat(p.daily));
+                            document.getElementById('ready-profit').innerText = "₹ " + totalDaily.toFixed(2);
+
+                            if(userData.lastClaimDate === today) {
+                                btn.innerText = "CLAIMED";
+                                btn.disabled = true;
+                            } else {
+                                btn.innerText = "CLAIM";
+                                btn.disabled = false;
+                            }
+                        } else {
+                            document.getElementById('ready-profit').innerText = "₹ 0.00";
+                            btn.disabled = true;
+                        }
                     }
                 });
             } else { window.location.href = "login.html"; }
         });
 
+        window.processClaim = async () => {
+            const btn = document.getElementById('claim-btn');
+            btn.disabled = true; btn.innerText = "Saving...";
+
+            let totalDaily = 0;
+            userData.activePlans.forEach(p => totalDaily += parseFloat(p.daily));
+
+            try {
+                const userRef = doc(db, "users", auth.currentUser.uid);
+                await updateDoc(userRef, {
+                    balance: increment(totalDaily),
+                    totalEarnings: increment(totalDaily),
+                    lastClaimDate: new Date().toDateString()
+                });
+                alert("₹" + totalDaily + " claimed successfully!");
+            } catch(e) { 
+                alert("Error: " + e.message);
+                btn.disabled = false; btn.innerText = "CLAIM";
+            }
+        };
+
         window.openPassModal = () => document.getElementById('pass-modal').style.display='flex';
-        
         window.saveNewPass = async () => {
             const p = document.getElementById('new-pass-inp').value;
             if(p.length < 6) return alert("Password too short!");
@@ -227,10 +280,7 @@
             } catch(e) { alert("Please login again to verify identity."); }
         };
 
-        document.getElementById('logout-btn').onclick = () => {
-            localStorage.clear();
-            signOut(auth);
-        };
+        document.getElementById('logout-btn').onclick = () => signOut(auth);
     </script>
 </body>
 </html>
