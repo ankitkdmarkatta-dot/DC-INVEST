@@ -15,11 +15,12 @@
             --bg-gradient: linear-gradient(135deg, #0d2542 0%, #1a4a80 100%);
             --glass-bg: rgba(255, 255, 255, 0.95);
             --text-dark: #333;
+            --success: #10b981;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
-        body { background: #f4f7f6; color: var(--text-dark); padding-bottom: 90px; }
+        body { background: #f4f7f6; color: var(--text-dark); padding-bottom: 90px; overflow-x: hidden; }
 
         header {
             background: var(--glass-bg); padding: 10px 20px;
@@ -29,7 +30,6 @@
 
         .logo-area { display: flex; align-items: center; gap: 12px; }
 
-        /* --- LOGO (STABLE & FULL ROUND - MATCHES LOGIN/SIGNUP) --- */
         .logo-container {
             width: 45px; height: 45px; padding: 2px;
             border-radius: 50%; background: var(--accent);
@@ -51,23 +51,37 @@
             background: var(--bg-gradient); border-radius: 25px;
             padding: 30px 20px; color: white; text-align: center;
             box-shadow: 0 10px 25px rgba(13, 37, 66, 0.3); position: relative; overflow: hidden;
+            animation: slideIn 0.8s ease-out;
         }
-        .bal-label { font-size: 13px; opacity: 0.8; text-transform: uppercase; }
+        .bal-label { font-size: 13px; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
         .bal-amount { font-size: 34px; font-weight: 800; margin: 5px 0; color: var(--accent); }
         
         .stats-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
             margin-top: 20px; background: rgba(255, 255, 255, 0.1);
-            padding: 15px; border-radius: 15px;
+            padding: 15px; border-radius: 15px; backdrop-filter: blur(5px);
         }
-        .stat-box h4 { font-size: 16px; color: #fff; }
-        .stat-box p { font-size: 10px; opacity: 0.7; text-transform: uppercase; }
+        .stat-box h4 { font-size: 16px; color: #fff; margin-top: 4px; }
+        .stat-box p { font-size: 10px; opacity: 0.7; text-transform: uppercase; font-weight: 600; }
+
+        /* --- CLAIM NOTIFICATION BOX --- */
+        #claim-notify {
+            display: none; background: #fff3cd; padding: 15px; border-radius: 15px;
+            margin-top: 20px; border: 1px solid #ffeeba; cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+        .claim-flex { display: flex; align-items: center; gap: 12px; }
+        .claim-icon { font-size: 24px; color: #856404; }
+        .claim-text b { color: #856404; font-size: 14px; }
+        .claim-text p { margin: 0; font-size: 11px; color: #856404; opacity: 0.8; }
 
         /* --- INFO SECTIONS --- */
         .info-section {
             background: white; border-radius: 20px; padding: 20px;
             margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: 0.3s;
         }
+        .info-section:active { transform: scale(0.98); }
         .info-section h3 { color: var(--primary); font-size: 17px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .info-section h3 i { color: var(--accent); }
         .info-content { font-size: 13.5px; line-height: 1.6; color: #555; }
@@ -81,14 +95,18 @@
         /* --- BOTTOM NAV --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: white; height: 70px; display: flex;
+            background: white; height: 75px; display: flex;
             justify-content: space-around; align-items: center;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 1000;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.08); z-index: 1000;
         }
-        .nav-link { text-decoration: none; color: #888; text-align: center; flex: 1; }
-        .nav-link i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; transition: 0.3s; }
+        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-link span { font-size: 11px; font-weight: 600; }
-        .nav-link.active { color: var(--primary); }
+        .nav-link.active { color: var(--primary); transform: translateY(-3px); }
+
+        /* --- ANIMATIONS --- */
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -102,12 +120,12 @@
             </div>
             <div class="brand-text">DC INVEST</div>
         </div>
-        <div id="welcome-user" style="font-size: 12px; font-weight: 600; color: var(--primary);">Loading...</div>
+        <div id="welcome-user" style="font-size: 12px; font-weight: 700; color: var(--primary); background: #f0f4f8; padding: 6px 12px; border-radius: 10px;">Hi, User</div>
     </header>
 
     <main>
         <div class="balance-card">
-            <p class="bal-label">Portfolio Value</p>
+            <p class="bal-label">Portfolio Balance</p>
             <h1 class="bal-amount" id="user-balance">₹ 0.00</h1>
             
             <div class="stats-grid">
@@ -116,31 +134,42 @@
                     <h4 id="user-invested">₹ 0</h4>
                 </div>
                 <div class="stat-box" style="border-left: 1px solid rgba(255,255,255,0.2);">
-                    <p>Profit Earned</p>
-                    <h4 id="user-profit" style="color: #4ade80;">+ ₹ 0</h4>
+                    <p>Total Earnings</p>
+                    <h4 id="user-profit" style="color: var(--accent);">₹ 0</h4>
                 </div>
             </div>
         </div>
 
-        <div class="info-section">
-            <h3><i class="fa-solid fa-shield-halved"></i> 100% Safe Investment</h3>
-            <div class="info-content">
-                Aapka capital humare AI-driven technical infrastructure mein secure rehta hai. DC INVEST aapko deta hai market ki sabse fast growth aur bharosa.
-            </div>
-            <div class="status-tag"><i class="fa-solid fa-check-double"></i> Verified Account</div>
-        </div>
-
-        <div class="info-section" style="border-left: 4px solid var(--accent);">
-            <h3><i class="fa-solid fa-money-bill-trend-up"></i> Paisa Badhao, Sapne Sajao</h3>
-            <div class="info-content">
-                Choti shuruat badi kamyabi ka rasta hai. Har ghante apna profit badhte huye dekhein aur kisi bhi waqt seedha apne bank mein payein.
+        <div id="claim-notify" onclick="window.location.href='account.html'">
+            <div class="claim-flex">
+                <div class="claim-icon"><i class="fa-solid fa-coins"></i></div>
+                <div class="claim-text">
+                    <b>Daily Profit Ready!</b>
+                    <p>Click here to collect your daily income.</p>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#856404; opacity:0.5;"></i>
             </div>
         </div>
 
         <div class="info-section">
-            <h3><i class="fa-solid fa-users"></i> Refer & Earn</h3>
+            <h3><i class="fa-solid fa-shield-halved"></i> 100% Secure Trading</h3>
             <div class="info-content">
-                Apne dosto ko join karwayein aur har referral par extra bonus payein. Jitne jyada log, utna jyada munafa!
+                Aapka capital AI-driven technical infrastructure mein secure rehta hai. DC INVEST market ki sabse fast growth ka bharosa deta hai.
+            </div>
+            <div class="status-tag"><i class="fa-solid fa-circle-check"></i> System Verified</div>
+        </div>
+
+        <div class="info-section" style="border-left: 5px solid var(--accent);">
+            <h3><i class="fa-solid fa-bolt"></i> Instant Withdrawals</h3>
+            <div class="info-content">
+                Apne profit ko kisi bhi waqt seedha apne bank account mein transfer karein. No hidden charges, pure transparency.
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3><i class="fa-solid fa-gift"></i> Referral Bonus</h3>
+            <div class="info-content">
+                Dosto ko invite karein aur har referral par ₹50 se ₹500 tak ka instant bonus payein. Team banayein, zyada kamayein!
             </div>
         </div>
     </main>
@@ -170,21 +199,32 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Fetch User Data
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Real-time listener for user document
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
-                        document.getElementById('welcome-user').innerText = "Hi, " + (data.fullName || "User");
-                        document.getElementById('user-balance').innerText = "₹ " + (data.balance || 0).toLocaleString();
-                        document.getElementById('user-invested').innerText = "₹ " + (data.totalInvested || 0).toLocaleString();
-                        document.getElementById('user-profit').innerText = "+ ₹ " + (data.totalProfit || 0).toLocaleString();
+                        
+                        // Update UI
+                        document.getElementById('welcome-user').innerText = "Hi, " + (data.name || "User");
+                        document.getElementById('user-balance').innerText = "₹ " + (data.balance || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                        document.getElementById('user-invested').innerText = "₹ " + (data.totalInvested || 0).toLocaleString('en-IN');
+                        document.getElementById('user-profit').innerText = "₹ " + (data.totalEarnings || 0).toLocaleString('en-IN');
+
+                        // Claim Notification Logic
+                        const today = new Date().toDateString();
+                        const hasActivePlans = data.activePlans && data.activePlans.length > 0;
+                        const notClaimedToday = data.lastClaimDate !== today;
+
+                        if (hasActivePlans && notClaimedToday) {
+                            document.getElementById('claim-notify').style.display = 'block';
+                        } else {
+                            document.getElementById('claim-notify').style.display = 'none';
+                        }
                     }
                 });
             } else {
-                window.location.href = "login.html"; // Login nahi hai to bahar nikalo
+                window.location.href = "login.html";
             }
         });
     </script>
