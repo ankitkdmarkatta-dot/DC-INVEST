@@ -7,21 +7,61 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; }
+        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; --white: #fff; --success: #27ae60; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); }
-        header { background: #fff; padding: 15px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .back-btn { text-decoration: none; color: var(--primary); }
+        body { background: var(--bg); padding-bottom: 50px; }
+
+        header { 
+            background: var(--white); padding: 15px 20px; display: flex; align-items: center; 
+            gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
+        }
+        .back-btn { text-decoration: none; color: var(--primary); font-size: 20px; }
+
         main { max-width: 500px; margin: 20px auto; padding: 0 20px; }
         
-        .card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 13px; font-weight: 600; color: #666; margin-bottom: 8px; }
-        input { width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 12px; font-size: 16px; font-weight: 700; outline: none; }
+        .section-title { font-size: 14px; font-weight: 700; color: var(--primary); margin: 20px 0 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Method Selection Cards */
+        .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .method-card {
+            background: white; padding: 20px; border-radius: 18px; text-align: center;
+            border: 2px solid transparent; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .method-card i { font-size: 24px; color: var(--primary); margin-bottom: 8px; display: block; }
+        .method-card span { font-size: 13px; font-weight: 700; color: var(--primary); }
+        .method-card.active { border-color: var(--accent); background: #fffdf0; transform: translateY(-3px); }
+
+        /* Details Form */
+        .details-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); display: none; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; font-weight: 600; color: #666; margin-bottom: 6px; }
+        input { 
+            width: 100%; padding: 12px 15px; border: 1.5px solid #eee; border-radius: 12px; 
+            font-size: 14px; font-weight: 600; outline: none; transition: 0.3s;
+        }
         input:focus { border-color: var(--primary); }
-        
-        .info-box { background: #fff9e6; border: 1px solid #ffe58f; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
-        .withdraw-btn { width: 100%; background: var(--primary); color: white; padding: 16px; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; }
+        input:disabled { background: #f8f9fa; color: #16a34a; border-color: #dcfce7; cursor: not-allowed; }
+
+        .save-btn { 
+            width: 100%; background: var(--accent); color: var(--primary); padding: 12px; 
+            border: none; border-radius: 12px; font-weight: 700; margin-top: 10px; cursor: pointer;
+        }
+
+        /* Amount Section */
+        .amount-card { background: var(--primary); border-radius: 20px; padding: 25px; margin-top: 20px; color: white; }
+        .amount-card input { 
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); 
+            color: white; font-size: 24px; text-align: center; margin: 10px 0;
+        }
+        .amount-card input::placeholder { color: rgba(255,255,255,0.4); }
+
+        .withdraw-btn { 
+            width: 100%; background: var(--accent); color: var(--primary); padding: 18px; 
+            border: none; border-radius: 18px; font-weight: 800; font-size: 16px; 
+            margin-top: 20px; cursor: pointer; box-shadow: 0 8px 20px rgba(241,196,15,0.3);
+        }
+        .lock-badge { font-size: 10px; color: var(--success); font-weight: 700; margin-top: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -32,43 +72,129 @@
 </header>
 
 <main>
-    <div class="card">
-        <div class="input-group">
-            <label>Withdrawal Amount</label>
-            <input type="number" id="withdraw-amt" placeholder="Min ₹200">
+    <p class="section-title">Select Method</p>
+    <div class="method-grid">
+        <div class="method-card" id="m-upi" onclick="showMethod('upi')">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+            <span>UPI ID</span>
         </div>
-
-        <div class="input-group">
-            <label>Withdrawal UPI ID (Auto-fetched)</label>
-            <input type="text" id="display-upi" disabled style="background: #f8f9fa; color: #888;">
+        <div class="method-card" id="m-bank" onclick="showMethod('bank')">
+            <i class="fa-solid fa-building-columns"></i>
+            <span>BANK AC</span>
         </div>
-
-        <div class="info-box">
-            <p style="font-size: 11px; color: #856404;"><b>Note:</b> Withdrawal will be credited within 24 hours to your locked UPI ID.</p>
-        </div>
-
-        <button class="withdraw-btn" onclick="handleWithdraw()">REQUEST WITHDRAWAL</button>
     </div>
+
+    <div id="upi-form" class="details-card">
+        <div class="input-group">
+            <label>UPI ID</label>
+            <input type="text" id="upi-val" placeholder="example@ybl">
+            <div id="upi-lock" class="lock-badge"><i class="fa-solid fa-lock"></i> Locked & Verified</div>
+        </div>
+        <button id="upi-save" class="save-btn" onclick="saveDetails('upi')">SAVE UPI ID</button>
+    </div>
+
+    <div id="bank-form" class="details-card">
+        <div class="input-group">
+            <label>Account Holder Name</label>
+            <input type="text" id="bnk-name" placeholder="Full Name">
+        </div>
+        <div class="input-group">
+            <label>Account Number</label>
+            <input type="number" id="bnk-acc" placeholder="000000000000">
+        </div>
+        <div class="input-group">
+            <label>IFSC Code</label>
+            <input type="text" id="bnk-ifsc" placeholder="SBIN000XXXX">
+            <div id="bank-lock" class="lock-badge"><i class="fa-solid fa-lock"></i> Bank Details Locked</div>
+        </div>
+        <button id="bank-save" class="save-btn" onclick="saveDetails('bank')">SAVE BANK DETAILS</button>
+    </div>
+
+    <div class="amount-card">
+        <label style="color: rgba(255,255,255,0.7);">Enter Withdrawal Amount</label>
+        <input type="number" id="withdraw-amt" placeholder="₹ 0.00">
+        <p style="font-size: 11px; opacity: 0.8;">Minimum withdrawal: <b>₹300</b></p>
+    </div>
+
+    <button class="withdraw-btn" onclick="handleWithdraw()">
+        <i class="fa-solid fa-paper-plane"></i> SUBMIT REQUEST
+    </button>
 </main>
 
 <script>
+    // Page load par check karein ki details pehle se save hain ya nahi
     window.onload = function() {
-        const savedUPI = localStorage.getItem('dcWithdrawUPI');
-        if(savedUPI) {
-            document.getElementById('display-upi').value = savedUPI;
+        checkSavedData('upi');
+        checkSavedData('bank');
+    };
+
+    function showMethod(type) {
+        document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.details-card').forEach(f => f.style.display = 'none');
+        
+        document.getElementById('m-' + type).classList.add('active');
+        document.getElementById(type + '-form').style.display = 'block';
+    }
+
+    function saveDetails(type) {
+        if(type === 'upi') {
+            const val = document.getElementById('upi-val').value;
+            if(!val.includes('@')) return alert("Enter valid UPI ID");
+            localStorage.setItem('dc_upi', val);
         } else {
-            document.getElementById('display-upi').value = "No UPI Set (Go to Account)";
+            const name = document.getElementById('bnk-name').value;
+            const acc = document.getElementById('bnk-acc').value;
+            const ifsc = document.getElementById('bnk-ifsc').value;
+            if(!name || !acc || !ifsc) return alert("Fill all bank details");
+            localStorage.setItem('dc_bank_name', name);
+            localStorage.setItem('dc_bank_acc', acc);
+            localStorage.setItem('dc_bank_ifsc', ifsc);
+        }
+        alert("Details Locked Successfully!");
+        checkSavedData(type);
+    }
+
+    function checkSavedData(type) {
+        if(type === 'upi') {
+            const saved = localStorage.getItem('dc_upi');
+            if(saved) {
+                const inp = document.getElementById('upi-val');
+                inp.value = saved;
+                inp.disabled = true;
+                document.getElementById('upi-save').style.display = 'none';
+                document.getElementById('upi-lock').style.display = 'block';
+            }
+        } else {
+            const savedName = localStorage.getItem('dc_bank_name');
+            if(savedName) {
+                document.getElementById('bnk-name').value = savedName;
+                document.getElementById('bnk-acc').value = localStorage.getItem('dc_bank_acc');
+                document.getElementById('bnk-ifsc').value = localStorage.getItem('dc_bank_ifsc');
+                
+                document.getElementById('bnk-name').disabled = true;
+                document.getElementById('bnk-acc').disabled = true;
+                document.getElementById('bnk-ifsc').disabled = true;
+                document.getElementById('bank-save').style.display = 'none';
+                document.getElementById('bank-lock').style.display = 'block';
+            }
         }
     }
 
     function handleWithdraw() {
         const amt = document.getElementById('withdraw-amt').value;
-        if(amt < 200) {
-            alert("Minimum withdrawal is ₹200");
-        } else {
-            alert("Withdrawal Request of ₹" + amt + " Submitted Successfully!");
-        }
+        const activeMethod = document.querySelector('.method-card.active');
+
+        if(!activeMethod) return alert("Please select a withdrawal method first!");
+        if(amt < 300) return alert("Minimum withdrawal is ₹300");
+
+        // Logic check details are saved
+        const methodType = activeMethod.id === 'm-upi' ? 'upi' : 'bank';
+        if(methodType === 'upi' && !localStorage.getItem('dc_upi')) return alert("Please save UPI details first!");
+        if(methodType === 'bank' && !localStorage.getItem('dc_bank_name')) return alert("Please save Bank details first!");
+
+        alert("Success! Your withdrawal request of ₹" + amt + " has been sent. It will be processed within 24 hours.");
     }
 </script>
+
 </body>
 </html>
