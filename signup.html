@@ -18,75 +18,81 @@
             background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: center; justify-content: center;
             padding: 20px;
         }
 
         .signup-card {
             background: var(--glass-bg);
-            width: 100%;
-            max-width: 400px;
-            padding: 40px 30px;
-            border-radius: 20px;
+            width: 100%; max-width: 400px;
+            padding: 40px 30px; border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            text-align: center;
-            position: relative;
+            text-align: center; position: relative;
+            animation: fadeInScale 0.8s ease-out;
         }
 
-        /* --- LOGO (SAB PAHLE JAISA) --- */
+        /* --- LOGO (SAME AS LOGIN/SIGNUP) --- */
         .logo-container {
-            width: 90px; height: 90px; margin: 0 auto 20px;
-            padding: 4px; border-radius: 50%;
+            width: 100px; height: 100px; margin: 0 auto 20px;
+            padding: 5px; border-radius: 50%;
             background: linear-gradient(45deg, var(--accent), transparent, var(--accent));
             animation: rotateBorder 4s linear infinite;
         }
         .logo-inner {
             width: 100%; height: 100%; background: #fff; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-            border: 2px solid #fff;
+            display: flex; align-items: center; justify-content: center; border: 2px solid #eee; overflow: hidden;
         }
-        .logo-inner img { width: 100%; height: 100%; object-fit: cover; }
+        .logo-inner img { width: 80%; height: auto; animation: pulse 2s ease-in-out infinite; }
 
-        h2 { color: var(--primary); margin-bottom: 5px; }
+        h2 { color: var(--primary); margin-bottom: 5px; font-size: 26px; }
         p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
 
         .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; margin-left: 5px; }
+        input { width: 100%; padding: 12px 15px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
 
-        /* --- TERMS SECTION WITH READ MORE --- */
-        .terms-container {
-            margin: 15px 0;
+        /* --- LEFT ALIGNED CHECKBOX AREA --- */
+        .terms-check-area {
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            margin: 15px 0 20px 5px; 
+            font-size: 13px; 
+            color: #444;
             text-align: left;
-            font-size: 13px;
-            color: #555;
-            background: #f9f9f9;
-            padding: 10px;
-            border-radius: 8px;
         }
-        #more-text { display: none; }
-        .read-more-btn {
-            color: var(--primary);
-            cursor: pointer;
-            font-weight: bold;
-            text-decoration: underline;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-        }
+        .terms-check-area input { width: 16px; height: 16px; cursor: pointer; }
+        .read-more-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; }
 
         .btn-signup {
             width: 100%; padding: 14px; background: var(--primary); color: white;
-            border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
+        .btn-signup:hover:not(:disabled) { background: #1a4a80; transform: translateY(-2px); }
         .btn-signup:disabled { background: #95a5a6; cursor: not-allowed; }
 
+        /* --- MODAL (POP-UP) STYLING --- */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+            align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 500px;
+            padding: 25px; border-radius: 15px; text-align: left;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .modal-content h3 { color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 15px; }
+        .modal-content p { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 10px; }
+        .close-modal-btn {
+            width: 100%; background: var(--primary); color: white; border: none;
+            padding: 12px; border-radius: 8px; margin-top: 15px; cursor: pointer; font-weight: bold;
+        }
+
         @keyframes rotateBorder { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -104,38 +110,39 @@
         <form id="signup-form">
             <div class="form-group">
                 <label>Full Name</label>
-                <input type="text" id="user-name" required>
+                <input type="text" id="user-name" placeholder="Enter your full name" required>
             </div>
             <div class="form-group">
                 <label>Email Address</label>
-                <input type="email" id="signup-email" required>
+                <input type="email" id="signup-email" placeholder="email@example.com" required>
             </div>
             <div class="form-group">
                 <label>Create Password</label>
-                <input type="password" id="signup-password" required>
+                <input type="password" id="signup-password" placeholder="••••••••" required>
             </div>
 
-            <div class="terms-container">
-                <p>
-                    By signing up, you agree that you are at least 18 years old and aware of investment risks. 
-                    <span id="more-text">
-                        Market fluctuations can affect your capital. DC INVEST provides tools for management but does not guarantee fixed profits. 
-                        You are responsible for your account security.
-                    </span>
-                    <span class="read-more-btn" id="read-btn">Read More</span>
-                </p>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms-check">
-                    <label for="terms-check">I accept all terms</label>
-                </div>
+            <div class="terms-check-area">
+                <input type="checkbox" id="terms-check">
+                <label for="terms-check">I agree to the <span class="read-more-link" id="open-terms">Terms & Conditions</span></label>
             </div>
 
             <button type="submit" class="btn-signup" id="submit-btn" disabled>Sign Up Now</button>
         </form>
 
-        <div style="margin-top:20px; font-size:14px;">
+        <div style="margin-top:20px; font-size:14px; color:#666;">
             Already have an account? <a href="login.html" style="color:var(--primary); font-weight:bold; text-decoration:none;">Login</a>
+        </div>
+    </div>
+
+    <div class="modal" id="terms-modal">
+        <div class="modal-content">
+            <h3>DC INVEST - Terms & Conditions</h3>
+            <p>Welcome to <strong>DC INVEST</strong>. By using this platform, you agree to follow our rules and policies.</p>
+            <p><strong>1. Age Limit:</strong> You must be 18+ to participate in any investment or trading activities.</p>
+            <p><strong>2. Security:</strong> One user is allowed only one account. Sharing account details is prohibited.</p>
+            <p><strong>3. Transactions:</strong> Withdrawal process may take 24-48 hours depending on verification.</p>
+            <p><strong>4. Disclaimer:</strong> Financial markets involve risk. DC INVEST is not responsible for any market losses.</p>
+            <button class="close-modal-btn" id="close-terms">I Accept & Close</button>
         </div>
     </div>
 
@@ -157,26 +164,21 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- READ MORE LOGIC ---
-        const readBtn = document.getElementById('read-btn');
-        const moreText = document.getElementById('more-text');
-
-        readBtn.onclick = () => {
-            if (moreText.style.display === "none" || moreText.style.display === "") {
-                moreText.style.display = "inline";
-                readBtn.innerText = " Read Less";
-            } else {
-                moreText.style.display = "none";
-                readBtn.innerText = " Read More";
-            }
-        };
-
-        // --- SIGNUP LOGIC ---
+        const modal = document.getElementById('terms-modal');
+        const openBtn = document.getElementById('open-terms');
+        const closeBtn = document.getElementById('close-terms');
         const checkbox = document.getElementById('terms-check');
         const submitBtn = document.getElementById('submit-btn');
 
+        // Modal Logic
+        openBtn.onclick = () => { modal.style.display = "flex"; };
+        closeBtn.onclick = () => { modal.style.display = "none"; };
+        window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; };
+
+        // Enable button only if checkbox is ticked
         checkbox.onchange = () => { submitBtn.disabled = !checkbox.checked; };
 
+        // Signup Logic
         document.getElementById('signup-form').onsubmit = async (e) => {
             e.preventDefault();
             submitBtn.disabled = true;
