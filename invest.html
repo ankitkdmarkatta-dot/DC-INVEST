@@ -19,56 +19,39 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: #f4f7f6; padding-bottom: 90px; }
 
-        /* --- Header --- */
         header {
-            background: var(--white);
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
+            background: var(--white); padding: 10px 20px;
+            display: flex; align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky; top: 0; z-index: 1000;
         }
-        .logo-container {
-            width: 40px; height: 40px; border-radius: 50%;
-            padding: 2px; background: linear-gradient(45deg, var(--accent), transparent);
-            animation: rotate 4s linear infinite; margin-right: 10px;
-        }
-        .logo-inner { 
-            width: 100%; height: 100%; background: #fff; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        .logo-inner img { width: 80%; }
 
-        /* --- Animated Tab Buttons --- */
-        .tab-container {
-            display: flex; gap: 10px; padding: 20px;
-            max-width: 500px; margin: 0 auto;
+        /* --- LOGO (STABLE & ROUND) --- */
+        .logo-container {
+            width: 40px; height: 40px; padding: 2px;
+            border-radius: 50%; background: var(--accent); margin-right: 12px;
         }
+        .logo-inner {
+            width: 100%; height: 100%; background: #fff;
+            border-radius: 50%; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .logo-inner img { width: 100%; height: 100%; object-fit: cover; }
+
+        .tab-container { display: flex; gap: 10px; padding: 20px; max-width: 500px; margin: 0 auto; }
         .tab-btn {
             flex: 1; padding: 12px; border: none; border-radius: 12px;
             font-weight: 700; cursor: pointer; transition: 0.4s;
             background: #e2e8f0; color: var(--primary);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        .tab-btn.active {
-            background: var(--bg-gradient); color: white;
-            transform: scale(1.05); box-shadow: 0 8px 15px rgba(13, 37, 66, 0.3);
-        }
+        .tab-btn.active { background: var(--bg-gradient); color: white; transform: scale(1.05); }
 
-        /* --- Investment Plans Grid --- */
-        .plans-grid {
-            display: grid; grid-template-columns: 1fr; gap: 20px;
-            padding: 0 20px; max-width: 500px; margin: 0 auto;
-        }
+        .plans-grid { display: grid; grid-template-columns: 1fr; gap: 20px; padding: 0 20px; max-width: 500px; margin: 0 auto; }
         .plan-card {
             background: white; border-radius: 20px; overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            animation: slideIn 0.5s ease-out; position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); animation: slideIn 0.5s ease-out;
         }
-        .plan-img {
-            width: 100%; height: 140px; object-fit: cover;
-            background: #eee;
-        }
+        .plan-img { width: 100%; height: 160px; object-fit: cover; }
         .plan-details { padding: 15px; }
         .plan-title { font-size: 18px; font-weight: 700; color: var(--primary); }
         .plan-info { display: flex; justify-content: space-between; margin-top: 10px; }
@@ -77,27 +60,23 @@
 
         .buy-btn {
             width: 100%; background: var(--accent); border: none;
-            padding: 10px; border-radius: 10px; margin-top: 15px;
-            font-weight: 700; color: var(--primary); cursor: pointer;
-            transition: 0.3s;
+            padding: 12px; border-radius: 10px; margin-top: 15px;
+            font-weight: 700; color: var(--primary); cursor: pointer; transition: 0.3s;
         }
-        .buy-btn:active { transform: scale(0.95); }
 
-        /* --- Sections Visibility --- */
-        #active-plans-section { display: none; text-align: center; padding: 40px; color: #94a3b8; }
+        #active-plans-section { display: none; padding: 20px; max-width: 500px; margin: 0 auto; }
+        .empty-state { text-align: center; padding: 40px; color: #94a3b8; }
 
-        /* --- Bottom Nav --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white; height: 70px; display: flex;
             justify-content: space-around; align-items: center;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-top: 1px solid #eee;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
         }
         .nav-link { text-decoration: none; color: #888; text-align: center; flex: 1; font-size: 11px; }
         .nav-link i { font-size: 20px; display: block; margin-bottom: 4px; }
         .nav-link.active { color: var(--primary); }
 
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -113,87 +92,61 @@
     </header>
 
     <div class="tab-container">
-        <button class="tab-btn active" onclick="showTab('buy')">BUY PLANS</button>
-        <button class="tab-btn" onclick="showTab('active')">ACTIVE PLANS</button>
+        <button class="tab-btn active" id="buy-btn-tab" onclick="showTab('buy')">BUY PLANS</button>
+        <button class="tab-btn" id="active-btn-tab" onclick="showTab('active')">ACTIVE PLANS</button>
     </div>
 
     <div id="buy-plans-section" class="plans-grid">
-        
         <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1611974717528-58700030563b?w=400" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1574482620826-40685ca5eba2?w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Fuel Starter (Energy)</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Price</span><b>₹200</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹100</b></div>
+                    <div class="info-item"><span>Days</span><b>10 Days</b></div>
+                </div>
+                <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹1000</div>
+                <button class="buy-btn" onclick="buyPlan('Fuel Starter', 200, 100, 10)">BUY NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.unsplash.com/photo-1508615070457-7baeba4003ab?w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Petrol Pro (Growth)</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Price</span><b>₹500</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹194</b></div>
+                    <div class="info-item"><span>Days</span><b>18 Days</b></div>
+                </div>
+                <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹3500</div>
+                <button class="buy-btn" onclick="buyPlan('Petrol Pro', 500, 194, 18)">BUY NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.unsplash.com/photo-1611974717528-58700030563b?w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Silver Starter</div>
                 <div class="plan-info">
                     <div class="info-item"><span>Price</span><b>₹300</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹142.85</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹142</b></div>
                     <div class="info-item"><span>Days</span><b>7 Days</b></div>
                 </div>
                 <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹1000</div>
-                <button class="buy-btn">BUY NOW</button>
+                <button class="buy-btn" onclick="buyPlan('Silver Starter', 300, 142, 7)">BUY NOW</button>
             </div>
         </div>
-
-        <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400" class="plan-img">
-            <div class="plan-details">
-                <div class="plan-title">Gold Pro</div>
-                <div class="plan-info">
-                    <div class="info-item"><span>Price</span><b>₹599</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹200</b></div>
-                    <div class="info-item"><span>Days</span><b>10 Days</b></div>
-                </div>
-                <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹2000</div>
-                <button class="buy-btn">BUY NOW</button>
-            </div>
-        </div>
-
-        <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=400" class="plan-img">
-            <div class="plan-details">
-                <div class="plan-title">Diamond Elite</div>
-                <div class="plan-info">
-                    <div class="info-item"><span>Price</span><b>₹999</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹233</b></div>
-                    <div class="info-item"><span>Days</span><b>15 Days</b></div>
-                </div>
-                <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹3500</div>
-                <button class="buy-btn">BUY NOW</button>
-            </div>
-        </div>
-
-        <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400" class="plan-img">
-            <div class="plan-details">
-                <div class="plan-title">VIP Corporate</div>
-                <div class="plan-info">
-                    <div class="info-item"><span>Price</span><b>₹1699</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹300</b></div>
-                    <div class="info-item"><span>Days</span><b>20 Days</b></div>
-                </div>
-                <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹6000</div>
-                <button class="buy-btn">BUY NOW</button>
-            </div>
-        </div>
-
-        <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1526303323984-ad74c6309e4e?w=400" class="plan-img">
-            <div class="plan-details">
-                <div class="plan-title">Legend Plan</div>
-                <div class="plan-info">
-                    <div class="info-item"><span>Price</span><b>₹2999</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹400</b></div>
-                    <div class="info-item"><span>Days</span><b>30 Days</b></div>
-                </div>
-                <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹12000</div>
-                <button class="buy-btn">BUY NOW</button>
-            </div>
-        </div>
-
-        </div>
+    </div>
 
     <div id="active-plans-section">
-        <i class="fa-solid fa-folder-open" style="font-size: 50px; margin-bottom: 10px;"></i>
-        <p>No active plans found.<br>Buy a plan to see it here!</p>
+        <div id="active-list" class="plans-grid">
+            </div>
+        <div id="no-active" class="empty-state">
+            <i class="fa-solid fa-folder-open" style="font-size: 50px; margin-bottom: 10px;"></i>
+            <p>No active plans found.<br>Buy a plan to see it here!</p>
+        </div>
     </div>
 
     <nav class="bottom-nav">
@@ -203,23 +156,106 @@
         <a href="account.html" class="nav-link"><i class="fa-solid fa-user-gear"></i><span>Account</span></a>
     </nav>
 
-    <script>
-        function showTab(tab) {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
+            authDomain: "win-ad891.firebaseapp.com",
+            projectId: "win-ad891",
+            storageBucket: "win-ad891.firebasestorage.app",
+            messagingSenderId: "777370829193",
+            appId: "1:777370829193:web:58af7368078591e6806158"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                loadActivePlans();
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        window.showTab = function(tab) {
             const buySection = document.getElementById('buy-plans-section');
             const activeSection = document.getElementById('active-plans-section');
-            const btns = document.querySelectorAll('.tab-btn');
-
-            btns.forEach(b => b.classList.remove('active'));
-
             if(tab === 'buy') {
                 buySection.style.display = 'grid';
                 activeSection.style.display = 'none';
-                btns[0].classList.add('active');
+                document.getElementById('buy-btn-tab').classList.add('active');
+                document.getElementById('active-btn-tab').classList.remove('active');
             } else {
                 buySection.style.display = 'none';
                 activeSection.style.display = 'block';
-                btns[1].classList.add('active');
+                document.getElementById('buy-btn-tab').classList.remove('active');
+                document.getElementById('active-btn-tab').classList.add('active');
             }
+        }
+
+        window.buyPlan = async function(name, price, daily, days) {
+            if (!currentUser) return;
+            
+            const conf = confirm(`Plan: ${name}\nPrice: ₹${price}\nDaily Income: ₹${daily}\nValidity: ${days} Days\n\nConfirm purchase?`);
+            
+            if (conf) {
+                const userRef = doc(db, "users", currentUser.uid);
+                const userSnap = await getDoc(userRef);
+                const userData = userSnap.data();
+
+                if (userData.balance >= price) {
+                    await updateDoc(userRef, {
+                        balance: userData.balance - price,
+                        totalInvested: (userData.totalInvested || 0) + price,
+                        activePlans: arrayUnion({
+                            name: name,
+                            daily: daily,
+                            days: days,
+                            boughtAt: new Date().toISOString()
+                        })
+                    });
+                    alert("Plan purchased successfully!");
+                    showTab('active');
+                } else {
+                    alert("Insufficient balance! Please recharge.");
+                }
+            }
+        }
+
+        function loadActivePlans() {
+            onSnapshot(doc(db, "users", currentUser.uid), (docSnap) => {
+                const data = docSnap.data();
+                const list = document.getElementById('active-list');
+                const noActive = document.getElementById('no-active');
+                
+                list.innerHTML = "";
+                if (data.activePlans && data.activePlans.length > 0) {
+                    noActive.style.display = "none";
+                    data.activePlans.forEach(plan => {
+                        const card = `
+                            <div class="plan-card" style="border-left: 5px solid #10b981;">
+                                <div class="plan-details">
+                                    <div class="plan-title">${plan.name} <span style="font-size:10px; color:green;">(ACTIVE)</span></div>
+                                    <div class="plan-info">
+                                        <div class="info-item"><span>Daily Profit</span><b>₹${plan.daily}</b></div>
+                                        <div class="info-item"><span>Remaining</span><b>${plan.days} Days</b></div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        list.innerHTML += card;
+                    });
+                } else {
+                    noActive.style.display = "block";
+                }
+            });
         }
     </script>
 </body>
