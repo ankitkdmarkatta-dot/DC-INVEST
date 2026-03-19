@@ -7,9 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; --white: #fff; }
+        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; --white: #fff; --success: #27ae60; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); padding-bottom: 30px; }
+        body { background: var(--bg); padding-bottom: 50px; }
 
         header {
             background: var(--white); padding: 15px 20px; display: flex; align-items: center;
@@ -20,54 +20,67 @@
 
         main { max-width: 500px; margin: 20px auto; padding: 0 20px; }
         
-        .section-title { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .section-title { font-size: 14px; font-weight: 700; color: var(--primary); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
 
         /* Custom Input Box */
         .custom-amt-wrapper {
-            background: white; padding: 15px; border-radius: 15px;
-            margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            background: white; padding: 18px; border-radius: 18px;
+            margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04);
             border: 2px solid transparent; transition: 0.3s;
         }
         .custom-amt-wrapper:focus-within { border-color: var(--accent); }
         .input-group { display: flex; align-items: center; gap: 10px; }
-        .currency-symbol { font-size: 24px; font-weight: 800; color: var(--primary); }
+        .currency-symbol { font-size: 26px; font-weight: 800; color: var(--primary); }
         #custom-input {
-            width: 100%; border: none; outline: none; font-size: 22px;
+            width: 100%; border: none; outline: none; font-size: 24px;
             font-weight: 800; color: var(--primary); background: transparent;
         }
 
         /* Package Grid */
-        .amt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px; }
+        .amt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
         .amt-box {
-            background: white; padding: 12px; border-radius: 12px; text-align: center;
-            font-weight: 700; color: var(--primary); border: 2px solid transparent; cursor: pointer;
+            background: white; padding: 14px; border-radius: 14px; text-align: center;
+            font-weight: 700; color: var(--primary); border: 2.5px solid transparent; cursor: pointer;
             transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.03); font-size: 14px;
         }
-        .amt-box.active { border-color: var(--accent); background: #fffdf0; transform: scale(1.05); }
+        .amt-box.active { border-color: var(--accent); background: #fffdf0; transform: translateY(-2px); }
 
         /* QR Section */
         .qr-card {
             background: white; border-radius: 25px; padding: 25px; text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06); margin-bottom: 20px; border: 1px solid #eee;
         }
-        .qr-img { width: 180px; height: 180px; margin-bottom: 15px; border: 5px solid #f8f9fa; border-radius: 15px; }
+        .qr-img { width: 190px; height: 190px; margin-bottom: 15px; border: 6px solid #f8f9fa; border-radius: 18px; }
         
         .upi-copy-box {
-            background: #f8f9fa; padding: 12px; border-radius: 12px;
+            background: #f8f9fa; padding: 14px; border-radius: 12px;
             display: flex; justify-content: space-between; align-items: center;
-            border: 1px dashed #ccc; margin-top: 10px;
+            border: 1px dashed #bbb; margin-top: 10px;
         }
-        .copy-btn { background: var(--primary); color: white; border: none; padding: 6px 15px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .copy-btn { background: var(--primary); color: white; border: none; padding: 8px 18px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; }
 
-        .pay-btn {
-            width: 100%; background: var(--primary); color: white; padding: 18px;
+        /* UTR Section - The Automatic Magic */
+        .utr-card {
+            background: #0d2542; border-radius: 20px; padding: 22px; color: white; margin-top: 25px;
+            box-shadow: 0 10px 20px rgba(13,37,66,0.2);
+        }
+        .utr-card h4 { font-size: 14px; margin-bottom: 12px; color: var(--accent); text-align: center; }
+        .utr-input {
+            width: 100%; padding: 15px; border-radius: 12px; border: none;
+            background: rgba(255,255,255,0.1); color: white; font-size: 18px;
+            font-weight: 700; text-align: center; letter-spacing: 2px; outline: none;
+        }
+        .utr-input::placeholder { color: rgba(255,255,255,0.3); letter-spacing: 0; font-size: 14px; }
+
+        .submit-btn {
+            width: 100%; background: var(--accent); color: var(--primary); padding: 18px;
             border: none; border-radius: 18px; font-weight: 800; font-size: 16px;
-            margin-top: 10px; cursor: pointer; box-shadow: 0 8px 20px rgba(13,37,66,0.2);
+            margin-top: 20px; cursor: pointer; box-shadow: 0 8px 20px rgba(241,196,15,0.25);
             transition: 0.3s;
         }
-        .pay-btn:active { transform: scale(0.98); }
+        .submit-btn:active { transform: scale(0.98); }
 
-        .note { font-size: 11px; color: #888; text-align: center; margin-top: 15px; padding: 0 10px; }
+        .note-box { background: #fff3cd; padding: 12px; border-radius: 10px; margin-top: 15px; border-left: 4px solid #ffc107; }
     </style>
 </head>
 <body>
@@ -78,8 +91,7 @@
 </header>
 
 <main>
-    <p class="section-title"><i class="fa-solid fa-wallet" style="color: var(--accent);"></i> Enter Amount</p>
-    
+    <p class="section-title"><i class="fa-solid fa-coins" style="color: var(--accent);"></i> 1. Choose Amount</p>
     <div class="custom-amt-wrapper">
         <div class="input-group">
             <span class="currency-symbol">₹</span>
@@ -87,7 +99,6 @@
         </div>
     </div>
 
-    <p class="section-title"><i class="fa-solid fa-layer-group" style="color: var(--accent);"></i> Quick Selection</p>
     <div class="amt-grid">
         <div class="amt-box active" onclick="selectAmt(300, this)">₹300</div>
         <div class="amt-box" onclick="selectAmt(500, this)">₹500</div>
@@ -97,64 +108,121 @@
         <div class="amt-box" onclick="selectAmt(10000, this)">₹10k</div>
     </div>
 
+    <p class="section-title"><i class="fa-solid fa-qrcode" style="color: var(--accent);"></i> 2. Scan & Pay</p>
     <div class="qr-card">
-        <p style="font-size: 12px; color: #666; margin-bottom: 12px; font-weight: 600;">Scan to Pay using Any App</p>
         <img id="dynamic-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=4449winsuraj@fam&pn=DC%20INVEST&am=300&cu=INR" alt="QR Code" class="qr-img">
-        
         <div class="upi-copy-box">
             <span id="upi-id" style="font-size: 13px; font-weight: 700; color: var(--primary);">4449winsuraj@fam</span>
             <button class="copy-btn" onclick="copyUPI()">COPY ID</button>
         </div>
+        <button class="submit-btn" style="background: var(--primary); color: white; margin-top: 15px; padding: 12px;" onclick="redirectToUPI()">
+            <i class="fa-solid fa-paper-plane"></i> OPEN UPI APP
+        </button>
     </div>
 
-    <button class="pay-btn" onclick="redirectToUPI()">
-        <i class="fa-solid fa-bolt-lightning" style="color: var(--accent); margin-right: 8px;"></i> PAY SECURELY
+    <p class="section-title"><i class="fa-solid fa-shield-check" style="color: var(--accent);"></i> 3. Verify Payment</p>
+    <div class="utr-card">
+        <h4>ENTER 12-DIGIT UTR / REF NO.</h4>
+        <input type="number" id="utr-input" class="utr-input" placeholder="0000 0000 0000" oninput="if(this.value.length > 12) this.value = this.value.slice(0,12)">
+    </div>
+
+    <button class="submit-btn" onclick="submitDeposit()">
+        <i class="fa-solid fa-circle-check"></i> SUBMIT TO ADD BALANCE
     </button>
 
-    <p class="note"><b>Note:</b> After successful payment, funds will be added to your wallet automatically within 5-10 minutes.</p>
+    <div class="note-box">
+        <p style="font-size: 11px; color: #856404; line-height: 1.4;"><b>IMPORTANT:</b> Wrong UTR submission may lead to account suspension. It takes 5-10 mins to verify.</p>
+    </div>
 </main>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
+        authDomain: "win-ad891.firebaseapp.com",
+        projectId: "win-ad891",
+        storageBucket: "win-ad891.firebasestorage.app",
+        messagingSenderId: "777370829193",
+        appId: "1:777370829193:web:58af7368078591e6806158"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
     let selectedAmount = 300;
-    const upiID = "4449winsuraj@fam";
+    let currentUser = null;
+
+    onAuthStateChanged(auth, (user) => { if (user) currentUser = user; else window.location.href = "login.html"; });
+
     const qrImg = document.getElementById('dynamic-qr');
     const customInp = document.getElementById('custom-input');
 
-    function updateQR(amt) {
-        // Amount change hone par QR code bhi automatically update ho jayega
-        const qrData = `upi://pay?pa=${upiID}&pn=DC%20INVEST&am=${amt}&cu=INR`;
+    window.updateQR = (amt) => {
+        const qrData = `upi://pay?pa=4449winsuraj@fam&pn=DC%20INVEST&am=${amt}&cu=INR`;
         qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
-    }
+    };
 
-    function selectAmt(amt, el) {
+    window.selectAmt = (amt, el) => {
         selectedAmount = amt;
-        customInp.value = amt; // Input box update karein
+        customInp.value = amt;
         document.querySelectorAll('.amt-box').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
         updateQR(amt);
-    }
+    };
 
-    function handleManualInput() {
-        const val = customInp.value;
-        selectedAmount = val;
-        // Grid selection hata dein agar manual typing ho rahi hai
+    window.handleManualInput = () => {
+        selectedAmount = customInp.value;
         document.querySelectorAll('.amt-box').forEach(b => b.classList.remove('active'));
-        updateQR(val);
-    }
+        updateQR(selectedAmount);
+    };
 
-    function copyUPI() {
-        navigator.clipboard.writeText(upiID);
-        alert("UPI ID Copied: " + upiID);
-    }
+    window.copyUPI = () => {
+        navigator.clipboard.writeText("4449winsuraj@fam");
+        alert("UPI ID Copied!");
+    };
 
-    function redirectToUPI() {
-        if(!selectedAmount || selectedAmount < 1) {
-            alert("Please enter a valid amount");
-            return;
+    window.redirectToUPI = () => {
+        if(!selectedAmount || selectedAmount < 1) return alert("Enter Amount!");
+        window.location.href = `upi://pay?pa=4449winsuraj@fam&pn=DC%20INVEST&am=${selectedAmount}&cu=INR`;
+    };
+
+    // SEMI-AUTOMATIC VERIFICATION LOGIC
+    window.submitDeposit = async () => {
+        const utr = document.getElementById('utr-input').value;
+        const finalAmt = parseFloat(selectedAmount);
+
+        if(!utr || utr.length < 12) return alert("Please enter valid 12-digit UTR No.");
+        if(finalAmt < 100) return alert("Min deposit is ₹100");
+
+        try {
+            // 1. Check if UTR already exists (Fraud Protection)
+            const q = query(collection(db, "deposits"), where("utr", "==", utr));
+            const querySnapshot = await getDocs(q);
+            
+            if (!querySnapshot.empty) {
+                return alert("This UTR has already been submitted!");
+            }
+
+            // 2. Add Request to Firestore
+            await addDoc(collection(db, "deposits"), {
+                uid: currentUser.uid,
+                amount: finalAmt,
+                utr: utr,
+                status: "Pending",
+                timestamp: serverTimestamp()
+            });
+
+            alert("Success! Request submitted. Balance will be added after UTR verification.");
+            window.location.href = "account.html";
+
+        } catch (e) {
+            alert("Error: " + e.message);
         }
-        const upiUrl = `upi://pay?pa=${upiID}&pn=DC%20INVEST&am=${selectedAmount}&cu=INR`;
-        window.location.href = upiUrl;
-    }
+    };
 </script>
 </body>
 </html>
