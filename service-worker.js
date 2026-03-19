@@ -1,7 +1,15 @@
-self.addEventListener('install', (e) => {
-  console.log('Service Worker: Installed');
+const CACHE_NAME = 'dc-invest-v1';
+
+self.addEventListener('install', (event) => {
+    console.log('Service Worker: Installing...');
 });
 
-self.addEventListener('fetch', (e) => {
-  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+self.addEventListener('activate', (event) => {
+    console.log('Service Worker: Activated');
+});
+
+self.addEventListener('fetch', (event) => {
+    event.respondWith(
+        fetch(event.request).catch(() => caches.match(event.request))
+    );
 });
