@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History | DC INVEST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0d2542;
+            --accent: #f1c40f;
+            --bg-light: #f4f7f6;
+            --white: #fff;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --text-muted: #888;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg-light); padding-bottom: 90px; }
+
+        /* --- Header --- */
+        header {
+            background: var(--white);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { text-decoration: none; color: var(--primary); font-size: 18px; }
+        .logo-round {
+            width: 35px; height: 35px; border-radius: 50%;
+            border: 2px solid var(--accent);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .logo-round img { width: 100%; height: 100%; object-fit: cover; }
+        .brand-name { font-weight: 800; color: var(--primary); font-size: 15px; }
+
+        /* --- Tabs --- */
+        .tabs {
+            display: flex; background: white; margin: 15px 20px;
+            border-radius: 12px; padding: 5px; gap: 5px;
+        }
+        .tab-btn {
+            flex: 1; padding: 10px; border: none; border-radius: 10px;
+            background: transparent; color: var(--text-muted);
+            font-weight: 600; font-size: 13px; cursor: pointer;
+        }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        /* --- History List --- */
+        .history-container { padding: 0 20px; max-width: 500px; margin: 0 auto; }
+        
+        .transaction-card {
+            background: white; border-radius: 18px; padding: 15px;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border-left: 4px solid #eee;
+        }
+        .type-icon {
+            width: 45px; height: 45px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .icon-deposit { background: #dcfce7; color: var(--success); }
+        .icon-withdraw { background: #fee2e2; color: var(--danger); }
+
+        .trans-info { flex: 1; margin-left: 15px; }
+        .trans-info b { font-size: 14px; color: var(--primary); display: block; }
+        .trans-info span { font-size: 11px; color: var(--text-muted); }
+
+        .trans-amt { text-align: right; }
+        .amt-val { font-weight: 800; font-size: 15px; display: block; }
+        .status-badge {
+            font-size: 10px; font-weight: 700; padding: 2px 8px;
+            border-radius: 6px; text-transform: uppercase;
+        }
+        .status-success { background: #dcfce7; color: var(--success); }
+        .status-pending { background: #fef3c7; color: var(--warning); }
+        .status-failed { background: #fee2e2; color: var(--danger); }
+
+        /* --- Bottom Nav --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: white; height: 75px; display: flex;
+            justify-content: space-around; align-items: center;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.08);
+        }
+        .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; font-size: 11px; }
+        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
+        .nav-link.active { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <a href="account.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="logo-round">
+                <img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'">
+            </div>
+            <div class="brand-name">TRANSACTIONS</div>
+        </div>
+        <i class="fa-solid fa-filter" style="color: var(--primary); font-size: 14px;"></i>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="filterData('all')">All</button>
+        <button class="tab-btn" onclick="filterData('deposit')">Deposits</button>
+        <button class="tab-btn" onclick="filterData('withdraw')">Withdrawals</button>
+    </div>
+
+    <main class="history-container" id="history-list">
+        <p style="text-align: center; color: #999; margin-top: 50px; font-size: 13px;">Fetching transactions...</p>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="invest.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i><span>Invest</span></a>
+        <a href="refer.html" class="nav-link"><i class="fa-solid fa-gift"></i><span>Refer</span></a>
+        <a href="account.html" class="nav-link active"><i class="fa-solid fa-user-gear"></i><span>Account</span></a>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
+            authDomain: "win-ad891.firebaseapp.com",
+            projectId: "win-ad891",
+            storageBucket: "win-ad891.firebasestorage.app",
+            messagingSenderId: "777370829193",
+            appId: "1:777370829193:web:58af7368078591e6806158"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loadHistory(user.uid);
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        function loadHistory(uid) {
+            // "transactions" collection se data fetch karega jahan userId match ho
+            const q = query(
+                collection(db, "transactions"), 
+                where("userId", "==", uid),
+                orderBy("timestamp", "desc")
+            );
+
+            onSnapshot(q, (snapshot) => {
+                const list = document.getElementById('history-list');
+                list.innerHTML = "";
+
+                if (snapshot.empty) {
+                    list.innerHTML = `<div style="text-align:center; margin-top:50px;">
+                        <i class="fa-solid fa-folder-open" style="font-size:40px; color:#ddd;"></i>
+                        <p style="color:#999; font-size:13px; mt-10">No transactions found</p>
+                    </div>`;
+                    return;
+                }
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const isDeposit = data.type === 'deposit';
+                    const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : 'Just now';
+                    
+                    list.innerHTML += `
+                        <div class="transaction-card" style="border-left-color: ${isDeposit ? '#27ae60' : '#e74c3c'}">
+                            <div class="type-icon ${isDeposit ? 'icon-deposit' : 'icon-withdraw'}">
+                                <i class="fa-solid ${isDeposit ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+                            </div>
+                            <div class="trans-info">
+                                <b>${isDeposit ? 'Deposit Funds' : 'Withdrawal Request'}</b>
+                                <span>${date}</span>
+                            </div>
+                            <div class="trans-amt">
+                                <span class="amt-val" style="color: ${isDeposit ? '#27ae60' : '#333'}">
+                                    ${isDeposit ? '+' : '-'}₹${data.amount}
+                                </span>
+                                <span class="status-badge status-${data.status.toLowerCase()}">${data.status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        window.filterData = (type) => {
+            // Logic for visual tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            // Yahan aap local filtering logic bhi laga sakte hain snapshot data par
+        };
+    </script>
+</body>
+</html>
