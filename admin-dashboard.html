@@ -11,14 +11,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg); color: var(--primary); }
 
-        /* Sidebar - Desktop & Tablet */
         .sidebar { 
             width: 260px; background: var(--primary); height: 100vh; position: fixed; 
             color: white; padding: 30px 20px; display: flex; flex-direction: column; 
             transition: 0.3s; z-index: 1000; 
         }
         
-        /* Mobile Navigation Bottom Bar */
         .mobile-nav { 
             display: none; position: fixed; bottom: 0; width: 100%; 
             background: var(--primary); justify-content: space-around; 
@@ -42,10 +40,8 @@
         }
         .nav-link.active { background: var(--accent); color: var(--primary); }
 
-        /* Main Content area */
         .main-view { margin-left: 260px; width: calc(100% - 260px); padding: 30px; transition: 0.3s; }
 
-        /* Stats Section */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { 
             background: white; padding: 20px; border-radius: 20px; 
@@ -54,7 +50,6 @@
         .stat-card span { font-size: 11px; color: #777; font-weight: 700; text-transform: uppercase; }
         .stat-card h2 { font-size: 24px; font-weight: 800; margin-top: 5px; }
 
-        /* Table Responsiveness */
         .table-card { 
             background: white; border-radius: 20px; padding: 15px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.03); overflow-x: auto; 
@@ -70,7 +65,6 @@
         .tab-view { display: none; }
         .tab-view.active { display: block; }
 
-        /* Mobile View Styles */
         @media (max-width: 768px) {
             .sidebar { display: none; }
             .mobile-nav { display: flex; }
@@ -131,7 +125,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -162,6 +156,7 @@
         document.getElementById('total-users').innerText = snap.size;
     });
 
+    // --- DEPOSITS LOGIC ---
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('dep-table-body');
         body.innerHTML = "";
@@ -174,12 +169,13 @@
                 <td>${row.utr}</td>
                 <td>
                     <button class="btn-act btn-approve" onclick="approveDep('${d.id}', '${row.uid}', ${row.amount})">ADD</button>
+                    <button class="btn-act btn-reject" onclick="rejectReq('deposits', '${d.id}')">REJECT</button>
                 </td>
             </tr>`;
         });
     });
 
-    // Withdrawal display logic (basic)
+    // --- WITHDRAWALS LOGIC ---
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
@@ -189,17 +185,64 @@
                 <td>${row.uid.substring(0,6)}..</td>
                 <td>₹${row.amount}</td>
                 <td>${row.method}</td>
-                <td><button class="btn-act btn-reject">DONE</button></td>
+                <td>
+                    <button class="btn-act btn-approve" onclick="doneWithdrawal('${d.id}', '${row.uid}', ${row.amount})">DONE</button>
+                    <button class="btn-act btn-reject" onclick="rejectReq('withdrawals', '${d.id}', '${row.uid}', ${row.amount})">REJECT</button>
+                </td>
             </tr>`;
         });
     });
 
+    // APPROVE DEPOSIT
     window.approveDep = async (docId, uid, amt) => {
         if(!confirm("Verify UTR? Confirm to add balance.")) return;
         try {
-            await updateDoc(doc(db, "users", uid), { balance: increment(amt) });
-            await updateDoc(doc(db, "deposits", docId), { status: "Approved" });
-            alert("Success!");
+            const batch = writeBatch(db);
+            batch.update(doc(db, "users", uid), { balance: increment(amt) });
+            batch.update(doc(db, "deposits", docId), { status: "Approved" });
+            
+            // History entry
+            const transRef = doc(collection(db, "transactions"));
+            batch.set(transRef, {
+                uid: uid, amount: amt, type: "Deposit", status: "Success", time: serverTimestamp()
+            });
+
+            await batch.commit();
+            alert("Deposit Added!");
+        } catch(e) { alert(e.message); }
+    };
+
+    // DONE WITHDRAWAL (Function you needed)
+    window.doneWithdrawal = async (docId, uid, amt) => {
+        if(!confirm("Payment done? Mark as complete?")) return;
+        try {
+            const batch = writeBatch(db);
+            batch.update(doc(db, "withdrawals", docId), { status: "Success" });
+            
+            // Transaction History entry
+            const transRef = doc(collection(db, "transactions"));
+            batch.set(transRef, {
+                uid: uid, amount: amt, type: "Withdrawal", status: "Success", time: serverTimestamp()
+            });
+
+            await batch.commit();
+            alert("Withdrawal marked as DONE!");
+        } catch(e) { alert(e.message); }
+    };
+
+    // REJECT REQUEST
+    window.rejectReq = async (coll, docId, uid = null, amt = 0) => {
+        const reason = prompt("Rejection Reason:");
+        if (reason === null) return;
+        try {
+            const batch = writeBatch(db);
+            // Refund balance if withdrawal rejected
+            if(coll === 'withdrawals' && uid) {
+                batch.update(doc(db, "users", uid), { balance: increment(amt) });
+            }
+            batch.update(doc(db, coll, docId), { status: "Rejected", remark: reason });
+            await batch.commit();
+            alert("Rejected Successfully!");
         } catch(e) { alert(e.message); }
     };
 
