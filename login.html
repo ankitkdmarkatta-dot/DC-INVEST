@@ -34,7 +34,7 @@
         .logo-container {
             width: 100px; height: 100px; margin: 0 auto 20px;
             padding: 3px; border-radius: 50%;
-            background: var(--accent); /* Simple Gold Border */
+            background: var(--accent); 
         }
         .logo-inner {
             width: 100%; height: 100%; background: #fff; 
@@ -44,7 +44,7 @@
         }
         .logo-inner img { 
             width: 100%; height: 100%; 
-            object-fit: cover; /* Isse image rectangle nahi dikhegi, gol kategi */
+            object-fit: cover; 
             border-radius: 50%; 
         }
 
@@ -53,12 +53,14 @@
 
         .form-group { margin-bottom: 15px; text-align: left; }
         label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; margin-left: 5px; }
-        input { width: 100%; padding: 12px 15px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; }
+        input { width: 100%; padding: 12px 15px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
 
         .terms-check-area {
             display: flex; align-items: center; gap: 10px;
             margin: 15px 0 20px 5px; font-size: 13px; color: #444; text-align: left;
         }
+        .terms-check-area input { width: 16px; height: 16px; cursor: pointer; }
         .read-more-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; }
 
         .btn-login {
@@ -78,6 +80,7 @@
             padding: 25px; border-radius: 15px; text-align: left;
             max-height: 80vh; overflow-y: auto;
         }
+        .modal-content h3 { color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 15px; }
         .close-modal-btn {
             width: 100%; background: var(--primary); color: white; border: none;
             padding: 12px; border-radius: 8px; margin-top: 15px; cursor: pointer; font-weight: bold;
@@ -108,7 +111,7 @@
             </div>
             <button type="submit" class="btn-login" id="login-btn" disabled>Log In</button>
         </form>
-        <div style="margin-top:20px; font-size:14px;">
+        <div style="margin-top:20px; font-size:14px; color:#666;">
             Don't have an account? <a href="signup.html" style="color:var(--primary); font-weight:bold; text-decoration:none;">Sign Up</a>
         </div>
     </div>
@@ -116,12 +119,30 @@
     <div class="modal" id="terms-modal">
         <div class="modal-content">
             <h3>DC INVEST - Terms & Conditions</h3>
-            <p><strong>1. Age:</strong> 18+ only. <strong>2. Security:</strong> One account per user. <strong>3. Risk:</strong> Market risks apply. DC INVEST is not liable for losses.</p>
+            <p>Welcome to <strong>DC INVEST</strong>.</p>
+            <p><strong>1. Age:</strong> 18+ only.</p>
+            <p><strong>2. Security:</strong> One account per user.</p>
+            <p><strong>3. Risk:</strong> Market risks apply. DC INVEST is not liable for losses.</p>
             <button class="close-modal-btn" id="close-terms">I Accept & Close</button>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
+            authDomain: "win-ad891.firebaseapp.com",
+            projectId: "win-ad891",
+            storageBucket: "win-ad891.firebasestorage.app",
+            messagingSenderId: "777370829193",
+            appId: "1:777370829193:web:58af7368078591e6806158"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
         const loginBtn = document.getElementById('login-btn');
         const termsCheck = document.getElementById('login-terms-check');
         const modal = document.getElementById('terms-modal');
@@ -132,6 +153,20 @@
         openBtn.onclick = () => { modal.style.display = "flex"; };
         closeBtn.onclick = () => { modal.style.display = "none"; };
         window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; };
+
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            loginBtn.disabled = true;
+            loginBtn.innerText = "Verifying...";
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-password').value);
+                window.location.href = "home.html";
+            } catch (err) {
+                alert("Invalid Email or Password!");
+                loginBtn.disabled = false;
+                loginBtn.innerText = "Log In";
+            }
+        };
     </script>
 </body>
 </html>
