@@ -51,7 +51,7 @@
         .plan-card {
             background: white; border-radius: 25px; overflow: hidden;
             box-shadow: 0 8px 20px rgba(0,0,0,0.06); animation: slideUp 0.5s ease-out;
-            border: 1px solid rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.03); margin-bottom: 15px;
         }
         .plan-img { width: 100%; height: 180px; object-fit: cover; background: #f0f0f0; }
         .plan-details { padding: 18px; }
@@ -206,7 +206,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, arrayUnion, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -225,8 +225,12 @@
         let pData = {};
 
         onAuthStateChanged(auth, (user) => {
-            if (user) { currentUser = user; loadActivePlans(); }
-            else { window.location.href = "login.html"; }
+            if (user) { 
+                currentUser = user; 
+                loadActivePlans(); 
+            } else { 
+                window.location.href = "login.html"; 
+            }
         });
 
         window.showTab = (tab) => {
@@ -237,7 +241,7 @@
         }
 
         window.openModal = (name, price, daily, days, total) => {
-            pData = { name, price, daily, days };
+            pData = { name, price, daily, days, total };
             document.getElementById('m-name').innerText = name;
             document.getElementById('m-price').innerText = "₹" + price;
             document.getElementById('m-daily').innerText = "₹" + daily;
@@ -248,11 +252,11 @@
 
         window.closeModal = () => { document.getElementById('order-modal').style.display = 'none'; }
 
-        // Professional Success Logic
         function showSuccess() {
             closeModal();
             document.getElementById('success-overlay').style.display = 'flex';
         }
+
         window.hideSuccess = () => {
             document.getElementById('success-overlay').style.display = 'none';
             showTab('active');
@@ -267,26 +271,31 @@
                 const snap = await getDoc(userRef);
 
                 if (!snap.exists()) {
-                    await setDoc(userRef, { uid: currentUser.uid, email: currentUser.email, balance: 0, activePlans: [], totalInvested: 0 });
-                    alert("Profile created. Add balance to continue.");
+                    alert("User record not found. Please contact support.");
                     btn.disabled = false; btn.innerText = "CONFIRM & ACTIVATE";
                     return;
                 }
 
                 const userData = snap.data();
-                if (userData.balance >= pData.price) {
+                if ((userData.balance || 0) >= pData.price) {
                     await updateDoc(userRef, {
-                        balance: userData.balance - pData.price,
-                        totalInvested: (userData.totalInvested || 0) + pData.price,
-                        activePlans: arrayUnion({ ...pData, date: new Date().toISOString() })
+                        balance: increment(-pData.price),
+                        totalInvested: increment(pData.price),
+                        activePlans: arrayUnion({ 
+                            name: pData.name, 
+                            daily: parseFloat(pData.daily), 
+                            days: pData.days,
+                            purchaseDate: new Date().toISOString(),
+                            status: 'active'
+                        })
                     });
-                    showSuccess(); // Yahan professional popup call ho raha hai
+                    showSuccess();
                 } else {
-                    alert("Low Balance! Please recharge.");
+                    alert("Insufficient Balance! Please recharge first.");
                 }
             } catch (e) {
                 console.error(e);
-                alert("Error! " + e.message);
+                alert("Transaction Failed: " + e.message);
             }
             btn.disabled = false; btn.innerText = "CONFIRM & ACTIVATE";
         }
@@ -296,20 +305,29 @@
                 const list = document.getElementById('active-list');
                 const noActive = document.getElementById('no-active');
                 list.innerHTML = "";
+                
                 if(!snap.exists()) return;
+                
                 const data = snap.data();
                 if (data.activePlans && data.activePlans.length > 0) {
                     noActive.style.display = "none";
                     data.activePlans.forEach(p => {
-                        list.innerHTML += `<div class="plan-card" style="border-left: 5px solid var(--success); padding:20px;">
-                            <div class="plan-title">${p.name} <span style="font-size:10px; color:green;">● ACTIVE</span></div>
-                            <div class="plan-info">
-                                <div class="info-item"><span>Daily Income</span><b style="color:var(--success);">₹${p.daily}</b></div>
-                                <div class="info-item"><span>Remaining</span><b>${p.days} Days</b></div>
+                        list.innerHTML += `
+                        <div class="plan-card" style="border-left: 5px solid var(--success); padding:20px;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div class="plan-title">${p.name} <span style="font-size:10px; color:green;">● ACTIVE</span></div>
+                                <i class="fa-solid fa-circle-check" style="color:var(--success);"></i>
                             </div>
+                            <div class="plan-info">
+                                <div class="info-item"><span>Daily Profit</span><b style="color:var(--success);">₹${p.daily}</b></div>
+                                <div class="info-item"><span>Status</span><b style="color:#10b981;">Earning</b></div>
+                            </div>
+                            <div style="margin-top:10px; font-size:10px; color:#94a3b8;">Purchased: ${new Date(p.purchaseDate).toLocaleDateString()}</div>
                         </div>`;
                     });
-                } else { noActive.style.display = "block"; }
+                } else { 
+                    noActive.style.display = "block"; 
+                }
             });
         }
     </script>
