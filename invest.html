@@ -14,6 +14,7 @@
             --bg-gradient: linear-gradient(135deg, #0d2542 0%, #1a4a80 100%);
             --white: #ffffff;
             --text-muted: #64748b;
+            --success: #10b981;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -26,7 +27,6 @@
             position: sticky; top: 0; z-index: 1000;
         }
 
-        /* --- LOGO (STABLE & ROUND) --- */
         .logo-container {
             width: 40px; height: 40px; padding: 2px;
             border-radius: 50%; background: var(--accent); margin-right: 12px;
@@ -61,8 +61,34 @@
         .buy-btn {
             width: 100%; background: var(--accent); border: none;
             padding: 12px; border-radius: 10px; margin-top: 15px;
-            font-weight: 700; color: var(--primary); cursor: pointer; transition: 0.3s;
+            font-weight: 700; color: var(--primary); cursor: pointer;
         }
+
+        /* --- PROFESSIONAL MODAL --- */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content {
+            background: white; width: 100%; max-width: 400px;
+            border-radius: 25px; padding: 25px; text-align: center;
+            animation: popUp 0.3s ease-out;
+        }
+        .modal-content h3 { color: var(--primary); margin-bottom: 15px; }
+        .modal-detail-box {
+            background: #f8fafc; border-radius: 15px; padding: 15px;
+            margin-bottom: 20px; text-align: left; border: 1px solid #e2e8f0;
+        }
+        .modal-detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .modal-detail-row span { color: var(--text-muted); }
+        .modal-detail-row b { color: var(--primary); }
+        
+        .confirm-buy-btn {
+            width: 100%; padding: 14px; background: var(--primary); color: white;
+            border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 10px;
+        }
+        .cancel-btn { color: #ef4444; font-weight: 600; cursor: pointer; background: none; border: none; }
 
         #active-plans-section { display: none; padding: 20px; max-width: 500px; margin: 0 auto; }
         .empty-state { text-align: center; padding: 40px; color: #94a3b8; }
@@ -78,6 +104,7 @@
         .nav-link.active { color: var(--primary); }
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -98,30 +125,28 @@
 
     <div id="buy-plans-section" class="plans-grid">
         <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1574482620826-40685ca5eba2?w=500" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1610492314412-f02787834bc6?w=500" class="plan-img">
             <div class="plan-details">
-                <div class="plan-title">Fuel Starter (Energy)</div>
+                <div class="plan-title">Fuel Mini</div>
                 <div class="plan-info">
                     <div class="info-item"><span>Price</span><b>₹200</b></div>
                     <div class="info-item"><span>Daily</span><b>₹100</b></div>
                     <div class="info-item"><span>Days</span><b>10 Days</b></div>
                 </div>
-                <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹1000</div>
-                <button class="buy-btn" onclick="buyPlan('Fuel Starter', 200, 100, 10)">BUY NOW</button>
+                <button class="buy-btn" onclick="openOrderModal('Fuel Mini', 200, 100, 10, 1000)">BUY NOW</button>
             </div>
         </div>
 
         <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1508615070457-7baeba4003ab?w=500" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1543239235-903828308d7e?w=500" class="plan-img">
             <div class="plan-details">
-                <div class="plan-title">Petrol Pro (Growth)</div>
+                <div class="plan-title">Petrol Pro</div>
                 <div class="plan-info">
                     <div class="info-item"><span>Price</span><b>₹500</b></div>
                     <div class="info-item"><span>Daily</span><b>₹194</b></div>
                     <div class="info-item"><span>Days</span><b>18 Days</b></div>
                 </div>
-                <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹3500</div>
-                <button class="buy-btn" onclick="buyPlan('Petrol Pro', 500, 194, 18)">BUY NOW</button>
+                <button class="buy-btn" onclick="openOrderModal('Petrol Pro', 500, 194, 18, 3500)">BUY NOW</button>
             </div>
         </div>
 
@@ -134,18 +159,46 @@
                     <div class="info-item"><span>Daily</span><b>₹142</b></div>
                     <div class="info-item"><span>Days</span><b>7 Days</b></div>
                 </div>
-                <div style="margin-top:10px; font-weight:700; color:#10b981;">Total Return: ₹1000</div>
-                <button class="buy-btn" onclick="buyPlan('Silver Starter', 300, 142, 7)">BUY NOW</button>
+                <button class="buy-btn" onclick="openOrderModal('Silver Starter', 300, 142, 7, 1000)">BUY NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Gold Pro</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Price</span><b>₹599</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹200</b></div>
+                    <div class="info-item"><span>Days</span><b>10 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openOrderModal('Gold Pro', 599, 200, 10, 2000)">BUY NOW</button>
             </div>
         </div>
     </div>
 
     <div id="active-plans-section">
-        <div id="active-list" class="plans-grid">
-            </div>
+        <div id="active-list" class="plans-grid"></div>
         <div id="no-active" class="empty-state">
             <i class="fa-solid fa-folder-open" style="font-size: 50px; margin-bottom: 10px;"></i>
             <p>No active plans found.<br>Buy a plan to see it here!</p>
+        </div>
+    </div>
+
+    <div class="modal" id="order-modal">
+        <div class="modal-content">
+            <h3>Confirm Purchase</h3>
+            <div class="modal-detail-box">
+                <div class="modal-detail-row"><span>Plan Name:</span><b id="m-name">-</b></div>
+                <div class="modal-detail-row"><span>Investment:</span><b id="m-price">₹0</b></div>
+                <div class="modal-detail-row"><span>Daily Income:</span><b id="m-daily">₹0</b></div>
+                <div class="modal-detail-row"><span>Validity:</span><b id="m-days">0 Days</b></div>
+                <div class="modal-detail-row" style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
+                    <span>Total Return:</span><b id="m-total" style="color:var(--success);">₹0</b>
+                </div>
+            </div>
+            <button class="confirm-buy-btn" id="confirm-btn">CONFIRM BUY</button>
+            <button class="cancel-btn" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
@@ -175,86 +228,79 @@
         const db = getFirestore(app);
 
         let currentUser = null;
+        let selectedPlan = {};
 
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                loadActivePlans();
-            } else {
-                window.location.href = "login.html";
-            }
+            if (user) { currentUser = user; loadActivePlans(); }
+            else { window.location.href = "login.html"; }
         });
 
-        window.showTab = function(tab) {
-            const buySection = document.getElementById('buy-plans-section');
-            const activeSection = document.getElementById('active-plans-section');
-            if(tab === 'buy') {
-                buySection.style.display = 'grid';
-                activeSection.style.display = 'none';
-                document.getElementById('buy-btn-tab').classList.add('active');
-                document.getElementById('active-btn-tab').classList.remove('active');
-            } else {
-                buySection.style.display = 'none';
-                activeSection.style.display = 'block';
-                document.getElementById('buy-btn-tab').classList.remove('active');
-                document.getElementById('active-btn-tab').classList.add('active');
-            }
-        }
+        window.showTab = (tab) => {
+            document.getElementById('buy-plans-section').style.display = tab === 'buy' ? 'grid' : 'none';
+            document.getElementById('active-plans-section').style.display = tab === 'active' ? 'block' : 'none';
+            document.getElementById('buy-btn-tab').classList.toggle('active', tab === 'buy');
+            document.getElementById('active-btn-tab').classList.toggle('active', tab === 'active');
+        };
 
-        window.buyPlan = async function(name, price, daily, days) {
+        window.openOrderModal = (name, price, daily, days, total) => {
+            selectedPlan = { name, price, daily, days };
+            document.getElementById('m-name').innerText = name;
+            document.getElementById('m-price').innerText = "₹" + price;
+            document.getElementById('m-daily').innerText = "₹" + daily;
+            document.getElementById('m-days').innerText = days + " Days";
+            document.getElementById('m-total').innerText = "₹" + total;
+            document.getElementById('order-modal').style.display = 'flex';
+        };
+
+        window.closeModal = () => { document.getElementById('order-modal').style.display = 'none'; };
+
+        document.getElementById('confirm-btn').onclick = async () => {
             if (!currentUser) return;
-            
-            const conf = confirm(`Plan: ${name}\nPrice: ₹${price}\nDaily Income: ₹${daily}\nValidity: ${days} Days\n\nConfirm purchase?`);
-            
-            if (conf) {
+            const btn = document.getElementById('confirm-btn');
+            btn.innerText = "Processing..."; btn.disabled = true;
+
+            try {
                 const userRef = doc(db, "users", currentUser.uid);
                 const userSnap = await getDoc(userRef);
                 const userData = userSnap.data();
 
-                if (userData.balance >= price) {
+                if (userData.balance >= selectedPlan.price) {
                     await updateDoc(userRef, {
-                        balance: userData.balance - price,
-                        totalInvested: (userData.totalInvested || 0) + price,
+                        balance: userData.balance - selectedPlan.price,
+                        totalInvested: (userData.totalInvested || 0) + selectedPlan.price,
                         activePlans: arrayUnion({
-                            name: name,
-                            daily: daily,
-                            days: days,
+                            ...selectedPlan,
                             boughtAt: new Date().toISOString()
                         })
                     });
-                    alert("Plan purchased successfully!");
+                    alert("Investment Successful!");
+                    closeModal();
                     showTab('active');
                 } else {
-                    alert("Insufficient balance! Please recharge.");
+                    alert("Insufficient Balance!");
                 }
-            }
-        }
+            } catch (e) { alert("Error! Try again."); }
+            btn.innerText = "CONFIRM BUY"; btn.disabled = false;
+        };
 
         function loadActivePlans() {
             onSnapshot(doc(db, "users", currentUser.uid), (docSnap) => {
                 const data = docSnap.data();
                 const list = document.getElementById('active-list');
                 const noActive = document.getElementById('no-active');
-                
                 list.innerHTML = "";
                 if (data.activePlans && data.activePlans.length > 0) {
                     noActive.style.display = "none";
                     data.activePlans.forEach(plan => {
-                        const card = `
-                            <div class="plan-card" style="border-left: 5px solid #10b981;">
-                                <div class="plan-details">
-                                    <div class="plan-title">${plan.name} <span style="font-size:10px; color:green;">(ACTIVE)</span></div>
-                                    <div class="plan-info">
-                                        <div class="info-item"><span>Daily Profit</span><b>₹${plan.daily}</b></div>
-                                        <div class="info-item"><span>Remaining</span><b>${plan.days} Days</b></div>
-                                    </div>
-                                </div>
-                            </div>`;
-                        list.innerHTML += card;
+                        list.innerHTML += `<div class="plan-card" style="border-left: 5px solid var(--success); padding:15px;">
+                            <div class="plan-title">${plan.name} <span style="font-size:10px; color:green;">(RUNNING)</span></div>
+                            <div class="plan-info">
+                                <div class="info-item"><span>Daily Profit</span><b>₹${plan.daily}</b></div>
+                                <div class="info-item"><span>Remaining</span><b>${plan.days} Days</b></div>
+                            </div>
+                        </div>`;
                     });
-                } else {
-                    noActive.style.display = "block";
-                }
+                } else { noActive.style.display = "block"; }
             });
         }
     </script>
