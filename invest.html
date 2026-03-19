@@ -68,6 +68,7 @@
             box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3);
         }
 
+        /* --- MODAL STYLE --- */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.8);
@@ -91,6 +92,19 @@
             border: none; border-radius: 15px; font-weight: 700; cursor: pointer;
         }
 
+        /* --- SUCCESS POPUP OVERLAY --- */
+        #success-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 3000; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+        }
+        .success-circle {
+            width: 100px; height: 100px; background: var(--success);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 50px; margin-bottom: 20px;
+            animation: scaleCheck 0.5s ease-out forwards;
+        }
+
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white; height: 75px; display: flex;
@@ -104,6 +118,7 @@
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes scaleCheck { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -148,8 +163,7 @@
                 <button class="buy-btn" onclick="openModal('Petrol Pro', 500, 194, 18, 3500)">ACTIVATE NOW</button>
             </div>
         </div>
-        
-        </div>
+    </div>
 
     <div id="active-plans-section" style="display:none;">
         <div id="active-list" class="plans-grid"></div>
@@ -175,6 +189,13 @@
         </div>
     </div>
 
+    <div id="success-overlay">
+        <div class="success-circle"><i class="fa-solid fa-check"></i></div>
+        <h2 style="color:var(--primary); font-weight:800;">Plan Activated!</h2>
+        <p style="color:var(--text-muted); margin-top:10px;">Aapka investment shuru ho chuka hai.</p>
+        <button class="confirm-buy-btn" onclick="hideSuccess()" style="width:200px; margin-top:30px;">Great!</button>
+    </div>
+
     <nav class="bottom-nav">
         <a href="home.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Home</span></a>
         <a href="invest.html" class="nav-link active"><i class="fa-solid fa-chart-pie"></i><span>Invest</span></a>
@@ -185,7 +206,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        // 'setDoc' ko zarour import karein
         import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -228,7 +248,16 @@
 
         window.closeModal = () => { document.getElementById('order-modal').style.display = 'none'; }
 
-        // --- FIXED BUYING LOGIC ---
+        // Professional Success Logic
+        function showSuccess() {
+            closeModal();
+            document.getElementById('success-overlay').style.display = 'flex';
+        }
+        window.hideSuccess = () => {
+            document.getElementById('success-overlay').style.display = 'none';
+            showTab('active');
+        }
+
         document.getElementById('confirm-buy-btn').onclick = async () => {
             const btn = document.getElementById('confirm-buy-btn');
             btn.disabled = true; btn.innerText = "Activating...";
@@ -237,37 +266,27 @@
                 const userRef = doc(db, "users", currentUser.uid);
                 const snap = await getDoc(userRef);
 
-                // Agar user ka document nahi hai, toh use pehle banao (Fixes permissions error)
                 if (!snap.exists()) {
-                    await setDoc(userRef, {
-                        uid: currentUser.uid,
-                        email: currentUser.email,
-                        balance: 0,
-                        activePlans: [],
-                        totalInvested: 0
-                    });
-                    alert("Profile updated. Please add balance and try again!");
+                    await setDoc(userRef, { uid: currentUser.uid, email: currentUser.email, balance: 0, activePlans: [], totalInvested: 0 });
+                    alert("Profile created. Add balance to continue.");
                     btn.disabled = false; btn.innerText = "CONFIRM & ACTIVATE";
                     return;
                 }
 
                 const userData = snap.data();
-
                 if (userData.balance >= pData.price) {
                     await updateDoc(userRef, {
                         balance: userData.balance - pData.price,
                         totalInvested: (userData.totalInvested || 0) + pData.price,
                         activePlans: arrayUnion({ ...pData, date: new Date().toISOString() })
                     });
-                    alert("Success! Plan Activated.");
-                    closeModal();
-                    showTab('active');
+                    showSuccess(); // Yahan professional popup call ho raha hai
                 } else {
                     alert("Low Balance! Please recharge.");
                 }
-            } catch (e) { 
+            } catch (e) {
                 console.error(e);
-                alert("Error! " + e.message); 
+                alert("Error! " + e.message);
             }
             btn.disabled = false; btn.innerText = "CONFIRM & ACTIVATE";
         }
@@ -278,7 +297,6 @@
                 const noActive = document.getElementById('no-active');
                 list.innerHTML = "";
                 if(!snap.exists()) return;
-                
                 const data = snap.data();
                 if (data.activePlans && data.activePlans.length > 0) {
                     noActive.style.display = "none";
