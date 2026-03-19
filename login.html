@@ -18,23 +18,20 @@
             background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: center; justify-content: center;
             padding: 20px;
         }
 
         .login-card {
             background: var(--glass-bg);
-            width: 100%;
-            max-width: 400px;
-            padding: 40px 30px;
-            border-radius: 20px;
+            width: 100%; max-width: 400px;
+            padding: 40px 30px; border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            text-align: center;
-            position: relative;
+            text-align: center; position: relative;
+            animation: fadeInScale 0.8s ease-out;
         }
 
-        /* --- LOGO (SAB SIGNUP JAISA) --- */
+        /* --- LOGO ANIMATION --- */
         .logo-container {
             width: 90px; height: 90px; margin: 0 auto 20px;
             padding: 4px; border-radius: 50%;
@@ -44,54 +41,55 @@
         .logo-inner {
             width: 100%; height: 100%; background: #fff; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; overflow: hidden;
-            border: 2px solid #fff;
+            border: 2px solid #eee;
         }
-        .logo-inner img { width: 100%; height: 100%; object-fit: cover; }
+        .logo-inner img { width: 80%; height: auto; animation: pulse 2s infinite; }
 
-        h2 { color: var(--primary); margin-bottom: 5px; }
-        p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
-
+        h2 { color: var(--primary); margin-bottom: 10px; font-size: 26px; }
         .form-group { margin-bottom: 15px; text-align: left; }
         label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); }
+        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; }
 
-        /* --- TERMS SECTION WITH READ MORE --- */
-        .terms-container {
-            margin: 15px 0;
-            text-align: left;
-            font-size: 12px;
-            color: #555;
-            background: #f4f7f9;
-            padding: 10px;
-            border-radius: 8px;
+        /* --- TERMS CHECKBOX STYLE --- */
+        .terms-check-area {
+            display: flex; align-items: center; gap: 8px;
+            margin: 15px 0; font-size: 13px; color: #444;
         }
-        #more-text { display: none; }
-        .read-more-btn {
-            color: var(--primary);
-            cursor: pointer;
-            font-weight: bold;
-            text-decoration: underline;
-        }
+        .read-more-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; }
 
         .btn-login {
             width: 100%; padding: 14px; background: var(--primary); color: white;
-            border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
         }
         .btn-login:disabled { background: #95a5a6; cursor: not-allowed; }
 
-        .signup-link { margin-top: 20px; font-size: 14px; color: #666; }
-        .signup-link a { color: var(--primary); font-weight: bold; text-decoration: none; }
+        /* --- MODAL (POP-UP) STYLING --- */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+            align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 500px;
+            padding: 25px; border-radius: 15px; text-align: left;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .modal-content h3 { color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 15px; }
+        .modal-content h4 { color: #e67e22; margin-top: 15px; font-size: 15px; }
+        .modal-content p, .modal-content li { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 8px; }
+        .close-modal-btn {
+            width: 100%; background: var(--primary); color: white; border: none;
+            padding: 12px; border-radius: 8px; margin-top: 20px; cursor: pointer; font-weight: bold;
+        }
 
         @keyframes rotateBorder { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <div class="login-card">
-        <div id="status-msg" style="display:none; color:red; margin-bottom:10px; font-size:13px;"></div>
-
         <div class="logo-container">
             <div class="logo-inner">
                 <img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'">
@@ -99,7 +97,7 @@
         </div>
 
         <h2>Welcome Back</h2>
-        <p class="subtitle">Log in to manage your DC INVEST portfolio</p>
+        <p style="color:#666; font-size:14px; margin-bottom:25px;">Log in to DC INVEST</p>
 
         <form id="login-form">
             <div class="form-group">
@@ -111,77 +109,64 @@
                 <input type="password" id="login-password" placeholder="••••••••" required>
             </div>
 
-            <div class="terms-container">
-                <p>
-                    By logging in, you confirm your identity and agree to our security protocols.
-                    <span id="more-text">
-                        Please ensure you are using a secure network. DC INVEST will never ask for your password via email or chat. 
-                        Your session will automatically expire after inactivity for your safety.
-                    </span>
-                    <span class="read-more-btn" id="read-btn">Read More</span>
-                </p>
+            <div class="terms-check-area">
+                <input type="checkbox" id="login-terms-check">
+                <label for="login-terms-check">I agree to the <span class="read-more-link" id="open-terms">Terms & Conditions</span></label>
             </div>
 
-            <button type="submit" class="btn-login" id="login-btn">Log In</button>
+            <button type="submit" class="btn-login" id="login-btn" disabled>Log In</button>
         </form>
 
-        <div class="signup-link">
-            Don't have an account? <a href="signup.html">Sign Up</a>
+        <div style="margin-top:20px; font-size:14px;">
+            Don't have an account? <a href="signup.html" style="color:var(--primary); font-weight:bold; text-decoration:none;">Sign Up</a>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    <div class="modal" id="terms-modal">
+        <div class="modal-content">
+            <h3>4449 WIN - Terms & Conditions</h3>
+            
+            <h4>1. Age Requirement (18+)</h4>
+            <p>User ki umar kam se kam <strong>18 saal</strong> honi chahiye. Underage use sakht mana hai.</p>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
-            authDomain: "win-ad891.firebaseapp.com",
-            projectId: "win-ad891",
-            storageBucket: "win-ad891.firebasestorage.app",
-            messagingSenderId: "777370829193",
-            appId: "1:777370829193:web:58af7368078591e6806158"
-        };
+            <h4>2. Account Security</h4>
+            <ul>
+                <li>Ek user sirf ek hi account bana sakta hai.</li>
+                <li>Apne login details kisi ke saath share na karein.</li>
+            </ul>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+            <h4>3. Deposits & Withdrawals</h4>
+            <p>Saare transactions secure hain. Withdrawal mein 24-48 ghante lag sakte hain.</p>
 
-        // --- READ MORE LOGIC ---
-        const readBtn = document.getElementById('read-btn');
-        const moreText = document.getElementById('more-text');
+            <h4>4. Fair Play & Risks</h4>
+            <p>Betting mein financial risk hota hai. DC INVEST kisi bhi loss ke liye zimmedar nahi hoga.</p>
 
-        readBtn.onclick = () => {
-            if (moreText.style.display === "none" || moreText.style.display === "") {
-                moreText.style.display = "inline";
-                readBtn.innerText = " Read Less";
-            } else {
-                moreText.style.display = "none";
-                readBtn.innerText = " Read More";
-            }
-        };
+            <h4>5. Termination</h4>
+            <p>Cheating ya suspicious activity par account bina bataye suspend kar diya jayega.</p>
 
-        // --- LOGIN LOGIC ---
-        const loginForm = document.getElementById('login-form');
-        const statusMsg = document.getElementById('status-msg');
+            <button class="close-modal-btn" id="close-terms">I Accept & Close</button>
+        </div>
+    </div>
+
+    <script>
         const loginBtn = document.getElementById('login-btn');
+        const termsCheck = document.getElementById('login-terms-check');
+        const modal = document.getElementById('terms-modal');
+        const openBtn = document.getElementById('open-terms');
+        const closeBtn = document.getElementById('close-terms');
 
-        loginForm.onsubmit = async (e) => {
+        // Logic to enable button only on tick
+        termsCheck.onchange = () => { loginBtn.disabled = !termsCheck.checked; };
+
+        // Modal Open/Close Logic
+        openBtn.onclick = () => { modal.style.display = "flex"; };
+        closeBtn.onclick = () => { modal.style.display = "none"; };
+        window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; };
+
+        // Form Submit
+        document.getElementById('login-form').onsubmit = function(e) {
             e.preventDefault();
-            loginBtn.disabled = true;
-            loginBtn.innerText = "Verifying...";
-
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                window.location.href = "home.html";
-            } catch (err) {
-                statusMsg.innerText = "Invalid Email or Password!";
-                statusMsg.style.display = "block";
-                loginBtn.disabled = false;
-                loginBtn.innerText = "Log In";
-            }
+            window.location.href = 'home.html';
         };
     </script>
 </body>
