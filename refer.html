@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refer & Earn | DC INVEST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0d2542;
+            --accent: #f1c40f;
+            --bg-light: #f4f7f6;
+            --white: #fff;
+            --text-muted: #888;
+            --success: #27ae60;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg-light); padding-bottom: 90px; }
+
+        /* --- Header --- */
+        header {
+            background: var(--white);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn { text-decoration: none; color: var(--primary); font-size: 18px; font-weight: 700; }
+        
+        .logo-section { display: flex; align-items: center; gap: 8px; }
+        .logo-round {
+            width: 35px; height: 35px; border-radius: 50%;
+            border: 2px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .logo-round img { width: 80%; }
+
+        /* --- Main Content --- */
+        main { max-width: 500px; margin: 0 auto; padding: 20px; }
+
+        /* Referral Hero Card */
+        .refer-hero {
+            background: var(--primary); color: white;
+            padding: 30px 20px; border-radius: 24px;
+            text-align: center; margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(13, 37, 66, 0.2);
+            position: relative; overflow: hidden;
+        }
+        .refer-hero h1 { font-size: 22px; margin-bottom: 10px; }
+        .refer-hero span { color: var(--accent); }
+        .refer-hero p { font-size: 13px; opacity: 0.8; margin-bottom: 20px; }
+
+        .refer-code-box {
+            background: rgba(255,255,255,0.1);
+            padding: 12px; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px dashed var(--accent);
+        }
+        .copy-btn { 
+            background: var(--accent); border: none; padding: 6px 15px; 
+            border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;
+        }
+
+        /* Rewards Grid */
+        .rewards-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;
+        }
+        .reward-card {
+            background: white; padding: 20px; border-radius: 20px;
+            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .reward-card i { font-size: 28px; color: var(--success); margin-bottom: 10px; }
+        .reward-card h3 { font-size: 14px; color: var(--primary); }
+        .reward-card .amt { font-size: 18px; font-weight: 800; color: var(--success); }
+
+        /* Tracker Section */
+        .tracker-card {
+            background: white; border-radius: 24px; padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .tracker-header { font-weight: 700; margin-bottom: 15px; color: var(--primary); }
+        
+        .ref-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid #f1f1f1;
+        }
+        .ref-item:last-child { border-bottom: none; }
+        .ref-user { display: flex; align-items: center; gap: 10px; }
+        .ref-initial {
+            width: 35px; height: 35px; background: #e2e8f0;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: var(--primary); font-size: 12px;
+        }
+        .ref-name { font-size: 13px; font-weight: 600; display: block; }
+        .ref-date { font-size: 10px; color: var(--text-muted); }
+        .ref-status { font-size: 11px; font-weight: 700; }
+        .status-success { color: var(--success); }
+        .status-pending { color: #e67e22; }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: white; height: 70px; display: flex;
+            justify-content: space-around; align-items: center;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-top: 1px solid #eee;
+        }
+        .nav-link { text-decoration: none; color: #888; text-align: center; flex: 1; font-size: 11px; }
+        .nav-link i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-link.active { color: var(--primary); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <a href="home.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+            <div class="logo-section">
+                <div class="logo-round">
+                    <img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'">
+                </div>
+                <div style="font-weight: 800; color: var(--primary); font-size: 14px;">DC INVEST</div>
+            </div>
+        </div>
+        <div style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Referral Program</div>
+    </header>
+
+    <main>
+        <div class="refer-hero">
+            <h1>Invite & Earn <span>Cash</span></h1>
+            <p>Share your link with friends and get rewards instantly when they start investing.</p>
+            <div class="refer-code-box">
+                <span style="font-weight: 700; letter-spacing: 1px;" id="ref-code">DC999WIN</span>
+                <button class="copy-btn" onclick="copyCode()">COPY LINK</button>
+            </div>
+        </div>
+
+        <div class="rewards-grid">
+            <div class="reward-card">
+                <i class="fa-solid fa-users"></i>
+                <h3>Direct Refer</h3>
+                <p class="amt">+₹50</p>
+            </div>
+            <div class="reward-card">
+                <i class="fa-solid fa-trophy"></i>
+                <h3>Mega Bonus</h3>
+                <p class="amt">₹3000</p>
+            </div>
+        </div>
+
+        <div class="tracker-card">
+            <div class="tracker-header">Your Referrals</div>
+            
+            <div class="ref-item">
+                <div class="ref-user">
+                    <div class="ref-initial">AS</div>
+                    <div>
+                        <span class="ref-name">Aman Sharma</span>
+                        <span class="ref-date">10 Oct 2023</span>
+                    </div>
+                </div>
+                <span class="ref-status status-success">₹50 Credited</span>
+            </div>
+
+            <div class="ref-item">
+                <div class="ref-user">
+                    <div class="ref-initial">VD</div>
+                    <div>
+                        <span class="ref-name">Vikram Das</span>
+                        <span class="ref-date">12 Oct 2023</span>
+                    </div>
+                </div>
+                <span class="ref-status status-pending">Pending...</span>
+            </div>
+
+            </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="home.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="invest.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i><span>Invest</span></a>
+        <a href="refer.html" class="nav-link active"><i class="fa-solid fa-gift"></i><span>Refer</span></a>
+        <a href="account.html" class="nav-link"><i class="fa-solid fa-user-gear"></i><span>Account</span></a>
+    </nav>
+
+    <script>
+        function copyCode() {
+            const code = document.getElementById('ref-code').innerText;
+            navigator.clipboard.writeText("https://4449-win.vercel.app/signup?ref=" + code);
+            alert("Referral Link Copied!");
+        }
+    </script>
+</body>
+</html>
