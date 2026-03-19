@@ -12,12 +12,7 @@
             --glass-bg: rgba(255, 255, 255, 0.95);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
 
         body {
             background: var(--bg-gradient);
@@ -31,124 +26,72 @@
         .signup-card {
             background: var(--glass-bg);
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             padding: 40px 30px;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             text-align: center;
-            animation: fadeInScale 0.8s ease-out;
             position: relative;
         }
 
-        #status-msg {
-            display: none;
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            right: 20px;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            z-index: 10;
-        }
-
-        .success { background: #27ae60; color: white; }
-        .error { background: #e74c3c; color: white; }
-
-        /* --- PROFESSIONAL ROUND ROTATING LOGO --- */
+        /* --- LOGO (SAB PAHLE JAISA) --- */
         .logo-container {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 20px;
-            position: relative;
-            padding: 4px;
-            border-radius: 50%;
+            width: 90px; height: 90px; margin: 0 auto 20px;
+            padding: 4px; border-radius: 50%;
             background: linear-gradient(45deg, var(--accent), transparent, var(--accent));
             animation: rotateBorder 4s linear infinite;
         }
-
         .logo-inner {
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden; /* Ensures image stays round */
+            width: 100%; height: 100%; background: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
             border: 2px solid #fff;
         }
+        .logo-inner img { width: 100%; height: 100%; object-fit: cover; }
 
-        .logo-inner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Keeps logo centered and round */
-        }
-
-        h2 { color: var(--primary); margin-bottom: 5px; font-size: 24px; }
+        h2 { color: var(--primary); margin-bottom: 5px; }
         p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
 
         .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin: 0 0 5px 5px; }
-        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; font-size: 14px; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 8px rgba(13,37,66,0.1); }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; }
 
-        /* --- TERMS & CONDITIONS BOX --- */
-        .terms-box {
+        /* --- TERMS SECTION WITH READ MORE --- */
+        .terms-container {
             margin: 15px 0;
-            padding: 12px;
-            background: #f8f9fa;
-            border: 1px solid #eee;
-            border-radius: 10px;
             text-align: left;
-        }
-
-        .terms-content {
-            height: 80px;
-            overflow-y: auto;
-            font-size: 12px;
+            font-size: 13px;
             color: #555;
-            margin-bottom: 10px;
-            line-height: 1.5;
-            padding-right: 5px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        #more-text { display: none; }
+        .read-more-btn {
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: underline;
         }
 
-        .terms-content::-webkit-scrollbar { width: 4px; }
-        .terms-content::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
-
-        .checkbox-container {
+        .checkbox-group {
             display: flex;
             align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            font-size: 13px;
-            color: var(--primary);
-            font-weight: 500;
+            gap: 8px;
+            margin-top: 10px;
         }
-
-        .checkbox-container input { width: auto; cursor: pointer; }
 
         .btn-signup {
             width: 100%; padding: 14px; background: var(--primary); color: white;
-            border: none; border-radius: 10px; font-size: 16px; font-weight: bold;
-            cursor: pointer; transition: 0.3s; margin-top: 10px;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
-
-        .btn-signup:disabled { background: #95a5a6; cursor: not-allowed; transform: none; box-shadow: none; }
-        .btn-signup:hover:not(:disabled) { background: #1a4a80; transform: translateY(-2px); }
-
-        .login-link { margin-top: 20px; font-size: 14px; color: #666; }
-        .login-link a { color: var(--primary); font-weight: bold; text-decoration: none; }
+        .btn-signup:disabled { background: #95a5a6; cursor: not-allowed; }
 
         @keyframes rotateBorder { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <div class="signup-card">
-        <div id="status-msg"></div>
-
         <div class="logo-container">
             <div class="logo-inner">
                 <img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'">
@@ -161,35 +104,38 @@
         <form id="signup-form">
             <div class="form-group">
                 <label>Full Name</label>
-                <input type="text" id="user-name" placeholder="Enter your full name" required>
+                <input type="text" id="user-name" required>
             </div>
             <div class="form-group">
                 <label>Email Address</label>
-                <input type="email" id="signup-email" placeholder="example@mail.com" required>
+                <input type="email" id="signup-email" required>
             </div>
             <div class="form-group">
                 <label>Create Password</label>
-                <input type="password" id="signup-password" placeholder="Min. 6 characters" required>
+                <input type="password" id="signup-password" required>
             </div>
 
-            <div class="terms-box">
-                <div class="terms-content">
-                    <strong>1. Eligibility:</strong> By creating an account, you confirm that you are at least 18 years of age. Use of DC INVEST by minors is strictly prohibited.<br><br>
-                    <strong>2. Investment Disclosure:</strong> All investments involve risk. Market fluctuations may lead to a loss of principal. DC INVEST provides a platform for management but does not guarantee specific returns.<br><br>
-                    <strong>3. User Responsibility:</strong> You are responsible for maintaining the confidentiality of your login credentials. Any unauthorized use of your account must be reported immediately.<br><br>
-                    <strong>4. Agreement:</strong> By clicking sign up, you agree to comply with all platform regulations and financial safety protocols.
+            <div class="terms-container">
+                <p>
+                    By signing up, you agree that you are at least 18 years old and aware of investment risks. 
+                    <span id="more-text">
+                        Market fluctuations can affect your capital. DC INVEST provides tools for management but does not guarantee fixed profits. 
+                        You are responsible for your account security.
+                    </span>
+                    <span class="read-more-btn" id="read-btn">Read More</span>
+                </p>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms-check">
+                    <label for="terms-check">I accept all terms</label>
                 </div>
-                <label class="checkbox-container">
-                    <input type="checkbox" id="terms-checkbox">
-                    I agree to the Terms & Conditions
-                </label>
             </div>
 
             <button type="submit" class="btn-signup" id="submit-btn" disabled>Sign Up Now</button>
         </form>
 
-        <div class="login-link">
-            Already have an account? <a href="login.html">Login</a>
+        <div style="margin-top:20px; font-size:14px;">
+            Already have an account? <a href="login.html" style="color:var(--primary); font-weight:bold; text-decoration:none;">Login</a>
         </div>
     </div>
 
@@ -198,7 +144,6 @@
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Your Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
             authDomain: "win-ad891.firebaseapp.com",
@@ -212,56 +157,49 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const signupForm = document.getElementById('signup-form');
-        const statusMsg = document.getElementById('status-msg');
+        // --- READ MORE LOGIC ---
+        const readBtn = document.getElementById('read-btn');
+        const moreText = document.getElementById('more-text');
+
+        readBtn.onclick = () => {
+            if (moreText.style.display === "none" || moreText.style.display === "") {
+                moreText.style.display = "inline";
+                readBtn.innerText = " Read Less";
+            } else {
+                moreText.style.display = "none";
+                readBtn.innerText = " Read More";
+            }
+        };
+
+        // --- SIGNUP LOGIC ---
+        const checkbox = document.getElementById('terms-check');
         const submitBtn = document.getElementById('submit-btn');
-        const termsCheckbox = document.getElementById('terms-checkbox');
 
-        // Logic to enable button only when checkbox is ticked
-        termsCheckbox.addEventListener('change', () => {
-            submitBtn.disabled = !termsCheckbox.checked;
-        });
+        checkbox.onchange = () => { submitBtn.disabled = !checkbox.checked; };
 
-        signupForm.addEventListener('submit', async (e) => {
+        document.getElementById('signup-form').onsubmit = async (e) => {
             e.preventDefault();
-            
-            const name = document.getElementById('user-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-
             submitBtn.disabled = true;
-            submitBtn.innerText = "Creating Account...";
+            submitBtn.innerText = "Processing...";
 
             try {
-                // Register user in Firebase Auth
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                // Save user profile in Firestore with 0 balance
-                await setDoc(doc(db, "users", user.uid), {
-                    fullName: name,
-                    email: email,
-                    balance: 0, 
-                    isVerified: true,
+                const userCredential = await createUserWithEmailAndPassword(auth, 
+                    document.getElementById('signup-email').value, 
+                    document.getElementById('signup-password').value
+                );
+                await setDoc(doc(db, "users", userCredential.user.uid), {
+                    fullName: document.getElementById('user-name').value,
+                    balance: 0,
                     joinedAt: new Date().toISOString()
                 });
-
-                statusMsg.innerText = "Success! Redirecting to Login...";
-                statusMsg.className = "status-msg success";
-                statusMsg.style.display = "block";
-
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
-
-            } catch (error) {
-                statusMsg.innerText = "Error: " + error.message;
-                statusMsg.className = "status-msg error";
-                statusMsg.style.display = "block";
+                alert("Account Created!");
+                window.location.href = "login.html";
+            } catch (err) {
+                alert(err.message);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Sign Up Now";
             }
-        });
+        };
     </script>
 </body>
 </html>
