@@ -27,10 +27,13 @@
             position: sticky; top: 0; z-index: 1000;
         }
         .header-left { display: flex; align-items: center; gap: 10px; }
+        
+        /* --- Perfect Round Header Logo --- */
         .logo-round {
-            width: 35px; height: 35px; border-radius: 50%;
+            width: 40px; height: 40px; border-radius: 50%;
             border: 2px solid var(--accent);
             display: flex; align-items: center; justify-content: center; overflow: hidden;
+            background: white;
         }
         .logo-round img { width: 100%; height: 100%; object-fit: cover; }
         .brand-name { font-weight: 800; color: var(--primary); font-size: 16px; }
@@ -41,14 +44,15 @@
             border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
         }
 
-        /* --- User Photo with Logo.png (No Upload) --- */
+        /* --- Full Round Profile Logo --- */
         .avatar-main {
-            width: 100px; height: 100px; border-radius: 50%;
-            border: 3px solid var(--accent); background: white; 
+            width: 110px; height: 110px; border-radius: 50%;
+            border: 4px solid var(--accent); background: white; 
             margin: 0 auto 15px; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
-        .avatar-main img { width: 80%; height: auto; }
+        .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
 
         .action-buttons { display: flex; gap: 15px; max-width: 500px; margin: -35px auto 20px; padding: 0 20px; }
         .action-btn {
@@ -66,12 +70,12 @@
         .group-box { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .list-item { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid #f1f1f1; cursor: pointer; }
         .item-info { display: flex; align-items: center; gap: 15px; }
-        .item-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .item-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
         /* Security Modal */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            width: 100%; height: 100%; background: rgba(0,0,0,0.85);
             align-items: center; justify-content: center; padding: 20px;
         }
         .modal-content {
@@ -80,10 +84,10 @@
         }
         .modal-input {
             width: 100%; padding: 12px; border: 1px solid #ddd;
-            border-radius: 12px; margin: 15px 0; outline: none;
+            border-radius: 12px; margin: 15px 0; outline: none; font-size: 14px;
         }
 
-        .logout-btn { width: 100%; background: #fff; color: var(--danger); border: none; padding: 15px; border-radius: 15px; font-weight: 700; margin-top: 10px; cursor: pointer; }
+        .logout-btn { width: 100%; background: #fff; color: var(--danger); border: none; padding: 15px; border-radius: 15px; font-weight: 700; margin-top: 10px; cursor: pointer; border: 1px solid #fee2e2; }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -105,15 +109,15 @@
             <div class="logo-round"><img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'"></div>
             <div class="brand-name">DC INVEST</div>
         </div>
-        <i class="fa-solid fa-bell" style="color: var(--primary);"></i>
+        <i class="fa-solid fa-bell" style="color: var(--primary); font-size: 18px;"></i>
     </header>
 
     <div class="profile-hero">
         <div class="avatar-main">
-            <img src="logo.png" alt="User" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+            <img src="logo.png" alt="User Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
         </div>
         <h3 id="user-display-name">...</h3>
-        <p id="user-display-id" style="font-size: 13px; opacity: 0.8; letter-spacing: 1px;">ID: ...</p>
+        <p id="user-display-id" style="font-size: 13px; opacity: 0.8; letter-spacing: 1px; font-weight: 600;">ID: ...</p>
     </div>
 
     <div class="action-buttons">
@@ -123,12 +127,12 @@
 
     <div class="stats-grid">
         <div class="stat-card">
-            <h4 id="user-balance" style="color: var(--primary);">₹ 0.00</h4>
-            <p style="font-size: 10px; color: #888; font-weight: 600;">WALLET BALANCE</p>
+            <h4 id="user-balance" style="color: var(--primary); font-size: 18px;">₹ 0.00</h4>
+            <p style="font-size: 10px; color: #888; font-weight: 700; text-transform: uppercase;">Wallet Balance</p>
         </div>
         <div class="stat-card">
-            <h4 id="user-earnings" style="color: var(--success);">₹ 0.00</h4>
-            <p style="font-size: 10px; color: #888; font-weight: 600;">TOTAL EARNINGS</p>
+            <h4 id="user-earnings" style="color: var(--success); font-size: 18px;">₹ 0.00</h4>
+            <p style="font-size: 10px; color: #888; font-weight: 700; text-transform: uppercase;">Total Earnings</p>
         </div>
     </div>
 
@@ -136,15 +140,16 @@
         <div class="group-box">
             <div class="list-item" onclick="openPassModal()">
                 <div class="item-info">
-                    <div class="item-icon" style="background:#fff7ed; color:#ea580c;"><i class="fa-solid fa-shield-halved"></i></div>
-                    <div class="item-text"><b style="display:block; font-size:14px;">Security</b><span style="font-size:11px; color:#999;">Change Account Password</span></div>
+                    <div class="item-icon" style="background:#fff7ed; color:#ea580c;"><i class="fa-solid fa-user-lock"></i></div>
+                    <div class="item-text"><b style="display:block; font-size:14px;">Security</b><span style="font-size:11px; color:#999;">Change Password Settings</span></div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
             </div>
+            
             <div class="list-item" onclick="window.location.href='history.html'">
                 <div class="item-info">
-                    <div class="item-icon" style="background:#f0f9ff; color:#0284c7;"><i class="fa-solid fa-list-check"></i></div>
-                    <div class="item-text"><b style="display:block; font-size:14px;">Transaction History</b><span style="font-size:11px; color:#999;">All Deposits & Withdrawals</span></div>
+                    <div class="item-icon" style="background:#f0f9ff; color:#0284c7;"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <div class="item-text"><b style="display:block; font-size:14px;">Transaction History</b><span style="font-size:11px; color:#999;">View all past activity</span></div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
             </div>
@@ -155,11 +160,13 @@
 
     <div class="modal" id="pass-modal">
         <div class="modal-content">
-            <h3 style="color: var(--primary); font-weight: 800;">Security Update</h3>
-            <p style="font-size: 12px; color: #666; margin-top: 5px;">Set a strong new password</p>
-            <input type="password" id="new-pass-inp" class="modal-input" placeholder="Enter New Password">
-            <button class="action-btn btn-deposit" style="width: 100%;" onclick="saveNewPass()">UPDATE NOW</button>
-            <button style="width: 100%; border: none; background: none; margin-top: 15px; color: #999; font-weight: 600;" onclick="document.getElementById('pass-modal').style.display='none'">CANCEL</button>
+            <h3 style="color: var(--primary); font-weight: 800; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-user-shield" style="color: var(--accent);"></i> Security
+            </h3>
+            <p style="font-size: 12px; color: #666; margin-top: 8px;">Enter your new secure password</p>
+            <input type="password" id="new-pass-inp" class="modal-input" placeholder="New Password (min 6 chars)">
+            <button class="action-btn btn-deposit" style="width: 100%;" onclick="saveNewPass()">UPDATE PASSWORD</button>
+            <button style="width: 100%; border: none; background: none; margin-top: 15px; color: #999; font-weight: 600; cursor: pointer;" onclick="document.getElementById('pass-modal').style.display='none'">CANCEL</button>
         </div>
     </div>
 
@@ -188,12 +195,11 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Instant Caching for fast load
+        // Instant Cache
         if(localStorage.getItem('user_name')) document.getElementById('user-display-name').innerText = localStorage.getItem('user_name');
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Show User ID (First 8 chars)
                 document.getElementById('user-display-id').innerText = "ID: " + user.uid.substring(0, 8).toUpperCase();
                 
                 const userRef = doc(db, "users", user.uid);
@@ -213,12 +219,12 @@
         
         window.saveNewPass = async () => {
             const p = document.getElementById('new-pass-inp').value;
-            if(p.length < 6) return alert("Min 6 characters!");
+            if(p.length < 6) return alert("Password too short!");
             try {
                 await updatePassword(auth.currentUser, p);
-                alert("Password Changed!");
+                alert("Success! Password updated.");
                 document.getElementById('pass-modal').style.display='none';
-            } catch(e) { alert("Please login again to change password."); }
+            } catch(e) { alert("Please login again to verify identity."); }
         };
 
         document.getElementById('logout-btn').onclick = () => {
