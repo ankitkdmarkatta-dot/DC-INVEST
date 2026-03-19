@@ -13,7 +13,6 @@
             --accent: #f1c40f;
             --bg-light: #f4f7f6;
             --white: #ffffff;
-            --text-muted: #64748b;
             --success: #27ae60;
             --danger: #e74c3c;
         }
@@ -72,7 +71,7 @@
         .group-box { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .list-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #f1f1f1; cursor: pointer; }
 
-        /* --- MODAL STYLE (Professional Security) --- */
+        /* Security Modal Styling */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.7);
@@ -80,12 +79,11 @@
         }
         .modal-content {
             background: white; width: 100%; max-width: 400px;
-            border-radius: 25px; padding: 25px; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 25px; padding: 25px; animation: pop 0.3s ease;
         }
-        .modal-content h3 { color: var(--primary); margin-bottom: 15px; font-weight: 800; }
         .modal-input {
             width: 100%; padding: 12px; border: 1px solid #ddd;
-            border-radius: 12px; margin-bottom: 15px; outline: none; font-weight: 600;
+            border-radius: 12px; margin: 15px 0; outline: none; font-weight: 600;
         }
 
         .bottom-nav {
@@ -96,7 +94,6 @@
         }
         .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; }
         .nav-link.active { color: var(--primary); }
-
         .logout-btn { width: 100%; background: #fff; color: var(--danger); border: none; padding: 15px; border-radius: 15px; font-weight: 700; margin-top: 10px; }
 
         @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -115,30 +112,34 @@
     <div class="profile-hero">
         <div class="avatar-wrapper">
             <div class="avatar-main">
-                <img id="user-photo" src="https://wallpapers.com/images/hd/goku-anime-profile-picture-t7b0f0a5v5c7v4c3.jpg" alt="Profile">
+                <img id="user-photo" src="https://via.placeholder.com/150" alt="Profile">
             </div>
             <label for="photo-upload" class="upload-badge"><i class="fa-solid fa-camera"></i></label>
             <input type="file" id="photo-upload" style="display:none;" accept="image/*">
         </div>
-        <h3 id="user-display-name">Loading Profile...</h3>
-        <p id="user-display-id" style="font-size: 12px; opacity: 0.7;">ID: Loading...</p>
+        <h3 id="user-display-name">...</h3>
+        <p id="user-display-id" style="font-size: 12px; opacity: 0.7;">ID: ...</p>
     </div>
 
     <div class="action-buttons">
-        <button class="action-btn btn-deposit" onclick="window.location.href='deposit.html'"><i class="fa-solid fa-plus-circle"></i> DEPOSIT</button>
-        <button class="action-btn btn-withdraw" onclick="window.location.href='withdraw.html'"><i class="fa-solid fa-arrow-up-from-bracket"></i> WITHDRAW</button>
+        <button class="action-btn btn-deposit" onclick="window.location.href='deposit.html'">
+            <i class="fa-solid fa-plus-circle"></i> DEPOSIT
+        </button>
+        <button class="action-btn btn-withdraw" onclick="window.location.href='withdraw.html'">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i> WITHDRAW
+        </button>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card">
             <i class="fa-solid fa-wallet" style="color: var(--accent);"></i>
             <h4 id="user-balance">₹ 0.00</h4>
-            <p style="font-size: 10px; color: var(--text-muted);">WALLET BALANCE</p>
+            <p style="font-size: 10px; color: #888;">WALLET BALANCE</p>
         </div>
         <div class="stat-card">
             <i class="fa-solid fa-chart-line" style="color: var(--success);"></i>
             <h4 id="user-earnings">₹ 0.00</h4>
-            <p style="font-size: 10px; color: var(--text-muted);">TOTAL EARNINGS</p>
+            <p style="font-size: 10px; color: #888;">TOTAL EARNINGS</p>
         </div>
     </div>
 
@@ -154,9 +155,9 @@
         </div>
 
         <div class="group-box">
-            <div class="list-item" onclick="openSecurityModal()">
+            <div class="list-item" onclick="openPassModal()">
                 <div class="item-info">
-                    <div class="item-icon" style="background:#fef9c3; color:#ca8a04;"><i class="fa-solid fa-lock"></i></div>
+                    <div class="item-icon" style="background:#fef9c3; color:#ca8a04;"><i class="fa-solid fa-shield"></i></div>
                     <div class="item-text"><b>Security</b><span>Change Password</span></div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
@@ -170,16 +171,16 @@
             </div>
         </div>
 
-        <button class="logout-btn" id="logout-trigger"><i class="fa-solid fa-right-from-bracket"></i> LOGOUT ACCOUNT</button>
+        <button class="logout-btn" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> LOGOUT ACCOUNT</button>
     </div>
 
-    <div class="modal" id="security-modal">
+    <div class="modal" id="pass-modal">
         <div class="modal-content">
-            <h3><i class="fa-solid fa-shield-halved"></i> Security</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter your new password below.</p>
-            <input type="password" id="new-password" class="modal-input" placeholder="New Password (min 6 chars)">
-            <button class="action-btn btn-deposit" style="width:100%;" onclick="handlePasswordChange()">UPDATE PASSWORD</button>
-            <button style="width:100%; border:none; background:none; color:#999; margin-top:15px; cursor:pointer;" onclick="closeModal('security-modal')">CANCEL</button>
+            <h3 style="color: var(--primary);">Update Security</h3>
+            <p style="font-size: 12px; color: #666;">Enter a new password (min. 6 chars)</p>
+            <input type="password" id="new-pass-inp" class="modal-input" placeholder="New Password">
+            <button class="action-btn btn-deposit" style="width: 100%;" onclick="saveNewPass()">CHANGE PASSWORD</button>
+            <button style="width: 100%; border: none; background: none; margin-top: 15px; color: #999;" onclick="document.getElementById('pass-modal').style.display='none'">CANCEL</button>
         </div>
     </div>
 
@@ -208,59 +209,58 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Pre-load saved pic from LocalStorage (Fix for Refresh Issue)
-        const savedPic = localStorage.getItem('user_profile_pic');
-        if(savedPic) document.getElementById('user-photo').src = savedPic;
+        // Instant Recovery from LocalStorage
+        if(localStorage.getItem('cached_name')) document.getElementById('user-display-name').innerText = localStorage.getItem('cached_name');
+        if(localStorage.getItem('cached_pic')) document.getElementById('user-photo').src = localStorage.getItem('cached_pic');
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const userRef = doc(db, "users", user.uid);
                 onSnapshot(userRef, (snap) => {
                     if(snap.exists()){
-                        const data = snap.data();
-                        document.getElementById('user-display-name').innerText = data.name || "User";
-                        document.getElementById('user-display-id').innerText = "ID: " + user.uid.substring(0, 8).toUpperCase();
-                        document.getElementById('user-balance').innerText = "₹ " + (data.balance || 0).toFixed(2);
-                        document.getElementById('user-earnings').innerText = "₹ " + (data.totalEarnings || 0).toFixed(2);
+                        const d = snap.data();
+                        document.getElementById('user-display-name').innerText = d.name || "User";
+                        document.getElementById('user-display-id').innerText = "ID: " + user.uid.substring(0,8).toUpperCase();
+                        document.getElementById('user-balance').innerText = "₹ " + (d.balance || 0).toFixed(2);
+                        document.getElementById('user-earnings').innerText = "₹ " + (d.totalEarnings || 0).toFixed(2);
                         
-                        if(data.photoURL) {
-                            document.getElementById('user-photo').src = data.photoURL;
-                            localStorage.setItem('user_profile_pic', data.photoURL);
+                        if(d.photoURL) {
+                            document.getElementById('user-photo').src = d.photoURL;
+                            localStorage.setItem('cached_pic', d.photoURL);
                         }
+                        localStorage.setItem('cached_name', d.name);
                     }
                 });
             } else { window.location.href = "login.html"; }
         });
 
-        // Photo Upload Logic with Backup
-        document.getElementById('photo-upload').addEventListener('change', function(e) {
+        // Photo Upload with Fix
+        document.getElementById('photo-upload').onchange = (e) => {
             const file = e.target.files[0];
             const reader = new FileReader();
-            reader.onload = async function() {
+            reader.onload = async () => {
                 const base64 = reader.result;
                 document.getElementById('user-photo').src = base64;
-                localStorage.setItem('user_profile_pic', base64); // Local Backup
+                localStorage.setItem('cached_pic', base64);
                 await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: base64 });
-                alert("Profile Photo Updated!");
             };
             reader.readAsDataURL(file);
-        });
+        };
 
-        window.openSecurityModal = () => document.getElementById('security-modal').style.display = 'flex';
-        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
-
-        window.handlePasswordChange = async () => {
-            const newPass = document.getElementById('new-password').value;
-            if(newPass.length < 6) return alert("Min 6 characters required!");
+        window.openPassModal = () => document.getElementById('pass-modal').style.display='flex';
+        
+        window.saveNewPass = async () => {
+            const p = document.getElementById('new-pass-inp').value;
+            if(p.length < 6) return alert("Weak Password!");
             try {
-                await updatePassword(auth.currentUser, newPass);
-                alert("Password Updated!");
-                closeModal('security-modal');
-            } catch(e) { alert("Session expired. Please Login again."); }
-        }
+                await updatePassword(auth.currentUser, p);
+                alert("Success! Password Changed.");
+                document.getElementById('pass-modal').style.display='none';
+            } catch(err) { alert("Please Re-login to change password."); }
+        };
 
-        document.getElementById('logout-trigger').onclick = () => {
-            localStorage.removeItem('user_profile_pic');
+        document.getElementById('logout-btn').onclick = () => {
+            localStorage.clear();
             signOut(auth);
         };
     </script>
