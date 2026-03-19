@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KD Admin Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); display: flex; align-items: center; justify-content: center; height: 100vh; }
+        
+        .login-card { background: white; width: 90%; max-width: 400px; padding: 45px 35px; border-radius: 30px; box-shadow: 0 25px 60px rgba(0,0,0,0.1); position: relative; }
+        .kd-logo { position: absolute; top: -30px; left: 30px; background: var(--primary); color: var(--accent); width: 65px; height: 65px; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; border: 3px solid var(--accent); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        
+        h2 { color: var(--primary); font-weight: 800; margin-bottom: 30px; margin-top: 10px; font-size: 22px; }
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 14px; }
+        input { width: 100%; padding: 16px 16px 16px 50px; border-radius: 15px; border: 2px solid #f1f1f1; outline: none; transition: 0.3s; font-size: 14px; font-weight: 600; }
+        input:focus { border-color: var(--primary); background: #fdfdfd; }
+        
+        .login-btn { width: 100%; background: var(--primary); color: white; padding: 18px; border: none; border-radius: 18px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(13,37,66,0.2); font-size: 15px; letter-spacing: 1px; }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(13,37,66,0.3); }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="kd-logo">KD</div>
+    <h2>Admin Dashboard Login</h2>
+    <div class="input-group">
+        <i class="fa-solid fa-envelope"></i>
+        <input type="email" id="adm-email" placeholder="Admin Email">
+    </div>
+    <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" id="adm-pass" placeholder="Security Password">
+    </div>
+    <button class="login-btn" onclick="secureLogin()">ENTER DASHBOARD</button>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
+        authDomain: "win-ad891.firebaseapp.com",
+        projectId: "win-ad891",
+        storageBucket: "win-ad891.firebasestorage.app",
+        messagingSenderId: "777370829193",
+        appId: "1:777370829193:web:58af7368078591e6806158"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.secureLogin = async () => {
+        const email = document.getElementById('adm-email').value;
+        const pass = document.getElementById('adm-pass').value;
+
+        if(email !== "adminkd@gmail.com") return alert("Unauthorized Email!");
+
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+            // Session set karein taaki dashboard khul sake
+            localStorage.setItem('kd_admin_access', 'granted');
+            window.location.href = "admin-dashboard.html";
+        } catch (e) {
+            alert("Login Failed: Galt ID/Password");
+        }
+    }
+</script>
+</body>
+</html>
