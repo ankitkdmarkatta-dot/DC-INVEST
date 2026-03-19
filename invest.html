@@ -51,7 +51,7 @@
             background: white; border-radius: 20px; overflow: hidden;
             box-shadow: 0 10px 20px rgba(0,0,0,0.05); animation: slideIn 0.5s ease-out;
         }
-        .plan-img { width: 100%; height: 160px; object-fit: cover; }
+        .plan-img { width: 100%; height: 170px; object-fit: cover; background: #eee; }
         .plan-details { padding: 15px; }
         .plan-title { font-size: 18px; font-weight: 700; color: var(--primary); }
         .plan-info { display: flex; justify-content: space-between; margin-top: 10px; }
@@ -64,29 +64,29 @@
             font-weight: 700; color: var(--primary); cursor: pointer;
         }
 
-        /* --- PROFESSIONAL MODAL --- */
+        /* --- PROFESSIONAL POPUP MODAL --- */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            width: 100%; height: 100%; background: rgba(0,0,0,0.85);
             align-items: center; justify-content: center; padding: 20px;
         }
         .modal-content {
-            background: white; width: 100%; max-width: 400px;
+            background: white; width: 100%; max-width: 380px;
             border-radius: 25px; padding: 25px; text-align: center;
-            animation: popUp 0.3s ease-out;
+            animation: popUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .modal-content h3 { color: var(--primary); margin-bottom: 15px; }
+        .modal-icon { font-size: 50px; color: var(--accent); margin-bottom: 15px; }
         .modal-detail-box {
             background: #f8fafc; border-radius: 15px; padding: 15px;
-            margin-bottom: 20px; text-align: left; border: 1px solid #e2e8f0;
+            margin: 15px 0; text-align: left; border: 1px solid #e2e8f0;
         }
-        .modal-detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
-        .modal-detail-row span { color: var(--text-muted); }
-        .modal-detail-row b { color: var(--primary); }
-        
+        .modal-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .modal-row span { color: #64748b; }
+        .modal-row b { color: var(--primary); }
+
         .confirm-buy-btn {
-            width: 100%; padding: 14px; background: var(--primary); color: white;
-            border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 10px;
+            width: 100%; padding: 15px; background: var(--primary); color: white;
+            border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 12px;
         }
         .cancel-btn { color: #ef4444; font-weight: 600; cursor: pointer; background: none; border: none; }
 
@@ -104,7 +104,7 @@
         .nav-link.active { color: var(--primary); }
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes popUp { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -124,8 +124,9 @@
     </div>
 
     <div id="buy-plans-section" class="plans-grid">
+        
         <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1610492314412-f02787834bc6?w=500" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1543239235-903828308d7e?auto=format&fit=crop&q=80&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Fuel Mini</div>
                 <div class="plan-info">
@@ -138,7 +139,7 @@
         </div>
 
         <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1543239235-903828308d7e?w=500" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1610492314412-f02787834bc6?auto=format&fit=crop&q=80&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Petrol Pro</div>
                 <div class="plan-info">
@@ -151,7 +152,7 @@
         </div>
 
         <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1611974717528-58700030563b?w=500" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1611974717528-58700030563b?auto=format&fit=crop&q=80&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Silver Starter</div>
                 <div class="plan-info">
@@ -164,7 +165,7 @@
         </div>
 
         <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Gold Pro</div>
                 <div class="plan-info">
@@ -175,6 +176,85 @@
                 <button class="buy-btn" onclick="openOrderModal('Gold Pro', 599, 200, 10, 2000)">BUY NOW</button>
             </div>
         </div>
+
+        <div class="plan-card">
+            <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&q=80&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Diamond Elite</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Price</span><b>₹999</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹233</b></div>
+                    <div class="info-item"><span>Days</span><b>15 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openOrderModal('Diamond Elite', 999, 233, 15, 3500)">BUY NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.unsplash.com/photo-1517520287167-4bda64282b54?auto=format&fit=crop&q=80&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Diesel Power</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Price</span><b>₹1200</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹400</b></div>
+                    <div class="info-item"><span>Days</span><b>12 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openOrderModal('Diesel Power', 1200, 400, 12, 4800)">BUY NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.unsplash.com/photo-1621939514649-280e2ee25f60?auto=format&fit=crop&q=80&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">VIP Corporate</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Price</span><b>₹1699</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹300</b></div>
+                    <div class="info-item"><span>Days</span><b>20 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openOrderModal('VIP Corporate', 1699, 300, 20, 6000)">BUY NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.unsplash.com/photo-1526303323984-ad74c6309e4e?auto=format&fit=crop&q=80&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Legend Plan</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Price</span><b>₹2999</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹400</b></div>
+                    <div class="info-item"><span>Days</span><b>30 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openOrderModal('Legend Plan', 2999, 400, 30, 12000)">BUY NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.unsplash.com/photo-1509391366360-fe5bb65858db?auto=format&fit=crop&q=80&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Solar Green</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Price</span><b>₹4500</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹600</b></div>
+                    <div class="info-item"><span>Days</span><b>25 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openOrderModal('Solar Green', 4500, 600, 25, 15000)">BUY NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.unsplash.com/photo-1634733988138-bf2c3a2a13fa?auto=format&fit=crop&q=80&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Ultimate Crown</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Price</span><b>₹9000</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹1500</b></div>
+                    <div class="info-item"><span>Days</span><b>20 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openOrderModal('Ultimate Crown', 9000, 1500, 20, 30000)">BUY NOW</button>
+            </div>
+        </div>
+
     </div>
 
     <div id="active-plans-section">
@@ -187,18 +267,22 @@
 
     <div class="modal" id="order-modal">
         <div class="modal-content">
-            <h3>Confirm Purchase</h3>
+            <div class="modal-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <h3 style="color:var(--primary); font-size: 20px;">Confirm Investment</h3>
+            <p style="font-size: 13px; color: #666;">Aap is plan ko activate karne ja rahe hain.</p>
+            
             <div class="modal-detail-box">
-                <div class="modal-detail-row"><span>Plan Name:</span><b id="m-name">-</b></div>
-                <div class="modal-detail-row"><span>Investment:</span><b id="m-price">₹0</b></div>
-                <div class="modal-detail-row"><span>Daily Income:</span><b id="m-daily">₹0</b></div>
-                <div class="modal-detail-row"><span>Validity:</span><b id="m-days">0 Days</b></div>
-                <div class="modal-detail-row" style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
-                    <span>Total Return:</span><b id="m-total" style="color:var(--success);">₹0</b>
+                <div class="modal-row"><span>Plan Name</span><b id="m-name">-</b></div>
+                <div class="modal-row"><span>Price</span><b id="m-price">₹0</b></div>
+                <div class="modal-row"><span>Daily Income</span><b id="m-daily">₹0</b></div>
+                <div class="modal-row"><span>Period</span><b id="m-days">0 Days</b></div>
+                <div class="modal-row" style="border-top: 1px dashed #ccc; padding-top: 8px; margin-top: 8px;">
+                    <span style="font-weight:700;">Total Return</span><b id="m-total" style="color:var(--success); font-size: 16px;">₹0</b>
                 </div>
             </div>
-            <button class="confirm-buy-btn" id="confirm-btn">CONFIRM BUY</button>
-            <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+            
+            <button class="confirm-buy-btn" id="confirm-btn">ACTIVATE PLAN</button>
+            <button class="cancel-btn" onclick="closeModal()">Maybe Later</button>
         </div>
     </div>
 
@@ -243,7 +327,7 @@
         };
 
         window.openOrderModal = (name, price, daily, days, total) => {
-            selectedPlan = { name, price, daily, days };
+            selectedPlan = { name, price, daily, days, total };
             document.getElementById('m-name').innerText = name;
             document.getElementById('m-price').innerText = "₹" + price;
             document.getElementById('m-daily').innerText = "₹" + daily;
@@ -257,7 +341,7 @@
         document.getElementById('confirm-btn').onclick = async () => {
             if (!currentUser) return;
             const btn = document.getElementById('confirm-btn');
-            btn.innerText = "Processing..."; btn.disabled = true;
+            btn.innerText = "Activating..."; btn.disabled = true;
 
             try {
                 const userRef = doc(db, "users", currentUser.uid);
@@ -273,14 +357,14 @@
                             boughtAt: new Date().toISOString()
                         })
                     });
-                    alert("Investment Successful!");
+                    alert("Plan Activated Successfully!");
                     closeModal();
                     showTab('active');
                 } else {
-                    alert("Insufficient Balance!");
+                    alert("Insufficient Wallet Balance!");
                 }
-            } catch (e) { alert("Error! Try again."); }
-            btn.innerText = "CONFIRM BUY"; btn.disabled = false;
+            } catch (e) { alert("Network Error! Try again."); }
+            btn.innerText = "ACTIVATE PLAN"; btn.disabled = false;
         };
 
         function loadActivePlans() {
@@ -292,11 +376,11 @@
                 if (data.activePlans && data.activePlans.length > 0) {
                     noActive.style.display = "none";
                     data.activePlans.forEach(plan => {
-                        list.innerHTML += `<div class="plan-card" style="border-left: 5px solid var(--success); padding:15px;">
-                            <div class="plan-title">${plan.name} <span style="font-size:10px; color:green;">(RUNNING)</span></div>
+                        list.innerHTML += `<div class="plan-card" style="border-left: 6px solid var(--success); padding:15px; background: #fff;">
+                            <div class="plan-title" style="color:var(--primary);">${plan.name} <i class="fa-solid fa-bolt" style="color:var(--accent); font-size:12px;"></i></div>
                             <div class="plan-info">
-                                <div class="info-item"><span>Daily Profit</span><b>₹${plan.daily}</b></div>
-                                <div class="info-item"><span>Remaining</span><b>${plan.days} Days</b></div>
+                                <div class="info-item"><span>Daily Profit</span><b style="color:var(--success);">₹${plan.daily}</b></div>
+                                <div class="info-item"><span>Validity</span><b>${plan.days} Days</b></div>
                             </div>
                         </div>`;
                     });
