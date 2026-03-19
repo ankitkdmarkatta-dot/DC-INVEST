@@ -22,7 +22,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg-light); padding-bottom: 90px; }
 
-        /* --- Header --- */
         header {
             background: var(--white);
             padding: 12px 20px;
@@ -42,7 +41,6 @@
         .logo-round img { width: 100%; height: 100%; object-fit: cover; }
         .brand-name { font-weight: 800; color: var(--primary); font-size: 15px; }
 
-        /* --- Tabs --- */
         .tabs {
             display: flex; background: white; margin: 15px 20px;
             border-radius: 12px; padding: 5px; gap: 5px;
@@ -51,18 +49,21 @@
             flex: 1; padding: 10px; border: none; border-radius: 10px;
             background: transparent; color: var(--text-muted);
             font-weight: 600; font-size: 13px; cursor: pointer;
+            transition: 0.3s;
         }
         .tab-btn.active { background: var(--primary); color: white; }
 
-        /* --- History List --- */
-        .history-container { padding: 0 20px; max-width: 500px; margin: 0 auto; }
+        .history-container { padding: 0 20px; max-width: 500px; margin: 0 auto; min-height: 300px; }
         
         .transaction-card {
             background: white; border-radius: 18px; padding: 15px;
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             border-left: 4px solid #eee;
+            animation: slideUp 0.4s ease-out;
         }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .type-icon {
             width: 45px; height: 45px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
@@ -82,10 +83,10 @@
             border-radius: 6px; text-transform: uppercase;
         }
         .status-success { background: #dcfce7; color: var(--success); }
+        .status-approved { background: #dcfce7; color: var(--success); }
         .status-pending { background: #fef3c7; color: var(--warning); }
-        .status-failed { background: #fee2e2; color: var(--danger); }
+        .status-failed, .status-rejected { background: #fee2e2; color: var(--danger); }
 
-        /* --- Bottom Nav --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white; height: 75px; display: flex;
@@ -111,9 +112,9 @@
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="filterData('all')">All</button>
-        <button class="tab-btn" onclick="filterData('deposit')">Deposits</button>
-        <button class="tab-btn" onclick="filterData('withdraw')">Withdrawals</button>
+        <button class="tab-btn active" id="tab-all" onclick="filterData('all')">All</button>
+        <button class="tab-btn" id="tab-deposit" onclick="filterData('Deposit')">Deposits</button>
+        <button class="tab-btn" id="tab-withdraw" onclick="filterData('Withdrawal')">Withdrawals</button>
     </div>
 
     <main class="history-container" id="history-list">
@@ -130,7 +131,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -145,6 +146,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let allTransactions = [];
+        let currentFilter = 'all';
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 loadHistory(user.uid);
@@ -154,56 +158,83 @@
         });
 
         function loadHistory(uid) {
-            // "transactions" collection se data fetch karega jahan userId match ho
+            // Admin code uses 'uid' instead of 'userId'
             const q = query(
                 collection(db, "transactions"), 
-                where("userId", "==", uid),
-                orderBy("timestamp", "desc")
+                where("uid", "==", uid)
             );
 
             onSnapshot(q, (snapshot) => {
-                const list = document.getElementById('history-list');
-                list.innerHTML = "";
-
-                if (snapshot.empty) {
-                    list.innerHTML = `<div style="text-align:center; margin-top:50px;">
-                        <i class="fa-solid fa-folder-open" style="font-size:40px; color:#ddd;"></i>
-                        <p style="color:#999; font-size:13px; mt-10">No transactions found</p>
-                    </div>`;
-                    return;
-                }
-
+                allTransactions = [];
                 snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const isDeposit = data.type === 'deposit';
-                    const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : 'Just now';
-                    
-                    list.innerHTML += `
-                        <div class="transaction-card" style="border-left-color: ${isDeposit ? '#27ae60' : '#e74c3c'}">
-                            <div class="type-icon ${isDeposit ? 'icon-deposit' : 'icon-withdraw'}">
-                                <i class="fa-solid ${isDeposit ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
-                            </div>
-                            <div class="trans-info">
-                                <b>${isDeposit ? 'Deposit Funds' : 'Withdrawal Request'}</b>
-                                <span>${date}</span>
-                            </div>
-                            <div class="trans-amt">
-                                <span class="amt-val" style="color: ${isDeposit ? '#27ae60' : '#333'}">
-                                    ${isDeposit ? '+' : '-'}₹${data.amount}
-                                </span>
-                                <span class="status-badge status-${data.status.toLowerCase()}">${data.status}</span>
-                            </div>
-                        </div>
-                    `;
+                    allTransactions.push({ id: doc.id, ...doc.data() });
                 });
+
+                // Sort by time (Newest first)
+                allTransactions.sort((a, b) => (b.time?.seconds || 0) - (a.time?.seconds || 0));
+                
+                renderList();
+            }, (error) => {
+                console.error(error);
+                document.getElementById('history-list').innerHTML = `<p style="text-align:center; color:red; margin-top:20px;">Error loading data</p>`;
+            });
+        }
+
+        function renderList() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = "";
+
+            const filtered = currentFilter === 'all' 
+                ? allTransactions 
+                : allTransactions.filter(t => t.type === currentFilter);
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<div style="text-align:center; margin-top:50px;">
+                    <i class="fa-solid fa-folder-open" style="font-size:40px; color:#ddd;"></i>
+                    <p style="color:#999; font-size:13px; margin-top:10px">No ${currentFilter === 'all' ? '' : currentFilter.toLowerCase()} transactions</p>
+                </div>`;
+                return;
+            }
+
+            filtered.forEach((data) => {
+                const isDeposit = data.type === 'Deposit';
+                const date = data.time ? new Date(data.time.seconds * 1000).toLocaleString('en-IN', {
+                    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                }) : 'Just now';
+                
+                const statusStr = data.status || 'Pending';
+                const statusClass = statusStr.toLowerCase();
+
+                list.innerHTML += `
+                    <div class="transaction-card" style="border-left-color: ${isDeposit ? '#27ae60' : '#e74c3c'}">
+                        <div class="type-icon ${isDeposit ? 'icon-deposit' : 'icon-withdraw'}">
+                            <i class="fa-solid ${isDeposit ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+                        </div>
+                        <div class="trans-info">
+                            <b>${isDeposit ? 'Deposit Funds' : 'Withdrawal Request'}</b>
+                            <span>${date}</span>
+                        </div>
+                        <div class="trans-amt">
+                            <span class="amt-val" style="color: ${isDeposit ? '#27ae60' : '#333'}">
+                                ${isDeposit ? '+' : '-'}₹${data.amount}
+                            </span>
+                            <span class="status-badge status-${statusClass}">${statusStr}</span>
+                        </div>
+                    </div>
+                `;
             });
         }
 
         window.filterData = (type) => {
-            // Logic for visual tab switching
+            currentFilter = type;
+            
+            // UI Update
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            // Yahan aap local filtering logic bhi laga sakte hain snapshot data par
+            if(type === 'all') document.getElementById('tab-all').classList.add('active');
+            else if(type === 'Deposit') document.getElementById('tab-deposit').classList.add('active');
+            else if(type === 'Withdrawal') document.getElementById('tab-withdraw').classList.add('active');
+            
+            renderList();
         };
     </script>
 </body>
