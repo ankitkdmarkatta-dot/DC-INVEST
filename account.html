@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account | DC INVEST</title>
+    <title>Account | DC INVEST</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
             --primary: #0d2542;
+            --primary-light: #1a4a80;
             --accent: #f1c40f;
             --bg-light: #f4f7f6;
             --white: #ffffff;
             --text-muted: #64748b;
+            --success: #27ae60;
             --danger: #e74c3c;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg-light); padding-bottom: 90px; }
+        body { background: var(--bg-light); padding-bottom: 100px; }
 
         /* --- Header --- */
         header {
@@ -42,86 +44,90 @@
         /* --- Profile Hero Section --- */
         .profile-hero {
             background: var(--primary);
-            padding: 40px 20px;
+            padding: 40px 20px 60px;
             text-align: center;
             color: white;
             border-bottom-left-radius: 40px;
             border-bottom-right-radius: 40px;
-            box-shadow: 0 10px 20px rgba(13, 37, 66, 0.2);
         }
 
-        .avatar-container {
-            width: 100px; height: 100px;
+        .avatar-main {
+            width: 90px; height: 90px;
             margin: 0 auto 15px;
             border-radius: 50%;
-            border: 4px solid var(--accent);
-            padding: 3px;
+            border: 3px solid var(--accent);
             background: white;
-            position: relative;
+            overflow: hidden;
         }
-        .avatar-container img {
-            width: 100%; height: 100%;
-            border-radius: 50%; object-fit: cover;
-        }
-        .edit-badge {
-            position: absolute; bottom: 0; right: 0;
-            background: var(--accent); color: var(--primary);
-            width: 30px; height: 30px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; border: 2px solid var(--primary);
-        }
+        .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
 
-        .user-name { font-size: 20px; font-weight: 700; margin-bottom: 5px; }
-        .user-email { font-size: 13px; opacity: 0.7; letter-spacing: 0.5px; }
+        /* --- Transaction Buttons (New) --- */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            max-width: 500px;
+            margin: -35px auto 20px;
+            padding: 0 20px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .btn-deposit { background: var(--success); color: white; }
+        .btn-withdraw { background: var(--white); color: var(--primary); }
+        .action-btn:active { transform: scale(0.95); }
 
-        /* --- Stats Grid --- */
-        .stats-container {
-            max-width: 500px; margin: -30px auto 20px;
+        /* --- Stats Card --- */
+        .stats-grid {
+            max-width: 500px; margin: 0 auto 20px;
             padding: 0 20px;
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
         }
         .stat-card {
-            background: white; padding: 20px; border-radius: 20px;
-            text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            animation: slideUp 0.5s ease-out;
+            background: white; padding: 15px; border-radius: 20px;
+            text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        .stat-card i { color: var(--accent); font-size: 20px; margin-bottom: 8px; }
-        .stat-card h4 { font-size: 16px; color: var(--primary); }
-        .stat-card p { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+        .stat-card i { color: var(--accent); margin-bottom: 5px; }
+        .stat-card h4 { font-size: 18px; color: var(--primary); }
+        .stat-card p { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
 
-        /* --- Settings List --- */
-        .settings-section {
-            max-width: 500px; margin: 0 auto; padding: 0 20px;
-        }
-        .settings-group {
+        /* --- Settings Group --- */
+        .settings-container { max-width: 500px; margin: 0 auto; padding: 0 20px; }
+        .group-box {
             background: white; border-radius: 20px;
-            overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            margin-bottom: 15px; overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        .settings-item {
+        .list-item {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 15px 20px; border-bottom: 1px solid #f8f9fa;
-            cursor: pointer; transition: 0.3s;
+            padding: 15px 20px; border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
         }
-        .settings-item:last-child { border-bottom: none; }
-        .settings-item:active { background: #f1f1f1; }
-        
-        .item-left { display: flex; align-items: center; gap: 15px; }
-        .item-left i { width: 35px; height: 35px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        
-        .bg-blue { background: #e0f2fe; color: #0284c7; }
-        .bg-gold { background: #fef9c3; color: #ca8a04; }
-        .bg-green { background: #dcfce7; color: #16a34a; }
-        .bg-red { background: #fee2e2; color: #dc2626; }
+        .list-item:last-child { border-bottom: none; }
+        .item-info { display: flex; align-items: center; gap: 12px; }
+        .item-icon { 
+            width: 35px; height: 35px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+        .item-text b { display: block; font-size: 14px; color: var(--primary); }
+        .item-text span { font-size: 11px; color: var(--text-muted); }
 
-        .item-text span { display: block; font-size: 14px; font-weight: 600; color: var(--primary); }
-        .item-text small { font-size: 11px; color: var(--text-muted); }
-
-        .logout-btn {
-            width: 100%; padding: 15px; border: none; border-radius: 15px;
-            background: #fff; color: var(--danger); font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.1); margin-top: 10px;
+        /* --- UPI Input Lock (From previous code) --- */
+        .upi-lock-box { padding: 15px 20px; background: #fffbe6; border-top: 1px solid #ffe58f; }
+        .upi-input {
+            width: 100%; padding: 10px; border: 1px solid #ddd;
+            border-radius: 8px; margin-top: 5px; font-weight: 600;
         }
 
         /* --- Bottom Nav --- */
@@ -130,13 +136,17 @@
             background: white; height: 70px; display: flex;
             justify-content: space-around; align-items: center;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-top: 1px solid #eee;
-            z-index: 1000;
         }
         .nav-link { text-decoration: none; color: #888; text-align: center; flex: 1; font-size: 11px; }
         .nav-link i { font-size: 20px; display: block; margin-bottom: 4px; }
         .nav-link.active { color: var(--primary); }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .logout-btn {
+            width: 100%; background: #fff; color: var(--danger);
+            border: none; padding: 15px; border-radius: 15px;
+            font-weight: 700; margin-top: 10px; box-shadow: 0 4px 10px rgba(231,76,60,0.1);
+        }
+
     </style>
 </head>
 <body>
@@ -148,84 +158,75 @@
             </div>
             <div class="brand-name">DC INVEST</div>
         </div>
-        <i class="fa-solid fa-gear" style="color: var(--primary);"></i>
+        <i class="fa-solid fa-bell" style="color: var(--primary);"></i>
     </header>
 
     <div class="profile-hero">
-        <div class="avatar-container">
-            <img src="https://wallpapers.com/images/hd/goku-anime-profile-picture-t7b0f0a5v5c7v4c3.jpg" alt="User">
-            <div class="edit-badge"><i class="fa-solid fa-camera"></i></div>
+        <div class="avatar-main" id="main-avatar">
+            <img src="https://wallpapers.com/images/hd/goku-anime-profile-picture-t7b0f0a5v5c7v4c3.jpg" alt="Profile">
         </div>
-        <h2 class="user-name">Guest User</h2>
-        <p class="user-email">user@dcinvest.com</p>
+        <h3>Guest User</h3>
+        <p style="font-size: 12px; opacity: 0.7;">ID: DC99827</p>
     </div>
 
-    <div class="stats-container">
+    <div class="action-buttons">
+        <button class="action-btn btn-deposit" onclick="window.location.href='deposit.html'">
+            <i class="fa-solid fa-plus-circle"></i> DEPOSIT
+        </button>
+        <button class="action-btn btn-withdraw" onclick="window.location.href='withdraw.html'">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i> WITHDRAW
+        </button>
+    </div>
+
+    <div class="stats-grid">
         <div class="stat-card">
             <i class="fa-solid fa-wallet"></i>
-            <h4>₹ 1,500</h4>
-            <p>Withdrawal</p>
+            <h4 id="portfolio-val">₹ 0.00</h4>
+            <p>Wallet Balance</p>
         </div>
         <div class="stat-card">
-            <i class="fa-solid fa-layer-group"></i>
-            <h4>4</h4>
-            <p>Active Plans</p>
+            <i class="fa-solid fa-chart-line"></i>
+            <h4>₹ 0.00</h4>
+            <p>Total Earnings</p>
         </div>
     </div>
 
-    <main class="settings-section">
-        <div class="settings-group">
-            <div class="settings-item">
-                <div class="item-left">
-                    <i class="fa-solid fa-user bg-blue"></i>
-                    <div class="item-text">
-                        <span>Personal Info</span>
-                        <small>Edit your name and details</small>
-                    </div>
+    <div class="settings-container">
+        <div class="group-box">
+            <div class="list-item">
+                <div class="item-info">
+                    <div class="item-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-user"></i></div>
+                    <div class="item-text"><b>Personal Details</b><span>Name, Email, Phone</span></div>
                 </div>
-                <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #ccc;"></i>
+                <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
             </div>
-            
-            <div class="settings-item">
-                <div class="item-left">
-                    <i class="fa-solid fa-credit-card bg-gold"></i>
-                    <div class="item-text">
-                        <span>Payment Methods</span>
-                        <small>Manage your UPI and Bank</small>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #ccc;"></i>
+            <div class="upi-lock-box">
+                <b style="font-size: 12px; color: var(--primary);">Withdrawal UPI ID (Once set, cannot change)</b>
+                <input type="text" id="upi-with-input" class="upi-input" placeholder="example@ybl">
             </div>
         </div>
 
-        <div class="settings-group">
-            <div class="settings-item">
-                <div class="item-left">
-                    <i class="fa-solid fa-shield-halved bg-green"></i>
-                    <div class="item-text">
-                        <span>Security</span>
-                        <small>Change password & PIN</small>
-                    </div>
+        <div class="group-box">
+            <div class="list-item">
+                <div class="item-info">
+                    <div class="item-icon" style="background:#fef9c3; color:#ca8a04;"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="item-text"><b>Security</b><span>Password & Login PIN</span></div>
                 </div>
-                <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #ccc;"></i>
+                <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
             </div>
-            
-            <div class="settings-item">
-                <div class="item-left">
-                    <i class="fa-solid fa-headset bg-blue"></i>
-                    <div class="item-text">
-                        <span>Help Support</span>
-                        <small>Contact our team 24/7</small>
-                    </div>
+            <div class="list-item" onclick="window.location.href='history.html'">
+                <div class="item-info">
+                    <div class="item-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <div class="item-text"><b>Transaction History</b><span>All deposits & withdrawals</span></div>
                 </div>
-                <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #ccc;"></i>
+                <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
             </div>
         </div>
 
         <button class="logout-btn" onclick="window.location.href='login.html'">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout Account
+            <i class="fa-solid fa-right-from-bracket"></i> LOGOUT ACCOUNT
         </button>
-    </main>
+    </div>
 
     <nav class="bottom-nav">
         <a href="home.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Home</span></a>
@@ -234,5 +235,25 @@
         <a href="account.html" class="nav-link active"><i class="fa-solid fa-user-gear"></i><span>Account</span></a>
     </nav>
 
+    <script>
+        // UPI ID Lock Logic (Same as your previous code)
+        window.onload = function() {
+            const savedWithUPI = localStorage.getItem('dcWithdrawUPI');
+            if(savedWithUPI) {
+                const upiInput = document.getElementById('upi-with-input');
+                upiInput.value = savedWithUPI;
+                upiInput.disabled = true;
+            }
+        };
+
+        document.getElementById('upi-with-input').addEventListener('change', function() {
+            if(this.value && this.value.includes('@')) {
+                if(confirm("Are you sure? This UPI ID will be locked forever for withdrawals.")) {
+                    localStorage.setItem('dcWithdrawUPI', this.value);
+                    this.disabled = true;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
