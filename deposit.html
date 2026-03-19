@@ -14,19 +14,34 @@
         header {
             background: var(--white); padding: 15px 20px; display: flex; align-items: center;
             gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
         }
         .back-btn { text-decoration: none; color: var(--primary); font-size: 20px; }
 
         main { max-width: 500px; margin: 20px auto; padding: 0 20px; }
         
-        .section-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
+        .section-title { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+        /* Custom Input Box */
+        .custom-amt-wrapper {
+            background: white; padding: 15px; border-radius: 15px;
+            margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 2px solid transparent; transition: 0.3s;
+        }
+        .custom-amt-wrapper:focus-within { border-color: var(--accent); }
+        .input-group { display: flex; align-items: center; gap: 10px; }
+        .currency-symbol { font-size: 24px; font-weight: 800; color: var(--primary); }
+        #custom-input {
+            width: 100%; border: none; outline: none; font-size: 22px;
+            font-weight: 800; color: var(--primary); background: transparent;
+        }
 
         /* Package Grid */
         .amt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px; }
         .amt-box {
             background: white; padding: 12px; border-radius: 12px; text-align: center;
             font-weight: 700; color: var(--primary); border: 2px solid transparent; cursor: pointer;
-            transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.03); font-size: 14px;
         }
         .amt-box.active { border-color: var(--accent); background: #fffdf0; transform: scale(1.05); }
 
@@ -35,72 +50,109 @@
             background: white; border-radius: 25px; padding: 25px; text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px;
         }
-        .qr-img { width: 200px; height: 200px; margin-bottom: 15px; border: 5px solid #f8f9fa; border-radius: 15px; }
+        .qr-img { width: 180px; height: 180px; margin-bottom: 15px; border: 5px solid #f8f9fa; border-radius: 15px; }
         
         .upi-copy-box {
             background: #f8f9fa; padding: 12px; border-radius: 12px;
             display: flex; justify-content: space-between; align-items: center;
             border: 1px dashed #ccc; margin-top: 10px;
         }
-        .copy-btn { background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+        .copy-btn { background: var(--primary); color: white; border: none; padding: 6px 15px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
 
         .pay-btn {
-            width: 100%; background: var(--primary); color: white; padding: 16px;
-            border: none; border-radius: 15px; font-weight: 700; font-size: 16px;
-            margin-top: 20px; cursor: pointer; box-shadow: 0 8px 20px rgba(13,37,66,0.2);
+            width: 100%; background: var(--primary); color: white; padding: 18px;
+            border: none; border-radius: 18px; font-weight: 800; font-size: 16px;
+            margin-top: 10px; cursor: pointer; box-shadow: 0 8px 20px rgba(13,37,66,0.2);
+            transition: 0.3s;
         }
+        .pay-btn:active { transform: scale(0.98); }
+
+        .note { font-size: 11px; color: #888; text-align: center; margin-top: 15px; padding: 0 10px; }
     </style>
 </head>
 <body>
 
 <header>
     <a href="account.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
-    <div style="font-weight: 800; color: var(--primary);">DEPOSIT FUNDS</div>
+    <div style="font-weight: 800; color: var(--primary); letter-spacing: 0.5px;">DEPOSIT FUNDS</div>
 </header>
 
 <main>
-    <p class="section-title">Select Package</p>
+    <p class="section-title"><i class="fa-solid fa-wallet" style="color: var(--accent);"></i> Enter Amount</p>
+    
+    <div class="custom-amt-wrapper">
+        <div class="input-group">
+            <span class="currency-symbol">₹</span>
+            <input type="number" id="custom-input" placeholder="0.00" value="300" oninput="handleManualInput()">
+        </div>
+    </div>
+
+    <p class="section-title"><i class="fa-solid fa-layer-group" style="color: var(--accent);"></i> Quick Selection</p>
     <div class="amt-grid">
         <div class="amt-box active" onclick="selectAmt(300, this)">₹300</div>
         <div class="amt-box" onclick="selectAmt(500, this)">₹500</div>
         <div class="amt-box" onclick="selectAmt(1000, this)">₹1000</div>
         <div class="amt-box" onclick="selectAmt(2000, this)">₹2000</div>
-        <div class="amt-box" onclick="selectAmt(3000, this)">₹3000</div>
         <div class="amt-box" onclick="selectAmt(5000, this)">₹5000</div>
+        <div class="amt-box" onclick="selectAmt(10000, this)">₹10k</div>
     </div>
 
     <div class="qr-card">
-        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Scan QR to Pay</p>
-        <img src="suraj.png" alt="QR Code" class="qr-img" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=4449winsuraj@gmail.com&pn=Suraj&am=300'">
+        <p style="font-size: 12px; color: #666; margin-bottom: 12px; font-weight: 600;">Scan to Pay using Any App</p>
+        <img id="dynamic-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=4449winsuraj@fam&pn=DC%20INVEST&am=300&cu=INR" alt="QR Code" class="qr-img">
         
         <div class="upi-copy-box">
-            <span id="upi-id" style="font-size: 13px; font-weight: 600;">4449winsuraj@gmail.com</span>
-            <button class="copy-btn" onclick="copyUPI()">COPY</button>
+            <span id="upi-id" style="font-size: 13px; font-weight: 700; color: var(--primary);">4449winsuraj@fam</span>
+            <button class="copy-btn" onclick="copyUPI()">COPY ID</button>
         </div>
     </div>
 
     <button class="pay-btn" onclick="redirectToUPI()">
-        <i class="fa-solid fa-bolt"></i> PAY NOW & AUTOMATIC ADD
+        <i class="fa-solid fa-bolt-lightning" style="color: var(--accent); margin-right: 8px;"></i> PAY SECURELY
     </button>
+
+    <p class="note"><b>Note:</b> After successful payment, funds will be added to your wallet automatically within 5-10 minutes.</p>
 </main>
 
 <script>
     let selectedAmount = 300;
+    const upiID = "4449winsuraj@fam";
+    const qrImg = document.getElementById('dynamic-qr');
+    const customInp = document.getElementById('custom-input');
+
+    function updateQR(amt) {
+        // Amount change hone par QR code bhi automatically update ho jayega
+        const qrData = `upi://pay?pa=${upiID}&pn=DC%20INVEST&am=${amt}&cu=INR`;
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
+    }
 
     function selectAmt(amt, el) {
         selectedAmount = amt;
+        customInp.value = amt; // Input box update karein
         document.querySelectorAll('.amt-box').forEach(b => b.classList.remove('active'));
         el.classList.add('active');
+        updateQR(amt);
+    }
+
+    function handleManualInput() {
+        const val = customInp.value;
+        selectedAmount = val;
+        // Grid selection hata dein agar manual typing ho rahi hai
+        document.querySelectorAll('.amt-box').forEach(b => b.classList.remove('active'));
+        updateQR(val);
     }
 
     function copyUPI() {
-        const upi = document.getElementById('upi-id').innerText;
-        navigator.clipboard.writeText(upi);
-        alert("UPI ID Copied!");
+        navigator.clipboard.writeText(upiID);
+        alert("UPI ID Copied: " + upiID);
     }
 
     function redirectToUPI() {
-        const upiUrl = `upi://pay?pa=4449winsuraj@gmail.com&pn=DC%20INVEST&am=${selectedAmount}&cu=INR`;
+        if(!selectedAmount || selectedAmount < 1) {
+            alert("Please enter a valid amount");
+            return;
+        }
+        const upiUrl = `upi://pay?pa=${upiID}&pn=DC%20INVEST&am=${selectedAmount}&cu=INR`;
         window.location.href = upiUrl;
     }
 </script>
