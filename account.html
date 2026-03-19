@@ -42,10 +42,7 @@
             border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
         }
 
-        /* --- PROFILE IMAGE UPLOAD --- */
-        .avatar-wrapper {
-            position: relative; width: 100px; height: 100px; margin: 0 auto 15px;
-        }
+        .avatar-wrapper { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; }
         .avatar-main {
             width: 100%; height: 100%; border-radius: 50%;
             border: 3px solid var(--accent); background: white; overflow: hidden;
@@ -68,39 +65,27 @@
         .btn-deposit { background: var(--success); color: white; }
         .btn-withdraw { background: var(--white); color: var(--primary); }
 
-        .stats-grid {
-            max-width: 500px; margin: 0 auto 20px;
-            padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-        }
-        .stat-card {
-            background: white; padding: 15px; border-radius: 20px;
-            text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .stat-card h4 { font-size: 18px; color: var(--primary); margin-top: 5px; }
+        .stats-grid { max-width: 500px; margin: 0 auto 20px; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .stat-card { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         .settings-container { max-width: 500px; margin: 0 auto; padding: 0 20px; }
         .group-box { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .list-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 15px 20px; border-bottom: 1px solid #f1f1f1; cursor: pointer;
-        }
-        .item-info { display: flex; align-items: center; gap: 12px; }
-        .item-icon { width: 35px; height: 35px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-        .item-text b { display: block; font-size: 14px; color: var(--primary); }
-        .item-text span { font-size: 11px; color: var(--text-muted); }
+        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #f1f1f1; cursor: pointer; }
 
-        .upi-lock-box { padding: 15px 20px; background: #fffbe6; border-top: 1px solid #ffe58f; }
-        .upi-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px; font-weight: 600; }
-
-        /* --- MODAL STYLE --- */
+        /* --- MODAL STYLE (Professional Security) --- */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.6);
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
             align-items: center; justify-content: center; padding: 20px;
         }
         .modal-content {
             background: white; width: 100%; max-width: 400px;
-            border-radius: 25px; padding: 25px; animation: pop 0.3s;
+            border-radius: 25px; padding: 25px; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-content h3 { color: var(--primary); margin-bottom: 15px; font-weight: 800; }
+        .modal-input {
+            width: 100%; padding: 12px; border: 1px solid #ddd;
+            border-radius: 12px; margin-bottom: 15px; outline: none; font-weight: 600;
         }
 
         .bottom-nav {
@@ -109,15 +94,10 @@
             justify-content: space-around; align-items: center;
             box-shadow: 0 -5px 25px rgba(0,0,0,0.08);
         }
-        .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; font-size: 11px; }
-        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
+        .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; }
         .nav-link.active { color: var(--primary); }
 
-        .logout-btn {
-            width: 100%; background: #fff; color: var(--danger);
-            border: none; padding: 15px; border-radius: 15px;
-            font-weight: 700; margin-top: 10px;
-        }
+        .logout-btn { width: 100%; background: #fff; color: var(--danger); border: none; padding: 15px; border-radius: 15px; font-weight: 700; margin-top: 10px; }
 
         @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
@@ -126,9 +106,7 @@
 
     <header>
         <div class="header-left">
-            <div class="logo-round">
-                <img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'">
-            </div>
+            <div class="logo-round"><img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'"></div>
             <div class="brand-name">DC INVEST</div>
         </div>
         <i class="fa-solid fa-bell" style="color: var(--primary);"></i>
@@ -137,36 +115,30 @@
     <div class="profile-hero">
         <div class="avatar-wrapper">
             <div class="avatar-main">
-                <img id="user-photo" src="https://via.placeholder.com/150" alt="Profile">
+                <img id="user-photo" src="https://wallpapers.com/images/hd/goku-anime-profile-picture-t7b0f0a5v5c7v4c3.jpg" alt="Profile">
             </div>
-            <label for="photo-upload" class="upload-badge">
-                <i class="fa-solid fa-camera"></i>
-            </label>
+            <label for="photo-upload" class="upload-badge"><i class="fa-solid fa-camera"></i></label>
             <input type="file" id="photo-upload" style="display:none;" accept="image/*">
         </div>
-        <h3 id="user-display-name">Loading...</h3>
-        <p id="user-display-id" style="font-size: 12px; opacity: 0.7;">ID: ------</p>
+        <h3 id="user-display-name">Loading Profile...</h3>
+        <p id="user-display-id" style="font-size: 12px; opacity: 0.7;">ID: Loading...</p>
     </div>
 
     <div class="action-buttons">
-        <button class="action-btn btn-deposit" onclick="window.location.href='deposit.html'">
-            <i class="fa-solid fa-plus-circle"></i> DEPOSIT
-        </button>
-        <button class="action-btn btn-withdraw" onclick="window.location.href='withdraw.html'">
-            <i class="fa-solid fa-arrow-up-from-bracket"></i> WITHDRAW
-        </button>
+        <button class="action-btn btn-deposit" onclick="window.location.href='deposit.html'"><i class="fa-solid fa-plus-circle"></i> DEPOSIT</button>
+        <button class="action-btn btn-withdraw" onclick="window.location.href='withdraw.html'"><i class="fa-solid fa-arrow-up-from-bracket"></i> WITHDRAW</button>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card">
-            <i class="fa-solid fa-wallet"></i>
+            <i class="fa-solid fa-wallet" style="color: var(--accent);"></i>
             <h4 id="user-balance">₹ 0.00</h4>
-            <p>Wallet Balance</p>
+            <p style="font-size: 10px; color: var(--text-muted);">WALLET BALANCE</p>
         </div>
         <div class="stat-card">
-            <i class="fa-solid fa-chart-line"></i>
+            <i class="fa-solid fa-chart-line" style="color: var(--success);"></i>
             <h4 id="user-earnings">₹ 0.00</h4>
-            <p>Total Earnings</p>
+            <p style="font-size: 10px; color: var(--text-muted);">TOTAL EARNINGS</p>
         </div>
     </div>
 
@@ -175,20 +147,16 @@
             <div class="list-item" onclick="openDetails()">
                 <div class="item-info">
                     <div class="item-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fa-solid fa-user"></i></div>
-                    <div class="item-text"><b>Personal Details</b><span>Name, Email, Phone</span></div>
+                    <div class="item-text"><b>Personal Details</b><span>View Account Info</span></div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
-            </div>
-            <div class="upi-lock-box">
-                <b style="font-size: 11px; color: var(--primary);">WITHDRAWAL UPI ID (LOCKED ONCE SET)</b>
-                <input type="text" id="upi-with-input" class="upi-input" placeholder="example@ybl">
             </div>
         </div>
 
         <div class="group-box">
-            <div class="list-item" onclick="changePassword()">
+            <div class="list-item" onclick="openSecurityModal()">
                 <div class="item-info">
-                    <div class="item-icon" style="background:#fef9c3; color:#ca8a04;"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="item-icon" style="background:#fef9c3; color:#ca8a04;"><i class="fa-solid fa-lock"></i></div>
                     <div class="item-text"><b>Security</b><span>Change Password</span></div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
@@ -196,22 +164,22 @@
             <div class="list-item" onclick="window.location.href='history.html'">
                 <div class="item-info">
                     <div class="item-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                    <div class="item-text"><b>Transaction History</b><span>All deposits & withdrawals</span></div>
+                    <div class="item-text"><b>Transaction History</b><span>Deposits & Withdrawals</span></div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc; font-size:12px;"></i>
             </div>
         </div>
 
-        <button class="logout-btn" id="logout-trigger">
-            <i class="fa-solid fa-right-from-bracket"></i> LOGOUT ACCOUNT
-        </button>
+        <button class="logout-btn" id="logout-trigger"><i class="fa-solid fa-right-from-bracket"></i> LOGOUT ACCOUNT</button>
     </div>
 
-    <div class="modal" id="details-modal">
+    <div class="modal" id="security-modal">
         <div class="modal-content">
-            <h3 style="margin-bottom:20px;">Personal Details</h3>
-            <div id="details-list" style="text-align:left; line-height:2;"></div>
-            <button class="action-btn btn-deposit" style="margin-top:20px; width:100%;" onclick="closeModal()">CLOSE</button>
+            <h3><i class="fa-solid fa-shield-halved"></i> Security</h3>
+            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter your new password below.</p>
+            <input type="password" id="new-password" class="modal-input" placeholder="New Password (min 6 chars)">
+            <button class="action-btn btn-deposit" style="width:100%;" onclick="handlePasswordChange()">UPDATE PASSWORD</button>
+            <button style="width:100%; border:none; background:none; color:#999; margin-top:15px; cursor:pointer;" onclick="closeModal('security-modal')">CANCEL</button>
         </div>
     </div>
 
@@ -240,72 +208,61 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let userData = {};
+        // Pre-load saved pic from LocalStorage (Fix for Refresh Issue)
+        const savedPic = localStorage.getItem('user_profile_pic');
+        if(savedPic) document.getElementById('user-photo').src = savedPic;
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const userRef = doc(db, "users", user.uid);
                 onSnapshot(userRef, (snap) => {
-                    userData = snap.data();
-                    document.getElementById('user-display-name').innerText = userData.name || "User";
-                    document.getElementById('user-display-id').innerText = "ID: " + user.uid.substring(0, 8).toUpperCase();
-                    document.getElementById('user-balance').innerText = "₹ " + (userData.balance || 0).toFixed(2);
-                    document.getElementById('user-earnings').innerText = "₹ " + (userData.totalEarnings || 0).toFixed(2);
-                    if(userData.photoURL) document.getElementById('user-photo').src = userData.photoURL;
-                    
-                    // UPI ID Lock
-                    if(userData.withdrawalUPI) {
-                        const upiInp = document.getElementById('upi-with-input');
-                        upiInp.value = userData.withdrawalUPI;
-                        upiInp.disabled = true;
+                    if(snap.exists()){
+                        const data = snap.data();
+                        document.getElementById('user-display-name').innerText = data.name || "User";
+                        document.getElementById('user-display-id').innerText = "ID: " + user.uid.substring(0, 8).toUpperCase();
+                        document.getElementById('user-balance').innerText = "₹ " + (data.balance || 0).toFixed(2);
+                        document.getElementById('user-earnings').innerText = "₹ " + (data.totalEarnings || 0).toFixed(2);
+                        
+                        if(data.photoURL) {
+                            document.getElementById('user-photo').src = data.photoURL;
+                            localStorage.setItem('user_profile_pic', data.photoURL);
+                        }
                     }
                 });
             } else { window.location.href = "login.html"; }
         });
 
-        // Photo Upload Logic (Saves URL to Firestore)
+        // Photo Upload Logic with Backup
         document.getElementById('photo-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             const reader = new FileReader();
             reader.onload = async function() {
                 const base64 = reader.result;
                 document.getElementById('user-photo').src = base64;
+                localStorage.setItem('user_profile_pic', base64); // Local Backup
                 await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: base64 });
                 alert("Profile Photo Updated!");
             };
             reader.readAsDataURL(file);
         });
 
-        window.openDetails = () => {
-            document.getElementById('details-list').innerHTML = `
-                <b>Name:</b> ${userData.name || 'N/A'}<br>
-                <b>Email:</b> ${auth.currentUser.email}<br>
-                <b>Phone:</b> ${userData.phone || 'N/A'}<br>
-                <b>Joined:</b> ${new Date(auth.currentUser.metadata.creationTime).toLocaleDateString()}
-            `;
-            document.getElementById('details-modal').style.display = 'flex';
+        window.openSecurityModal = () => document.getElementById('security-modal').style.display = 'flex';
+        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+
+        window.handlePasswordChange = async () => {
+            const newPass = document.getElementById('new-password').value;
+            if(newPass.length < 6) return alert("Min 6 characters required!");
+            try {
+                await updatePassword(auth.currentUser, newPass);
+                alert("Password Updated!");
+                closeModal('security-modal');
+            } catch(e) { alert("Session expired. Please Login again."); }
         }
 
-        window.closeModal = () => { document.getElementById('details-modal').style.display = 'none'; }
-
-        window.changePassword = async () => {
-            const newPass = prompt("Enter your new password:");
-            if(newPass && newPass.length >= 6) {
-                try {
-                    await updatePassword(auth.currentUser, newPass);
-                    alert("Password updated successfully!");
-                } catch(e) { alert("Error! Re-login and try again."); }
-            }
-        }
-
-        document.getElementById('upi-with-input').addEventListener('change', async function() {
-            if(this.value.includes('@') && confirm("Lock this UPI ID for all future withdrawals?")) {
-                await updateDoc(doc(db, "users", auth.currentUser.uid), { withdrawalUPI: this.value });
-                this.disabled = true;
-            }
-        });
-
-        document.getElementById('logout-trigger').onclick = () => signOut(auth);
+        document.getElementById('logout-trigger').onclick = () => {
+            localStorage.removeItem('user_profile_pic');
+            signOut(auth);
+        };
     </script>
 </body>
 </html>
