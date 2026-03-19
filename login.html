@@ -47,13 +47,18 @@
 
         h2 { color: var(--primary); margin-bottom: 10px; font-size: 26px; }
         .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; margin-left: 2px; }
         input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; }
 
-        /* --- TERMS CHECKBOX STYLE --- */
+        /* --- TERMS CHECKBOX LEFT ALIGNED --- */
         .terms-check-area {
-            display: flex; align-items: center; gap: 8px;
-            margin: 15px 0; font-size: 13px; color: #444;
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            margin: 15px 0 20px 2px; /* Left se alignment ke liye 2px margin */
+            font-size: 13px; 
+            color: #444;
+            text-align: left; /* Text ko left align kiya */
         }
         .read-more-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; }
 
@@ -124,10 +129,11 @@
 
     <div class="modal" id="terms-modal">
         <div class="modal-content">
-            <h3>4449 WIN - Terms & Conditions</h3>
-            
+            <h3>DC INVEST - Terms & Conditions</h3>
+            <p>Welcome to <strong>DC INVEST</strong>. By accessing this website, you agree to comply with the following terms.</p>
+
             <h4>1. Age Requirement (18+)</h4>
-            <p>User ki umar kam se kam <strong>18 saal</strong> honi chahiye. Underage use sakht mana hai.</p>
+            <p>User ki umar kam se kam 18 saal honi chahiye.</p>
 
             <h4>2. Account Security</h4>
             <ul>
@@ -136,13 +142,10 @@
             </ul>
 
             <h4>3. Deposits & Withdrawals</h4>
-            <p>Saare transactions secure hain. Withdrawal mein 24-48 ghante lag sakte hain.</p>
+            <p>Withdrawal process hone mein 24-48 ghante lag sakte hain.</p>
 
             <h4>4. Fair Play & Risks</h4>
-            <p>Betting mein financial risk hota hai. DC INVEST kisi bhi loss ke liye zimmedar nahi hoga.</p>
-
-            <h4>5. Termination</h4>
-            <p>Cheating ya suspicious activity par account bina bataye suspend kar diya jayega.</p>
+            <p>Investment mein financial risk hota hai. DC INVEST kisi bhi loss ke liye zimmedar nahi hoga.</p>
 
             <button class="close-modal-btn" id="close-terms">I Accept & Close</button>
         </div>
@@ -155,15 +158,12 @@
         const openBtn = document.getElementById('open-terms');
         const closeBtn = document.getElementById('close-terms');
 
-        // Logic to enable button only on tick
         termsCheck.onchange = () => { loginBtn.disabled = !termsCheck.checked; };
 
-        // Modal Open/Close Logic
         openBtn.onclick = () => { modal.style.display = "flex"; };
         closeBtn.onclick = () => { modal.style.display = "none"; };
         window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; };
 
-        // Form Submit
         document.getElementById('login-form').onsubmit = function(e) {
             e.preventDefault();
             window.location.href = 'home.html';
