@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up | DC INVEST</title>
     <style>
-        /* --- DESIGN VARIABLES & STYLES (wahi same jo pehle the) --- */
         :root {
             --primary: #0d2542;
             --accent: #f1c40f;
@@ -41,24 +40,24 @@
             position: relative;
         }
 
-        /* --- SUCCESS MESSAGE STYLING (naya add kiya hai) --- */
-        #success-msg {
-            display: none; /* shuru mein chhupa hua */
+        #status-msg {
+            display: none;
             position: absolute;
-            top: 20px;
+            top: 15px;
             left: 20px;
             right: 20px;
-            background: #27ae60;
-            color: white;
             padding: 10px;
             border-radius: 8px;
-            font-size: 14px;
-            animation: fadeInScale 0.4s ease-out;
+            font-size: 13px;
+            z-index: 10;
         }
 
+        .success { background: #27ae60; color: white; }
+        .error { background: #e74c3c; color: white; }
+
         .logo-container {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             margin: 0 auto 20px;
             position: relative;
             padding: 5px;
@@ -68,130 +67,41 @@
         }
 
         .logo-inner {
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            border-radius: 50%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #eee;
+            width: 100%; height: 100%;
+            background: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .logo-inner img {
-            width: 80%;
-            height: auto;
-            animation: pulse 2s ease-in-out infinite;
-        }
+        h2 { color: var(--primary); margin-bottom: 5px; }
+        p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
 
-        h2 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 26px;
-        }
-
-        p.subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 5px;
-            margin-left: 5px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e1e1e1;
-            border-radius: 10px;
-            outline: none;
-            transition: 0.3s;
-            font-size: 15px;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(13, 37, 66, 0.1);
-        }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin: 0 0 5px 5px; }
+        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
 
         .btn-signup {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+            width: 100%; padding: 14px; background: var(--primary); color: white;
+            border: none; border-radius: 10px; font-size: 16px; font-weight: bold;
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
         }
 
-        .btn-signup:hover {
-            background: #1a4a80;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+        .btn-signup:disabled { background: #ccc; cursor: not-allowed; }
 
-        .login-link {
-            margin-top: 25px;
-            font-size: 14px;
-            color: #666;
-        }
+        .login-link { margin-top: 20px; font-size: 14px; color: #666; }
+        .login-link a { color: var(--primary); font-weight: bold; text-decoration: none; }
 
-        .login-link a {
-            color: var(--primary);
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes rotateBorder {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @media (max-width: 480px) {
-            .signup-card {
-                padding: 30px 20px;
-            }
-            h2 { font-size: 22px; }
-            input { padding: 10px; }
-        }
+        @keyframes rotateBorder { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <div class="signup-card">
-        <div id="success-msg">Account created successfully! Redirecting to login...</div>
+        <div id="status-msg"></div>
 
         <div class="logo-container">
-            <div class="logo-inner">
-                <img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'">
-            </div>
+            <div class="logo-inner"><b>DC</b></div>
         </div>
 
         <h2>Create Account</h2>
@@ -200,20 +110,17 @@
         <form id="signup-form">
             <div class="form-group">
                 <label>Full Name</label>
-                <input type="text" placeholder="Enter your name" required>
+                <input type="text" id="user-name" placeholder="Enter your name" required>
             </div>
-
             <div class="form-group">
                 <label>Email Address</label>
-                <input type="email" placeholder="email@example.com" id="signup-email" required>
+                <input type="email" id="signup-email" placeholder="email@example.com" required>
             </div>
-
             <div class="form-group">
                 <label>Create Password</label>
-                <input type="password" placeholder="••••••••" required>
+                <input type="password" id="signup-password" placeholder="••••••••" required>
             </div>
-
-            <button type="submit" class="btn-signup">Sign Up Now</button>
+            <button type="submit" class="btn-signup" id="submit-btn">Sign Up Now</button>
         </form>
 
         <div class="login-link">
@@ -221,23 +128,66 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
+            authDomain: "win-ad891.firebaseapp.com",
+            projectId: "win-ad891",
+            storageBucket: "win-ad891.firebasestorage.app",
+            messagingSenderId: "777370829193",
+            appId: "1:777370829193:web:58af7368078591e6806158"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
         const signupForm = document.getElementById('signup-form');
-        const successMsg = document.getElementById('success-msg');
+        const statusMsg = document.getElementById('status-msg');
+        const submitBtn = document.getElementById('submit-btn');
 
-        signupForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // page reload hone se rokega
-
-            // Success message dikhayega
-            successMsg.style.display = 'block';
-            signupForm.style.opacity = '0.3'; // form ko halka kar dega
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            // 2 second baad login page pe redirect karega
-            setTimeout(function() {
-                window.location.href = 'login.html';
-            }, 2000);
+            const name = document.getElementById('user-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Processing...";
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Yahan balance ab 0 set kiya gaya hai
+                await setDoc(doc(db, "users", user.uid), {
+                    fullName: name,
+                    email: email,
+                    balance: 0, 
+                    joinedDate: new Date().toISOString()
+                });
+
+                statusMsg.innerText = "Account Created! Redirecting...";
+                statusMsg.className = "success";
+                statusMsg.style.display = "block";
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+
+            } catch (error) {
+                statusMsg.innerText = "Error: " + error.message;
+                statusMsg.className = "error";
+                statusMsg.style.display = "block";
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Sign Up Now";
+            }
         });
     </script>
-
 </body>
 </html>
