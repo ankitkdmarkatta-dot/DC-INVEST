@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | KD INVEST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .reg-card { background: white; padding: 40px; border-radius: 25px; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        h2 { color: var(--primary); margin-bottom: 25px; text-align: center; font-weight: 800; }
+        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1.5px solid #eee; outline: none; font-size: 14px; }
+        input:focus { border-color: var(--primary); }
+        .reg-btn { width: 100%; background: var(--primary); color: white; padding: 16px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .reg-btn:hover { background: #1a3a5f; }
+        p { text-align: center; margin-top: 15px; font-size: 13px; color: #666; }
+        a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="reg-card">
+    <h2>Create Account</h2>
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="password" id="pass" placeholder="Create Password">
+    <button class="reg-btn" onclick="handleRegister()">REGISTER NOW</button>
+    <p>Already have an account? <a href="login.html">Login</a></p>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Aapka Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
+        authDomain: "win-ad891.firebaseapp.com",
+        projectId: "win-ad891",
+        storageBucket: "win-ad891.firebasestorage.app",
+        messagingSenderId: "777370829193",
+        appId: "1:777370829193:web:58af7368078591e6806158"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.handleRegister = async () => {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+
+        if(!name || !email || !pass) return alert("Please fill all fields!");
+
+        try {
+            // 1. Firebase Auth mein User banana
+            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+            const user = userCredential.user;
+
+            // 2. Firestore mein 'users' collection ke andar data save karna (Sabse Zaroori Step)
+            await setDoc(doc(db, "users", user.uid), {
+                name: name,
+                email: email,
+                uid: user.uid,
+                balance: 0, // Shuruat mein balance 0 rahega
+                timestamp: serverTimestamp()
+            });
+
+            alert("Registration Successful!");
+            window.location.href = "dashboard.html"; // User Dashboard par bhej do
+
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
+    }
+</script>
+</body>
+</html>
