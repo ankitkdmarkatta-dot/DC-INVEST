@@ -20,7 +20,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg-light); padding-bottom: 90px; }
 
-        /* --- Header --- */
         header {
             background: var(--white);
             padding: 12px 20px;
@@ -38,36 +37,39 @@
             width: 35px; height: 35px; border-radius: 50%;
             border: 2px solid var(--accent);
             display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
         }
-        .logo-round img { width: 80%; }
+        .logo-round img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- Main Content --- */
         main { max-width: 500px; margin: 0 auto; padding: 20px; }
 
-        /* Referral Hero Card */
         .refer-hero {
             background: var(--primary); color: white;
             padding: 30px 20px; border-radius: 24px;
             text-align: center; margin-bottom: 25px;
             box-shadow: 0 10px 25px rgba(13, 37, 66, 0.2);
-            position: relative; overflow: hidden;
         }
         .refer-hero h1 { font-size: 22px; margin-bottom: 10px; }
         .refer-hero span { color: var(--accent); }
-        .refer-hero p { font-size: 13px; opacity: 0.8; margin-bottom: 20px; }
+        .refer-hero p { font-size: 12px; opacity: 0.8; margin-bottom: 20px; }
 
         .refer-code-box {
             background: rgba(255,255,255,0.1);
-            padding: 12px; border-radius: 12px;
+            padding: 15px; border-radius: 12px;
             display: flex; justify-content: space-between; align-items: center;
             border: 1px dashed var(--accent);
         }
         .copy-btn { 
-            background: var(--accent); border: none; padding: 6px 15px; 
-            border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;
+            background: var(--accent); border: none; padding: 8px 15px; 
+            border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 12px;
         }
 
-        /* Rewards Grid */
+        .condition-alert {
+            background: #fff3cd; color: #856404; padding: 10px;
+            border-radius: 10px; font-size: 11px; margin-bottom: 20px;
+            text-align: center; border: 1px solid #ffeeba;
+        }
+
         .rewards-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;
         }
@@ -76,21 +78,19 @@
             text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         .reward-card i { font-size: 28px; color: var(--success); margin-bottom: 10px; }
-        .reward-card h3 { font-size: 14px; color: var(--primary); }
+        .reward-card h3 { font-size: 13px; color: var(--primary); }
         .reward-card .amt { font-size: 18px; font-weight: 800; color: var(--success); }
 
-        /* Tracker Section */
         .tracker-card {
             background: white; border-radius: 24px; padding: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .tracker-header { font-weight: 700; margin-bottom: 15px; color: var(--primary); }
+        .tracker-header { font-weight: 700; margin-bottom: 15px; color: var(--primary); display: flex; justify-content: space-between; }
         
         .ref-item {
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px 0; border-bottom: 1px solid #f1f1f1;
         }
-        .ref-item:last-child { border-bottom: none; }
         .ref-user { display: flex; align-items: center; gap: 10px; }
         .ref-initial {
             width: 35px; height: 35px; background: #e2e8f0;
@@ -98,23 +98,19 @@
             font-weight: 700; color: var(--primary); font-size: 12px;
         }
         .ref-name { font-size: 13px; font-weight: 600; display: block; }
-        .ref-date { font-size: 10px; color: var(--text-muted); }
-        .ref-status { font-size: 11px; font-weight: 700; }
-        .status-success { color: var(--success); }
-        .status-pending { color: #e67e22; }
+        .status-success { color: var(--success); font-weight: 700; font-size: 11px; }
+        .status-pending { color: #e67e22; font-weight: 700; font-size: 11px; }
 
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: white; height: 70px; display: flex;
+            background: white; height: 75px; display: flex;
             justify-content: space-around; align-items: center;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-top: 1px solid #eee;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.08);
         }
-        .nav-link { text-decoration: none; color: #888; text-align: center; flex: 1; font-size: 11px; }
-        .nav-link i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; }
+        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
+        .nav-link span { font-size: 11px; }
         .nav-link.active { color: var(--primary); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -135,11 +131,15 @@
     <main>
         <div class="refer-hero">
             <h1>Invite & Earn <span>Cash</span></h1>
-            <p>Share your link with friends and get rewards instantly when they start investing.</p>
+            <p>Reward tabhi milega jab aapka friend koi plan khareedega.</p>
             <div class="refer-code-box">
-                <span style="font-weight: 700; letter-spacing: 1px;" id="ref-code">DC999WIN</span>
+                <span style="font-weight: 800; letter-spacing: 1px; color: var(--accent); font-size: 18px;" id="ref-code">LOADING...</span>
                 <button class="copy-btn" onclick="copyCode()">COPY LINK</button>
             </div>
+        </div>
+
+        <div class="condition-alert">
+            <i class="fa-solid fa-triangle-exclamation"></i> 1 Friend = ₹50 | 10 Friends = ₹3000 Bonus
         </div>
 
         <div class="rewards-grid">
@@ -151,36 +151,19 @@
             <div class="reward-card">
                 <i class="fa-solid fa-trophy"></i>
                 <h3>Mega Bonus</h3>
-                <p class="amt">₹3000</p>
+                <p class="amt">₹3,000</p>
             </div>
         </div>
 
         <div class="tracker-card">
-            <div class="tracker-header">Your Referrals</div>
-            
-            <div class="ref-item">
-                <div class="ref-user">
-                    <div class="ref-initial">AS</div>
-                    <div>
-                        <span class="ref-name">Aman Sharma</span>
-                        <span class="ref-date">10 Oct 2023</span>
-                    </div>
-                </div>
-                <span class="ref-status status-success">₹50 Credited</span>
+            <div class="tracker-header">
+                <span>Your Referrals</span>
+                <span id="ref-count" style="color: var(--accent);">0 Joined</span>
             </div>
-
-            <div class="ref-item">
-                <div class="ref-user">
-                    <div class="ref-initial">VD</div>
-                    <div>
-                        <span class="ref-name">Vikram Das</span>
-                        <span class="ref-date">12 Oct 2023</span>
-                    </div>
-                </div>
-                <span class="ref-status status-pending">Pending...</span>
+            <div id="referrals-list">
+                <p style="text-align: center; font-size: 12px; color: #999; padding: 20px;">No friends joined yet.</p>
             </div>
-
-            </div>
+        </div>
     </main>
 
     <nav class="bottom-nav">
@@ -190,12 +173,81 @@
         <a href="account.html" class="nav-link"><i class="fa-solid fa-user-gear"></i><span>Account</span></a>
     </nav>
 
-    <script>
-        function copyCode() {
-            const code = document.getElementById('ref-code').innerText;
-            navigator.clipboard.writeText("https://4449-win.vercel.app/signup?ref=" + code);
-            alert("Referral Link Copied!");
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
+            authDomain: "win-ad891.firebaseapp.com",
+            projectId: "win-ad891",
+            storageBucket: "win-ad891.firebasestorage.app",
+            messagingSenderId: "777370829193",
+            appId: "1:777370829193:web:58af7368078591e6806158"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Login user ki UID ko Referral Code ki jagah set kiya
+                const myCode = user.uid.substring(0, 8).toUpperCase();
+                document.getElementById('ref-code').innerText = myCode;
+                loadMyReferrals(myCode);
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        // Referral List load karne ka function
+        function loadMyReferrals(code) {
+            const q = query(collection(db, "users"), where("referredBy", "==", code));
+            
+            onSnapshot(q, (snapshot) => {
+                const list = document.getElementById('referrals-list');
+                const countText = document.getElementById('ref-count');
+                list.innerHTML = "";
+                
+                if (snapshot.empty) {
+                    list.innerHTML = `<p style="text-align: center; font-size: 12px; color: #999; padding: 20px;">No friends joined yet.</p>`;
+                    countText.innerText = "0 Joined";
+                    return;
+                }
+
+                countText.innerText = `${snapshot.size} Joined`;
+                
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // "Condition" check: Agar user ne plan khareeda hai (activePlans exists)
+                    const hasInvested = data.activePlans && data.activePlans.length > 0;
+                    
+                    list.innerHTML += `
+                        <div class="ref-item">
+                            <div class="ref-user">
+                                <div class="ref-initial">${data.name ? data.name.charAt(0) : 'U'}</div>
+                                <div>
+                                    <span class="ref-name">${data.name || 'User'}</span>
+                                    <span style="font-size:10px; color:#999;">Joined via your link</span>
+                                </div>
+                            </div>
+                            <span class="ref-status ${hasInvested ? 'status-success' : 'status-pending'}">
+                                ${hasInvested ? '₹50 Credited' : 'Pending Invest'}
+                            </span>
+                        </div>
+                    `;
+                });
+            });
         }
+
+        window.copyCode = () => {
+            const code = document.getElementById('ref-code').innerText;
+            const refLink = `https://4449-win.vercel.app/signup.html?ref=${code}`;
+            navigator.clipboard.writeText(refLink);
+            alert("Referral Link Copied! Send it to your friends.");
+        };
     </script>
 </body>
 </html>
