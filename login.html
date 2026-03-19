@@ -31,44 +31,77 @@
             animation: fadeInScale 0.8s ease-out;
         }
 
-        /* --- LOGO ANIMATION --- */
+        /* --- LOGO (EXACTLY LIKE SIGNUP PAGE) --- */
         .logo-container {
-            width: 90px; height: 90px; margin: 0 auto 20px;
-            padding: 4px; border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            position: relative;
+            padding: 5px;
+            border-radius: 50%;
             background: linear-gradient(45deg, var(--accent), transparent, var(--accent));
             animation: rotateBorder 4s linear infinite;
         }
+
         .logo-inner {
-            width: 100%; height: 100%; background: #fff; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 2px solid #eee;
+            overflow: hidden;
         }
-        .logo-inner img { width: 80%; height: auto; animation: pulse 2s infinite; }
 
-        h2 { color: var(--primary); margin-bottom: 10px; font-size: 26px; }
+        .logo-inner img {
+            width: 80%;
+            height: auto;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        h2 { color: var(--primary); margin-bottom: 5px; font-size: 26px; }
+        p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
+
         .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; margin-left: 2px; }
-        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; margin-left: 5px; }
+        input { width: 100%; padding: 12px 15px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
 
-        /* --- TERMS CHECKBOX LEFT ALIGNED --- */
+        /* --- LEFT ALIGNED CHECKBOX & TEXT --- */
         .terms-check-area {
             display: flex; 
             align-items: center; 
             gap: 10px;
-            margin: 15px 0 20px 2px; /* Left se alignment ke liye 2px margin */
+            margin: 15px 0 20px 5px; /* Left alignment set to match input boxes */
             font-size: 13px; 
             color: #444;
-            text-align: left; /* Text ko left align kiya */
+            text-align: left;
         }
-        .read-more-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; }
+
+        .terms-check-area input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .read-more-link { 
+            color: var(--primary); 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-decoration: underline; 
+        }
 
         .btn-login {
             width: 100%; padding: 14px; background: var(--primary); color: white;
             border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+            transition: 0.3s;
         }
-        .btn-login:disabled { background: #95a5a6; cursor: not-allowed; }
+        .btn-login:hover { background: #1a4a80; transform: translateY(-2px); }
+        .btn-login:disabled { background: #95a5a6; cursor: not-allowed; transform: none; }
 
-        /* --- MODAL (POP-UP) STYLING --- */
+        /* --- MODAL STYLING --- */
         .modal {
             display: none; position: fixed; z-index: 1000; left: 0; top: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.7);
@@ -80,13 +113,13 @@
             max-height: 80vh; overflow-y: auto;
         }
         .modal-content h3 { color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 15px; }
-        .modal-content h4 { color: #e67e22; margin-top: 15px; font-size: 15px; }
-        .modal-content p, .modal-content li { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 8px; }
+        .modal-content p { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 10px; }
         .close-modal-btn {
             width: 100%; background: var(--primary); color: white; border: none;
-            padding: 12px; border-radius: 8px; margin-top: 20px; cursor: pointer; font-weight: bold;
+            padding: 12px; border-radius: 8px; margin-top: 15px; cursor: pointer; font-weight: bold;
         }
 
+        /* --- ANIMATIONS --- */
         @keyframes rotateBorder { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -102,7 +135,7 @@
         </div>
 
         <h2>Welcome Back</h2>
-        <p style="color:#666; font-size:14px; margin-bottom:25px;">Log in to DC INVEST</p>
+        <p class="subtitle">Log in to DC INVEST</p>
 
         <form id="login-form">
             <div class="form-group">
@@ -122,7 +155,7 @@
             <button type="submit" class="btn-login" id="login-btn" disabled>Log In</button>
         </form>
 
-        <div style="margin-top:20px; font-size:14px;">
+        <div style="margin-top:20px; font-size:14px; color:#666;">
             Don't have an account? <a href="signup.html" style="color:var(--primary); font-weight:bold; text-decoration:none;">Sign Up</a>
         </div>
     </div>
@@ -130,23 +163,11 @@
     <div class="modal" id="terms-modal">
         <div class="modal-content">
             <h3>DC INVEST - Terms & Conditions</h3>
-            <p>Welcome to <strong>DC INVEST</strong>. By accessing this website, you agree to comply with the following terms.</p>
-
-            <h4>1. Age Requirement (18+)</h4>
-            <p>User ki umar kam se kam 18 saal honi chahiye.</p>
-
-            <h4>2. Account Security</h4>
-            <ul>
-                <li>Ek user sirf ek hi account bana sakta hai.</li>
-                <li>Apne login details kisi ke saath share na karein.</li>
-            </ul>
-
-            <h4>3. Deposits & Withdrawals</h4>
-            <p>Withdrawal process hone mein 24-48 ghante lag sakte hain.</p>
-
-            <h4>4. Fair Play & Risks</h4>
-            <p>Investment mein financial risk hota hai. DC INVEST kisi bhi loss ke liye zimmedar nahi hoga.</p>
-
+            <p>Welcome to <strong>DC INVEST</strong>. By using this platform, you agree to follow our rules and policies.</p>
+            <p><strong>1. Age Limit:</strong> You must be 18+ to participate in any investment or trading activities.</p>
+            <p><strong>2. Security:</strong> One user is allowed only one account. Sharing account details is prohibited.</p>
+            <p><strong>3. Transactions:</strong> Withdrawal process may take 24-48 hours depending on verification.</p>
+            <p><strong>4. Disclaimer:</strong> Financial markets involve risk. DC INVEST is not responsible for any market losses.</p>
             <button class="close-modal-btn" id="close-terms">I Accept & Close</button>
         </div>
     </div>
@@ -158,12 +179,17 @@
         const openBtn = document.getElementById('open-terms');
         const closeBtn = document.getElementById('close-terms');
 
-        termsCheck.onchange = () => { loginBtn.disabled = !termsCheck.checked; };
+        // Enable button only if checkbox is ticked
+        termsCheck.onchange = () => {
+            loginBtn.disabled = !termsCheck.checked;
+        };
 
+        // Modal Open/Close
         openBtn.onclick = () => { modal.style.display = "flex"; };
         closeBtn.onclick = () => { modal.style.display = "none"; };
         window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; };
 
+        // Form Submit
         document.getElementById('login-form').onsubmit = function(e) {
             e.preventDefault();
             window.location.href = 'home.html';
