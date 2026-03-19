@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | DC INVEST</title>
     <style>
-        /* --- DESIGN VARIABLES & STYLES (same as signup) --- */
         :root {
             --primary: #0d2542;
             --accent: #f1c40f;
@@ -13,12 +12,7 @@
             --glass-bg: rgba(255, 255, 255, 0.95);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
 
         body {
             background: var(--bg-gradient);
@@ -37,141 +31,67 @@
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             text-align: center;
-            animation: fadeInScale 0.8s ease-out;
             position: relative;
         }
 
-        /* --- LOGO ANIMATION (same as signup) --- */
+        /* --- LOGO (SAB SIGNUP JAISA) --- */
         .logo-container {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            position: relative;
-            padding: 5px;
-            border-radius: 50%;
+            width: 90px; height: 90px; margin: 0 auto 20px;
+            padding: 4px; border-radius: 50%;
             background: linear-gradient(45deg, var(--accent), transparent, var(--accent));
             animation: rotateBorder 4s linear infinite;
         }
-
         .logo-inner {
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            border-radius: 50%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #eee;
+            width: 100%; height: 100%; background: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+            border: 2px solid #fff;
         }
+        .logo-inner img { width: 100%; height: 100%; object-fit: cover; }
 
-        .logo-inner img {
-            width: 80%;
-            height: auto;
-            animation: pulse 2s ease-in-out infinite;
-        }
+        h2 { color: var(--primary); margin-bottom: 5px; }
+        p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
 
-        h2 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 26px;
-        }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
 
-        p.subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
+        /* --- TERMS SECTION WITH READ MORE --- */
+        .terms-container {
+            margin: 15px 0;
             text-align: left;
+            font-size: 12px;
+            color: #555;
+            background: #f4f7f9;
+            padding: 10px;
+            border-radius: 8px;
         }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
+        #more-text { display: none; }
+        .read-more-btn {
             color: var(--primary);
-            margin-bottom: 5px;
-            margin-left: 5px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e1e1e1;
-            border-radius: 10px;
-            outline: none;
-            transition: 0.3s;
-            font-size: 15px;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(13, 37, 66, 0.1);
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: underline;
         }
 
         .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+            width: 100%; padding: 14px; background: var(--primary); color: white;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
+        .btn-login:disabled { background: #95a5a6; cursor: not-allowed; }
 
-        .btn-login:hover {
-            background: #1a4a80;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+        .signup-link { margin-top: 20px; font-size: 14px; color: #666; }
+        .signup-link a { color: var(--primary); font-weight: bold; text-decoration: none; }
 
-        .signup-link {
-            margin-top: 25px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .signup-link a {
-            color: var(--primary);
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        /* --- ANIMATIONS (same as signup) --- */
-        @keyframes rotateBorder {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 30px 20px;
-            }
-            h2 { font-size: 22px; }
-            input { padding: 10px; }
-        }
+        @keyframes rotateBorder { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <div class="login-card">
+        <div id="status-msg" style="display:none; color:red; margin-bottom:10px; font-size:13px;"></div>
+
         <div class="logo-container">
             <div class="logo-inner">
                 <img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'">
@@ -184,15 +104,25 @@
         <form id="login-form">
             <div class="form-group">
                 <label>Email Address</label>
-                <input type="email" placeholder="email@example.com" id="login-email" required>
+                <input type="email" id="login-email" placeholder="email@example.com" required>
             </div>
-
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" placeholder="••••••••" required>
+                <input type="password" id="login-password" placeholder="••••••••" required>
             </div>
 
-            <button type="submit" class="btn-login">Log In</button>
+            <div class="terms-container">
+                <p>
+                    By logging in, you confirm your identity and agree to our security protocols.
+                    <span id="more-text">
+                        Please ensure you are using a secure network. DC INVEST will never ask for your password via email or chat. 
+                        Your session will automatically expire after inactivity for your safety.
+                    </span>
+                    <span class="read-more-btn" id="read-btn">Read More</span>
+                </p>
+            </div>
+
+            <button type="submit" class="btn-login" id="login-btn">Log In</button>
         </form>
 
         <div class="signup-link">
@@ -200,17 +130,59 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
+            authDomain: "win-ad891.firebaseapp.com",
+            projectId: "win-ad891",
+            storageBucket: "win-ad891.firebasestorage.app",
+            messagingSenderId: "777370829193",
+            appId: "1:777370829193:web:58af7368078591e6806158"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // --- READ MORE LOGIC ---
+        const readBtn = document.getElementById('read-btn');
+        const moreText = document.getElementById('more-text');
+
+        readBtn.onclick = () => {
+            if (moreText.style.display === "none" || moreText.style.display === "") {
+                moreText.style.display = "inline";
+                readBtn.innerText = " Read Less";
+            } else {
+                moreText.style.display = "none";
+                readBtn.innerText = " Read More";
+            }
+        };
+
+        // --- LOGIN LOGIC ---
         const loginForm = document.getElementById('login-form');
+        const statusMsg = document.getElementById('status-msg');
+        const loginBtn = document.getElementById('login-btn');
 
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // page reload hone se rokega
+        loginForm.onsubmit = async (e) => {
+            e.preventDefault();
+            loginBtn.disabled = true;
+            loginBtn.innerText = "Verifying...";
 
-            // Is case mein hum koi verification nahi kar rahe hain (basic mockup hai)
-            // Seedha home page pe redirect kar denge.
-            window.location.href = 'home.html';
-        });
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = "home.html";
+            } catch (err) {
+                statusMsg.innerText = "Invalid Email or Password!";
+                statusMsg.style.display = "block";
+                loginBtn.disabled = false;
+                loginBtn.innerText = "Log In";
+            }
+        };
     </script>
-
 </body>
 </html>
