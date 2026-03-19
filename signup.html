@@ -31,7 +31,7 @@
         .signup-card {
             background: var(--glass-bg);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             padding: 40px 30px;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
@@ -55,30 +55,78 @@
         .success { background: #27ae60; color: white; }
         .error { background: #e74c3c; color: white; }
 
+        /* --- PROFESSIONAL ROUND ROTATING LOGO --- */
         .logo-container {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             margin: 0 auto 20px;
             position: relative;
-            padding: 5px;
+            padding: 4px;
             border-radius: 50%;
             background: linear-gradient(45deg, var(--accent), transparent, var(--accent));
             animation: rotateBorder 4s linear infinite;
         }
 
         .logo-inner {
-            width: 100%; height: 100%;
-            background: #fff; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Ensures image stays round */
+            border: 2px solid #fff;
         }
 
-        h2 { color: var(--primary); margin-bottom: 5px; }
+        .logo-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Keeps logo centered and round */
+        }
+
+        h2 { color: var(--primary); margin-bottom: 5px; font-size: 24px; }
         p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
 
         .form-group { margin-bottom: 15px; text-align: left; }
         label { display: block; font-size: 13px; font-weight: 600; color: var(--primary); margin: 0 0 5px 5px; }
-        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); }
+        input { width: 100%; padding: 12px; border: 2px solid #e1e1e1; border-radius: 10px; outline: none; transition: 0.3s; font-size: 14px; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 8px rgba(13,37,66,0.1); }
+
+        /* --- TERMS & CONDITIONS BOX --- */
+        .terms-box {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .terms-content {
+            height: 80px;
+            overflow-y: auto;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            padding-right: 5px;
+        }
+
+        .terms-content::-webkit-scrollbar { width: 4px; }
+        .terms-content::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .checkbox-container input { width: auto; cursor: pointer; }
 
         .btn-signup {
             width: 100%; padding: 14px; background: var(--primary); color: white;
@@ -86,7 +134,8 @@
             cursor: pointer; transition: 0.3s; margin-top: 10px;
         }
 
-        .btn-signup:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-signup:disabled { background: #95a5a6; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-signup:hover:not(:disabled) { background: #1a4a80; transform: translateY(-2px); }
 
         .login-link { margin-top: 20px; font-size: 14px; color: #666; }
         .login-link a { color: var(--primary); font-weight: bold; text-decoration: none; }
@@ -101,7 +150,9 @@
         <div id="status-msg"></div>
 
         <div class="logo-container">
-            <div class="logo-inner"><b>DC</b></div>
+            <div class="logo-inner">
+                <img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'">
+            </div>
         </div>
 
         <h2>Create Account</h2>
@@ -110,17 +161,31 @@
         <form id="signup-form">
             <div class="form-group">
                 <label>Full Name</label>
-                <input type="text" id="user-name" placeholder="Enter your name" required>
+                <input type="text" id="user-name" placeholder="Enter your full name" required>
             </div>
             <div class="form-group">
                 <label>Email Address</label>
-                <input type="email" id="signup-email" placeholder="email@example.com" required>
+                <input type="email" id="signup-email" placeholder="example@mail.com" required>
             </div>
             <div class="form-group">
                 <label>Create Password</label>
-                <input type="password" id="signup-password" placeholder="••••••••" required>
+                <input type="password" id="signup-password" placeholder="Min. 6 characters" required>
             </div>
-            <button type="submit" class="btn-signup" id="submit-btn">Sign Up Now</button>
+
+            <div class="terms-box">
+                <div class="terms-content">
+                    <strong>1. Eligibility:</strong> By creating an account, you confirm that you are at least 18 years of age. Use of DC INVEST by minors is strictly prohibited.<br><br>
+                    <strong>2. Investment Disclosure:</strong> All investments involve risk. Market fluctuations may lead to a loss of principal. DC INVEST provides a platform for management but does not guarantee specific returns.<br><br>
+                    <strong>3. User Responsibility:</strong> You are responsible for maintaining the confidentiality of your login credentials. Any unauthorized use of your account must be reported immediately.<br><br>
+                    <strong>4. Agreement:</strong> By clicking sign up, you agree to comply with all platform regulations and financial safety protocols.
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="terms-checkbox">
+                    I agree to the Terms & Conditions
+                </label>
+            </div>
+
+            <button type="submit" class="btn-signup" id="submit-btn" disabled>Sign Up Now</button>
         </form>
 
         <div class="login-link">
@@ -133,6 +198,7 @@
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // Your Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
             authDomain: "win-ad891.firebaseapp.com",
@@ -149,6 +215,12 @@
         const signupForm = document.getElementById('signup-form');
         const statusMsg = document.getElementById('status-msg');
         const submitBtn = document.getElementById('submit-btn');
+        const termsCheckbox = document.getElementById('terms-checkbox');
+
+        // Logic to enable button only when checkbox is ticked
+        termsCheckbox.addEventListener('change', () => {
+            submitBtn.disabled = !termsCheckbox.checked;
+        });
 
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -158,22 +230,24 @@
             const password = document.getElementById('signup-password').value;
 
             submitBtn.disabled = true;
-            submitBtn.innerText = "Processing...";
+            submitBtn.innerText = "Creating Account...";
 
             try {
+                // Register user in Firebase Auth
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // Yahan balance ab 0 set kiya gaya hai
+                // Save user profile in Firestore with 0 balance
                 await setDoc(doc(db, "users", user.uid), {
                     fullName: name,
                     email: email,
                     balance: 0, 
-                    joinedDate: new Date().toISOString()
+                    isVerified: true,
+                    joinedAt: new Date().toISOString()
                 });
 
-                statusMsg.innerText = "Account Created! Redirecting...";
-                statusMsg.className = "success";
+                statusMsg.innerText = "Success! Redirecting to Login...";
+                statusMsg.className = "status-msg success";
                 statusMsg.style.display = "block";
 
                 setTimeout(() => {
@@ -182,7 +256,7 @@
 
             } catch (error) {
                 statusMsg.innerText = "Error: " + error.message;
-                statusMsg.className = "error";
+                statusMsg.className = "status-msg error";
                 statusMsg.style.display = "block";
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Sign Up Now";
