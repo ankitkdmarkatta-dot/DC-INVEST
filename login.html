@@ -10,6 +10,7 @@
             --accent: #f1c40f;
             --bg-gradient: linear-gradient(135deg, #0d2542 0%, #1a4a80 100%);
             --glass-bg: rgba(255, 255, 255, 0.95);
+            --modal-dark: #161b22; /* Matches terms.html theme */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
@@ -30,7 +31,6 @@
             text-align: center; position: relative;
         }
 
-        /* --- Full Round Logo Container (Same as Signup) --- */
         .logo-container {
             width: 90px; height: 90px; margin: 0 auto 20px;
             padding: 3px; border-radius: 50%;
@@ -43,11 +43,7 @@
             align-items: center; justify-content: center; 
             overflow: hidden; border: 2px solid #fff;
         }
-        .logo-inner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .logo-inner img { width: 100%; height: 100%; object-fit: cover; }
 
         h2 { color: var(--primary); margin-bottom: 5px; font-size: 26px; }
         p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
@@ -71,19 +67,25 @@
         .btn-login:hover { background: #1a3a5f; }
         .btn-login:disabled { background: #95a5a6; cursor: not-allowed; }
 
+        /* --- Updated Themed Modal --- */
         .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.7);
-            align-items: center; justify-content: center;
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.85);
+            align-items: center; justify-content: center; padding: 20px;
         }
         .modal-content {
-            background: white; width: 90%; max-width: 500px;
-            padding: 25px; border-radius: 15px; text-align: left;
-            max-height: 80vh; overflow-y: auto;
+            background: var(--modal-dark); color: #fff; width: 100%; max-width: 450px;
+            padding: 30px; border-radius: 20px; text-align: left;
+            max-height: 80vh; overflow-y: auto; border: 1px solid rgba(0, 242, 255, 0.2);
         }
+        .modal-content h3 { color: #00f2ff; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .modal-content h4 { color: #ff007a; font-size: 15px; margin-top: 15px; text-transform: uppercase; }
+        .modal-content p, .modal-content li { color: #8b949e; font-size: 13px; margin-bottom: 10px; line-height: 1.5; }
+        .modal-content ul { padding-left: 18px; }
+        
         .close-modal-btn {
-            width: 100%; background: var(--primary); color: white; border: none;
-            padding: 12px; border-radius: 8px; margin-top: 15px; cursor: pointer; font-weight: bold;
+            width: 100%; background: #00f2ff; color: #000; border: none;
+            padding: 12px; border-radius: 10px; margin-top: 20px; cursor: pointer; font-weight: bold;
         }
     </style>
 </head>
@@ -94,7 +96,6 @@
                 <img src="logo.png" alt="DC Logo" onerror="this.parentElement.innerHTML='<b>DC</b>'">
             </div>
         </div>
-
         <h2>Welcome Back</h2>
         <p class="subtitle">Log in to DC INVEST</p>
         
@@ -121,8 +122,31 @@
 
     <div class="modal" id="terms-modal">
         <div class="modal-content">
-            <h3>DC INVEST - Terms & Conditions</h3>
-            <p style="font-size: 14px; line-height: 1.6;">1. Age: 18+ only.<br>2. Security: One account per user.<br>3. Risk: Market risks apply.</p>
+            <h3>Terms & Conditions</h3>
+            <p>Welcome to <strong>DC INVEST</strong>. By accessing this website, you agree to comply with the following terms.</p>
+
+            <h4>1. Age Requirement (18+)</h4>
+            <p>User ki umar kam se kam <strong>18 saal</strong> ya usse zyada honi chahiye. Agar aap underage hain, to is platform ka use karna sakht mana hai.</p>
+
+            <h4>2. Account Security</h4>
+            <ul>
+                <li>Ek user sirf ek hi account bana sakta hai. Multi-accounting karne par saare accounts ban kar diye jayenge.</li>
+                <li>Apne password aur login details kisi ke saath share na karein.</li>
+            </ul>
+
+            <h4>3. Deposits & Withdrawals</h4>
+            <ul>
+                <li>Saare transactions secure gateway ke through hote hain.</li>
+                <li>Withdrawal request process hone mein 24-48 ghante lag sakte hain.</li>
+                <li>Galat details dene par payment hold ki ja sakti hai.</li>
+            </ul>
+
+            <h4>4. Fair Play & Risks</h4>
+            <p>Investment mein financial risk hota hai. DC INVEST kisi bhi tarah ke financial loss ke liye zimmedar nahi hoga.</p>
+
+            <h4>5. Termination of Account</h4>
+            <p>Cheating ya suspicious activity ki wajah se hum bina bataye aapka account suspend kar sakte hain.</p>
+
             <button class="close-modal-btn" id="close-terms">I Accept & Close</button>
         </div>
     </div>
@@ -160,26 +184,22 @@
             e.preventDefault();
             loginBtn.disabled = true;
             loginBtn.innerText = "Verifying...";
-
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-password').value;
 
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, pass);
                 const user = userCredential.user;
-
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 
                 if (userDoc.exists()) {
-                    alert("Login Successful!");
                     window.location.href = "home.html";
                 } else {
-                    alert("User data not found in database. Please Register again.");
+                    alert("User data not found. Please Register.");
                     await auth.signOut();
                     loginBtn.disabled = false;
                     loginBtn.innerText = "Log In";
                 }
-
             } catch (err) {
                 alert("Login Failed: " + err.message);
                 loginBtn.disabled = false;
