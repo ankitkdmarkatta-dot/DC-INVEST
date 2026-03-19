@@ -138,6 +138,7 @@
     </div>
 
     <div id="buy-plans-section" class="plans-grid">
+        
         <div class="plan-card">
             <img src="https://images.pexels.com/photos/379419/pexels-photo-379419.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
             <div class="plan-details">
@@ -148,6 +149,19 @@
                     <div class="info-item"><span>Days</span><b>10 Days</b></div>
                 </div>
                 <button class="buy-btn" onclick="openModal('Fuel Mini', 200, 100, 10, 1000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">AI For Future</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹399</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹133</b></div>
+                    <div class="info-item"><span>Days</span><b>12 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openModal('AI For Future', 399, 133, 12, 1600)">ACTIVATE NOW</button>
             </div>
         </div>
 
@@ -163,6 +177,72 @@
                 <button class="buy-btn" onclick="openModal('Petrol Pro', 500, 194, 18, 3500)">ACTIVATE NOW</button>
             </div>
         </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/63238/pexels-photo-63238.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Telecom Services</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹599</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹200</b></div>
+                    <div class="info-item"><span>Days</span><b>16 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Telecom Services', 599, 200, 16, 3200)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/3183158/pexels-photo-3183158.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Corporate Tech</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹999</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹333</b></div>
+                    <div class="info-item"><span>Days</span><b>30 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Corporate Tech', 999, 333, 30, 10000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/2599244/pexels-photo-2599244.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Robotics Alpha</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹1500</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹500</b></div>
+                    <div class="info-item"><span>Days</span><b>25 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Robotics Alpha', 1500, 500, 25, 12500)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Cloud Server Pro</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹2500</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹900</b></div>
+                    <div class="info-item"><span>Days</span><b>20 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Cloud Server Pro', 2500, 900, 20, 18000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Green Energy</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹5000</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹1800</b></div>
+                    <div class="info-item"><span>Days</span><b>45 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Green Energy', 5000, 1800, 45, 81000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
     </div>
 
     <div id="active-plans-section" style="display:none;">
@@ -225,12 +305,8 @@
         let pData = {};
 
         onAuthStateChanged(auth, (user) => {
-            if (user) { 
-                currentUser = user; 
-                loadActivePlans(); 
-            } else { 
-                window.location.href = "login.html"; 
-            }
+            if (user) { currentUser = user; loadActivePlans(); } 
+            else { window.location.href = "login.html"; }
         });
 
         window.showTab = (tab) => {
@@ -270,11 +346,7 @@
                 const userRef = doc(db, "users", currentUser.uid);
                 const snap = await getDoc(userRef);
 
-                if (!snap.exists()) {
-                    alert("User record not found. Please contact support.");
-                    btn.disabled = false; btn.innerText = "CONFIRM & ACTIVATE";
-                    return;
-                }
+                if (!snap.exists()) { alert("User record not found."); btn.disabled = false; return; }
 
                 const userData = snap.data();
                 if ((userData.balance || 0) >= pData.price) {
@@ -294,7 +366,6 @@
                     alert("Insufficient Balance! Please recharge first.");
                 }
             } catch (e) {
-                console.error(e);
                 alert("Transaction Failed: " + e.message);
             }
             btn.disabled = false; btn.innerText = "CONFIRM & ACTIVATE";
@@ -305,9 +376,7 @@
                 const list = document.getElementById('active-list');
                 const noActive = document.getElementById('no-active');
                 list.innerHTML = "";
-                
                 if(!snap.exists()) return;
-                
                 const data = snap.data();
                 if (data.activePlans && data.activePlans.length > 0) {
                     noActive.style.display = "none";
@@ -325,9 +394,7 @@
                             <div style="margin-top:10px; font-size:10px; color:#94a3b8;">Purchased: ${new Date(p.purchaseDate).toLocaleDateString()}</div>
                         </div>`;
                     });
-                } else { 
-                    noActive.style.display = "block"; 
-                }
+                } else { noActive.style.display = "block"; }
             });
         }
     </script>
