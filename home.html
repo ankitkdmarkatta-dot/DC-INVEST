@@ -104,6 +104,43 @@
         .nav-link span { font-size: 11px; font-weight: 600; }
         .nav-link.active { color: var(--primary); transform: translateY(-3px); }
 
+        /* --- APP DOWNLOAD POPUP STYLES --- */
+        .popup-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); z-index: 2000;
+            align-items: center; justify-content: center; backdrop-filter: blur(5px);
+        }
+        .popup-content {
+            background: white; width: 85%; max-width: 350px; border-radius: 30px;
+            padding: 30px 20px; text-align: center; position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: popupAnim 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popupAnim {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .close-popup {
+            position: absolute; top: 15px; right: 20px; font-size: 24px;
+            color: #999; cursor: pointer; font-weight: bold;
+        }
+        .popup-icon {
+            width: 70px; height: 70px; background: var(--accent);
+            border-radius: 20px; margin: 0 auto 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 35px; color: var(--primary);
+            box-shadow: 0 10px 20px rgba(241, 196, 15, 0.3);
+        }
+        .popup-content h2 { color: var(--primary); font-size: 20px; margin-bottom: 8px; }
+        .popup-content p { font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.5; }
+        .download-btn-popup {
+            display: block; background: var(--bg-gradient); color: white;
+            text-decoration: none; padding: 12px; border-radius: 15px;
+            font-weight: 700; font-size: 15px; transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(13, 37, 66, 0.2);
+        }
+        .download-btn-popup:active { transform: scale(0.95); }
+
         /* --- ANIMATIONS --- */
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
@@ -174,6 +211,20 @@
         </div>
     </main>
 
+    <div id="downloadPopup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closeAppPopup()">&times;</span>
+            <div class="popup-icon">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+            </div>
+            <h2>Download App</h2>
+            <p>Behtar experience aur fast updates ke liye DC INVEST app install karein.</p>
+            <a href="YOUR_APP_LINK_HERE" class="download-btn-popup">
+                <i class="fa-solid fa-download"></i> Install Now
+            </a>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
         <a href="home.html" class="nav-link active"><i class="fa-solid fa-house"></i><span>Home</span></a>
         <a href="invest.html" class="nav-link"><i class="fa-solid fa-chart-pie"></i><span>Invest</span></a>
@@ -199,19 +250,28 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- POPUP LOGIC ---
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('downloadPopup').style.display = 'flex';
+            }, 3000); // 3 seconds baad dikhega
+        });
+
+        window.closeAppPopup = function() {
+            document.getElementById('downloadPopup').style.display = 'none';
+        }
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
                         
-                        // Update UI
                         document.getElementById('welcome-user').innerText = "Hi, " + (data.name || "User");
                         document.getElementById('user-balance').innerText = "₹ " + (data.balance || 0).toLocaleString('en-IN', {minimumFractionDigits: 2});
                         document.getElementById('user-invested').innerText = "₹ " + (data.totalInvested || 0).toLocaleString('en-IN');
                         document.getElementById('user-profit').innerText = "₹ " + (data.totalEarnings || 0).toLocaleString('en-IN');
 
-                        // Claim Notification Logic
                         const today = new Date().toDateString();
                         const hasActivePlans = data.activePlans && data.activePlans.length > 0;
                         const notClaimedToday = data.lastClaimDate !== today;
