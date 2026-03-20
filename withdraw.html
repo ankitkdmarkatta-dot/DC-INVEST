@@ -6,6 +6,8 @@
     <title>Withdraw | DC INVEST</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; --white: #fff; --success: #27ae60; --danger: #e74c3c; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -21,7 +23,6 @@
         
         .section-title { font-size: 13px; font-weight: 700; color: var(--primary); margin: 20px 0 12px; text-transform: uppercase; letter-spacing: 0.8px; }
 
-        /* Method Selection Cards */
         .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .method-card {
             background: white; padding: 22px; border-radius: 20px; text-align: center;
@@ -32,7 +33,6 @@
         .method-card span { font-size: 14px; font-weight: 700; color: var(--primary); }
         .method-card.active { border-color: var(--accent); background: #fffdf0; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(241,196,15,0.15); }
 
-        /* Details Form */
         .details-card { background: white; border-radius: 20px; padding: 22px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); display: none; border: 1px solid #eee; }
         .input-group { margin-bottom: 18px; }
         label { display: block; font-size: 12px; font-weight: 700; color: #777; margin-bottom: 8px; }
@@ -49,7 +49,6 @@
             box-shadow: 0 4px 10px rgba(241,196,15,0.2);
         }
 
-        /* Amount Section */
         .amount-card { background: var(--primary); border-radius: 25px; padding: 30px 20px; margin-top: 25px; color: white; text-align: center; }
         .amount-card label { color: rgba(255,255,255,0.7); font-size: 13px; text-align: center; display: block; }
         .amount-card input { 
@@ -70,7 +69,6 @@
 
         .lock-badge { font-size: 11px; color: var(--success); font-weight: 700; margin-top: 8px; display: none; align-items: center; gap: 5px; }
         
-        /* Modal for Success/Error */
         #loader { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; color:white; font-weight:700; }
     </style>
 </head>
@@ -118,7 +116,7 @@
     <div class="amount-card">
         <label>AVAILABLE BALANCE: <span id="current-bal-display">₹0.00</span></label>
         <input type="number" id="withdraw-amt" placeholder="0.00">
-        <p class="bal-info">Min Withdrawal: <b>₹300.00</b></p>
+        <p class="bal-info">Min Withdrawal: <b>₹800.00</b></p>
     </div>
 
     <button class="withdraw-btn" onclick="handleWithdraw()">
@@ -147,7 +145,6 @@
     let currentBalance = 0;
     let currentUser = null;
 
-    // --- REAL-TIME DATA FETCHING ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUser = user;
@@ -175,18 +172,23 @@
     window.saveDetails = (type) => {
         if(type === 'upi') {
             const val = document.getElementById('upi-val').value;
-            if(!val.includes('@')) return alert("Enter valid UPI ID!");
+            if(!val.includes('@')) return Swal.fire('Error', 'Enter valid UPI ID!', 'error');
             localStorage.setItem('dc_upi', val);
         } else {
             const name = document.getElementById('bnk-name').value;
             const acc = document.getElementById('bnk-acc').value;
             const ifsc = document.getElementById('bnk-ifsc').value;
-            if(!name || !acc || !ifsc) return alert("Please fill all bank fields!");
+            if(!name || !acc || !ifsc) return Swal.fire('Error', 'Please fill all bank fields!', 'error');
             localStorage.setItem('dc_bank_name', name);
             localStorage.setItem('dc_bank_acc', acc);
             localStorage.setItem('dc_bank_ifsc', ifsc);
         }
-        alert("Success! Details have been locked.");
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Details have been locked.',
+            confirmButtonColor: '#0d2542'
+        });
         checkSavedData(type);
     };
 
@@ -214,34 +216,43 @@
         }
     }
 
-    // --- WITHDRAWAL LOGIC WITH REAL-TIME BALANCE CHECK ---
     window.handleWithdraw = async () => {
         const amt = parseFloat(document.getElementById('withdraw-amt').value);
         const activeMethod = document.querySelector('.method-card.active');
 
-        if(!activeMethod) return alert("Select a withdrawal method!");
-        if(isNaN(amt) || amt < 300) return alert("Minimum withdrawal is ₹300!");
+        if(!activeMethod) return Swal.fire('Wait!', 'Please select a withdrawal method!', 'warning');
+        
+        // --- Updated Minimum Withdrawal Limit to 800 ---
+        if(isNaN(amt) || amt < 800) {
+            return Swal.fire({
+                icon: 'error',
+                title: 'Invalid Amount',
+                text: 'Minimum withdrawal amount is ₹800. Please enter a higher amount.',
+                confirmButtonColor: '#e74c3c'
+            });
+        }
 
-        // 1. Balance Validation
         if(amt > currentBalance) {
-            alert(`Insufficient Balance! You have only ₹${currentBalance.toFixed(2)}`);
-            return;
+            return Swal.fire({
+                icon: 'info',
+                title: 'Insufficient Balance',
+                text: `You only have ₹${currentBalance.toFixed(2)} in your wallet.`,
+                confirmButtonColor: '#0d2542'
+            });
         }
 
         const methodType = activeMethod.id === 'm-upi' ? 'upi' : 'bank';
         const methodData = methodType === 'upi' ? localStorage.getItem('dc_upi') : localStorage.getItem('dc_bank_acc');
         
-        if(!methodData) return alert("Please lock your payment details first!");
+        if(!methodData) return Swal.fire('Error', 'Please lock your payment details first!', 'error');
 
         document.getElementById('loader').style.display = 'flex';
 
         try {
-            // 2. Subtract Balance from User Profile
             const userRef = doc(db, "users", currentUser.uid);
             const newBalance = currentBalance - amt;
             await updateDoc(userRef, { balance: newBalance });
 
-            // 3. Log Request for Admin
             await addDoc(collection(db, "withdrawals"), {
                 uid: currentUser.uid,
                 amount: amt,
@@ -255,12 +266,18 @@
                 date: serverTimestamp()
             });
 
-            alert("Request Sent! ₹" + amt + " has been deducted from your wallet.");
-            window.location.href = "account.html";
+            Swal.fire({
+                icon: 'success',
+                title: 'Request Sent!',
+                text: `₹${amt} has been successfully requested.`,
+                confirmButtonColor: '#27ae60'
+            }).then(() => {
+                window.location.href = "account.html";
+            });
 
         } catch (e) {
             console.error(e);
-            alert("Connection error! Please try again.");
+            Swal.fire('Error', 'Connection error! Please try again.', 'error');
         } finally {
             document.getElementById('loader').style.display = 'none';
         }
