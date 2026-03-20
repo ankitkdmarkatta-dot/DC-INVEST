@@ -153,6 +153,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Modal Logic
         const modal = document.getElementById('terms-modal');
         const openBtn = document.getElementById('open-terms');
         const closeBtn = document.getElementById('close-terms');
@@ -162,18 +163,23 @@
         checkbox.onchange = () => { submitBtn.disabled = !checkbox.checked; };
         openBtn.onclick = () => { modal.style.display = "flex"; };
         closeBtn.onclick = () => { modal.style.display = "none"; };
+        window.onclick = (e) => { if(e.target == modal) modal.style.display = "none"; };
 
-        // URL referral detection
-        const urlParams = new URLSearchParams(window.location.search);
-        const refParam = urlParams.get('ref');
-        if(refParam) document.getElementById('referral-code').value = refParam.toUpperCase();
+        // URL referral detection: signup.html?ref=CODE
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+            if(refParam) {
+                document.getElementById('referral-code').value = refParam.toUpperCase();
+            }
+        };
 
         document.getElementById('signup-form').onsubmit = async (e) => {
             e.preventDefault();
             const name = document.getElementById('user-name').value;
             const email = document.getElementById('signup-email').value;
             const pass = document.getElementById('signup-password').value;
-            const refCode = document.getElementById('referral-code').value.trim();
+            const refInput = document.getElementById('referral-code').value.trim().toUpperCase();
 
             submitBtn.disabled = true;
             submitBtn.innerText = "Creating Account...";
@@ -182,18 +188,21 @@
                 const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
                 const user = userCredential.user;
 
+                // Naye user ka apna referral code generate karein (UID ke pehle 8 chars)
+                const myGeneratedCode = user.uid.substring(0, 8).toUpperCase();
+
                 await setDoc(doc(db, "users", user.uid), {
                     uid: user.uid,
                     fullName: name,
                     email: email,
                     balance: 0,
                     totalEarnings: 0,
-                    referredBy: refCode || null,
-                    myReferralCode: user.uid.substring(0, 8).toUpperCase(),
+                    referredBy: refInput || null, // Jisne invite kiya uska code
+                    myReferralCode: myGeneratedCode, // Is user ka apna code (Refer page ke liye)
                     joinedAt: serverTimestamp()
                 });
 
-                alert("Registration Successful!");
+                alert("Registration Successful! Please login.");
                 window.location.href = "login.html";
 
             } catch (err) {
