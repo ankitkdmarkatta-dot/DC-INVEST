@@ -160,9 +160,7 @@
                 <span>Your Referrals</span>
                 <span id="ref-count" style="color: var(--accent);">0 Joined</span>
             </div>
-            <div id="referrals-list">
-                <p style="text-align: center; font-size: 12px; color: #999; padding: 20px;">No friends joined yet.</p>
-            </div>
+            <div id="referrals-list"></div>
         </div>
     </main>
 
@@ -176,7 +174,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, collection, query, where, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -191,10 +189,10 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Login user ki UID ko Referral Code ki jagah set kiya
-                const myCode = user.uid.substring(0, 8).toUpperCase();
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                const myCode = userDoc.exists() ? userDoc.data().myReferralCode : user.uid.substring(0, 8).toUpperCase();
                 document.getElementById('ref-code').innerText = myCode;
                 loadMyReferrals(myCode);
             } else {
@@ -202,34 +200,28 @@
             }
         });
 
-        // Referral List load karne ka function
         function loadMyReferrals(code) {
             const q = query(collection(db, "users"), where("referredBy", "==", code));
-            
             onSnapshot(q, (snapshot) => {
                 const list = document.getElementById('referrals-list');
                 const countText = document.getElementById('ref-count');
                 list.innerHTML = "";
+                countText.innerText = `${snapshot.size} Joined`;
                 
                 if (snapshot.empty) {
                     list.innerHTML = `<p style="text-align: center; font-size: 12px; color: #999; padding: 20px;">No friends joined yet.</p>`;
-                    countText.innerText = "0 Joined";
                     return;
                 }
 
-                countText.innerText = `${snapshot.size} Joined`;
-                
                 snapshot.forEach((doc) => {
                     const data = doc.data();
-                    // "Condition" check: Agar user ne plan khareeda hai (activePlans exists)
                     const hasInvested = data.activePlans && data.activePlans.length > 0;
-                    
                     list.innerHTML += `
                         <div class="ref-item">
                             <div class="ref-user">
-                                <div class="ref-initial">${data.name ? data.name.charAt(0) : 'U'}</div>
+                                <div class="ref-initial">${data.fullName ? data.fullName.charAt(0) : 'U'}</div>
                                 <div>
-                                    <span class="ref-name">${data.name || 'User'}</span>
+                                    <span class="ref-name">${data.fullName || 'User'}</span>
                                     <span style="font-size:10px; color:#999;">Joined via your link</span>
                                 </div>
                             </div>
@@ -242,11 +234,23 @@
             });
         }
 
+        // Fixed Copy Link: Dynamically gets your domain
         window.copyCode = () => {
             const code = document.getElementById('ref-code').innerText;
-            const refLink = `https://4449-win.vercel.app/signup.html?ref=${code}`;
-            navigator.clipboard.writeText(refLink);
-            alert("Referral Link Copied! Send it to your friends.");
+            const baseUrl = window.location.origin; // Ye current site ka link leta hai
+            const refLink = `${baseUrl}/signup.html?ref=${code}`;
+            
+            navigator.clipboard.writeText(refLink).then(() => {
+                alert("Link Copied: " + refLink);
+            }).catch(() => {
+                const textArea = document.createElement("textarea");
+                textArea.value = refLink;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert("Link Copied!");
+            });
         };
     </script>
 </body>
