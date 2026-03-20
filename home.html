@@ -105,7 +105,7 @@
         .nav-link span { font-size: 11px; font-weight: 600; }
         .nav-link.active { color: var(--primary); transform: translateY(-3px); }
 
-        /* --- SCREENSHOT STYLE POPUP --- */
+        /* --- SCREENSHOT STYLE INSTALL POPUP --- */
         #pwa-install-banner {
             position: fixed; bottom: 85px; left: 15px; right: 15px;
             background: #0d2542; border: 1.5px solid var(--cyan-glow);
@@ -231,17 +231,26 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- PWA Banner Logic ---
+        // --- PWA Banner Logic (With 24-Hour Memory) ---
         let deferredPrompt;
         const banner = document.getElementById('pwa-install-banner');
+        const closeBtn = document.getElementById('pwa-close-btn');
+        const installBtn = document.getElementById('pwa-install-btn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            setTimeout(() => { banner.style.display = 'flex'; }, 2000);
+
+            const lastCloseDate = localStorage.getItem('pwaBannerClosedDate');
+            const today = new Date().toDateString();
+
+            // Agar aaj close nahi kiya gaya, tabhi dikhayein
+            if (lastCloseDate !== today) {
+                setTimeout(() => { banner.style.display = 'flex'; }, 2000);
+            }
         });
 
-        document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+        installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
@@ -250,11 +259,13 @@
             }
         });
 
-        document.getElementById('pwa-close-btn').addEventListener('click', () => {
+        closeBtn.addEventListener('click', () => {
             banner.style.display = 'none';
+            // Save today's date in memory
+            localStorage.setItem('pwaBannerClosedDate', new Date().toDateString());
         });
 
-        // --- Original Firebase Logic ---
+        // --- Original Firebase Data Logic (100% Same) ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
