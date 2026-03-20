@@ -6,6 +6,7 @@
     <title>Home | DC INVEST</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
     
     <style>
         :root {
@@ -19,7 +20,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
         body { background: #f4f7f6; color: var(--text-dark); padding-bottom: 90px; overflow-x: hidden; }
 
         header {
@@ -29,82 +29,54 @@
         }
 
         .logo-area { display: flex; align-items: center; gap: 12px; }
-
-        .logo-container {
-            width: 45px; height: 45px; padding: 2px;
-            border-radius: 50%; background: var(--accent);
-        }
-        .logo-inner {
-            width: 100%; height: 100%; background: #fff;
-            border-radius: 50%; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-            border: 1px solid #fff;
-        }
+        .logo-container { width: 45px; height: 45px; padding: 2px; border-radius: 50%; background: var(--accent); }
+        .logo-inner { width: 100%; height: 100%; background: #fff; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #fff; }
         .logo-inner img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-
         .brand-text { color: var(--primary); font-weight: 800; font-size: 18px; letter-spacing: 1px; }
 
         main { max-width: 500px; margin: 20px auto; padding: 0 15px; }
 
-        /* --- BALANCE CARD --- */
-        .balance-card {
-            background: var(--bg-gradient); border-radius: 25px;
-            padding: 30px 20px; color: white; text-align: center;
-            box-shadow: 0 10px 25px rgba(13, 37, 66, 0.3); position: relative; overflow: hidden;
-            animation: slideIn 0.8s ease-out;
-        }
+        .balance-card { background: var(--bg-gradient); border-radius: 25px; padding: 30px 20px; color: white; text-align: center; box-shadow: 0 10px 25px rgba(13, 37, 66, 0.3); position: relative; overflow: hidden; animation: slideIn 0.8s ease-out; }
         .bal-label { font-size: 13px; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; }
         .bal-amount { font-size: 34px; font-weight: 800; margin: 5px 0; color: var(--accent); }
         
-        .stats-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            margin-top: 20px; background: rgba(255, 255, 255, 0.1);
-            padding: 15px; border-radius: 15px; backdrop-filter: blur(5px);
-        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 15px; backdrop-filter: blur(5px); }
         .stat-box h4 { font-size: 16px; color: #fff; margin-top: 4px; }
         .stat-box p { font-size: 10px; opacity: 0.7; text-transform: uppercase; font-weight: 600; }
 
-        /* --- CLAIM NOTIFICATION BOX --- */
-        #claim-notify {
-            display: none; background: #fff3cd; padding: 15px; border-radius: 15px;
-            margin-top: 20px; border: 1px solid #ffeeba; cursor: pointer;
-            animation: pulse 2s infinite;
-        }
+        #claim-notify { display: none; background: #fff3cd; padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid #ffeeba; cursor: pointer; animation: pulse 2s infinite; }
         .claim-flex { display: flex; align-items: center; gap: 12px; }
         .claim-icon { font-size: 24px; color: #856404; }
         .claim-text b { color: #856404; font-size: 14px; }
         .claim-text p { margin: 0; font-size: 11px; color: #856404; opacity: 0.8; }
 
-        /* --- INFO SECTIONS --- */
-        .info-section {
-            background: white; border-radius: 20px; padding: 20px;
-            margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: 0.3s;
-        }
-        .info-section:active { transform: scale(0.98); }
+        .info-section { background: white; border-radius: 20px; padding: 20px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
         .info-section h3 { color: var(--primary); font-size: 17px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .info-section h3 i { color: var(--accent); }
         .info-content { font-size: 13.5px; line-height: 1.6; color: #555; }
+        .status-tag { display: inline-block; background: #e8f5e9; color: #2e7d32; padding: 5px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; margin-top: 10px; border: 1px solid #c8e6c9; }
 
-        .status-tag {
-            display: inline-block; background: #e8f5e9; color: #2e7d32;
-            padding: 5px 12px; border-radius: 50px; font-size: 11px; font-weight: 700;
-            margin-top: 10px; border: 1px solid #c8e6c9;
-        }
-
-        /* --- BOTTOM NAV --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: white; height: 75px; display: flex;
-            justify-content: space-around; align-items: center;
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.08); z-index: 1000;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; height: 75px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 25px rgba(0,0,0,0.08); z-index: 1000; }
         .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; transition: 0.3s; }
         .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-link span { font-size: 11px; font-weight: 600; }
         .nav-link.active { color: var(--primary); transform: translateY(-3px); }
 
-        /* --- ANIMATIONS --- */
+        /* --- 55 CLUB STYLE BOTTOM POPUP --- */
+        .pwa-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1999; display: none; backdrop-filter: blur(3px); }
+        .pwa-popup { 
+            position: fixed; bottom: -100%; left: 0; width: 100%; background: white; 
+            border-radius: 25px 25px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); 
+            z-index: 2000; transition: bottom 0.6s cubic-bezier(0.25, 1, 0.5, 1); 
+            padding: 30px 20px; text-align: center; 
+        }
+        .pwa-popup.show { bottom: 0; }
+        .pwa-close { position: absolute; top: 15px; right: 20px; font-size: 28px; color: #aaa; cursor: pointer; line-height: 1; }
+        .pwa-icon { width: 70px; height: 70px; border-radius: 18px; margin-bottom: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .pwa-popup h3 { font-size: 20px; color: var(--primary); margin-bottom: 8px; font-weight: 700; }
+        .pwa-popup p { font-size: 14px; color: #666; margin-bottom: 25px; padding: 0 20px; }
+        .install-btn { background: var(--bg-gradient); color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 5px 15px rgba(13,37,66,0.2); }
+
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
     </style>
@@ -127,7 +99,6 @@
         <div class="balance-card">
             <p class="bal-label">Portfolio Balance</p>
             <h1 class="bal-amount" id="user-balance">₹ 0.00</h1>
-            
             <div class="stats-grid">
                 <div class="stat-box">
                     <p>Total Invested</p>
@@ -153,26 +124,24 @@
 
         <div class="info-section">
             <h3><i class="fa-solid fa-shield-halved"></i> 100% Secure Trading</h3>
-            <div class="info-content">
-                Aapka capital AI-driven technical infrastructure mein secure rehta hai. DC INVEST market ki sabse fast growth ka bharosa deta hai.
-            </div>
+            <div class="info-content">Aapka capital AI-driven technical infrastructure mein secure rehta hai.</div>
             <div class="status-tag"><i class="fa-solid fa-circle-check"></i> System Verified</div>
         </div>
 
         <div class="info-section" style="border-left: 5px solid var(--accent);">
             <h3><i class="fa-solid fa-bolt"></i> Instant Withdrawals</h3>
-            <div class="info-content">
-                Apne profit ko kisi bhi waqt seedha apne bank account mein transfer karein. No hidden charges, pure transparency.
-            </div>
-        </div>
-
-        <div class="info-section">
-            <h3><i class="fa-solid fa-gift"></i> Referral Bonus</h3>
-            <div class="info-content">
-                Dosto ko invite karein aur har referral par ₹50 se ₹500 tak ka instant bonus payein. Team banayein, zyada kamayein!
-            </div>
+            <div class="info-content">Apne profit ko kisi bhi waqt seedha apne bank account mein transfer karein.</div>
         </div>
     </main>
+
+    <div id="pwaOverlay" class="pwa-overlay"></div>
+    <div id="pwaPopup" class="pwa-popup">
+        <span class="pwa-close" id="closePWA">&times;</span>
+        <img src="logo.png" alt="App Logo" class="pwa-icon">
+        <h3>Install DC INVEST App</h3>
+        <p>Fast experience aur daily profit updates ke liye hamara app home screen par add karein.</p>
+        <button class="install-btn" id="installPWA">Add to Home Screen</button>
+    </div>
 
     <nav class="bottom-nav">
         <a href="home.html" class="nav-link active"><i class="fa-solid fa-house"></i><span>Home</span></a>
@@ -199,6 +168,38 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- PWA LOGIC (55 Club Style) ---
+        let deferredPrompt;
+        const pwaPopup = document.getElementById('pwaPopup');
+        const pwaOverlay = document.getElementById('pwaOverlay');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            setTimeout(() => {
+                pwaPopup.classList.add('show');
+                pwaOverlay.style.display = 'block';
+            }, 3000); 
+        });
+
+        document.getElementById('installPWA').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                hidePopup();
+            }
+        });
+
+        document.getElementById('closePWA').addEventListener('click', hidePopup);
+        pwaOverlay.addEventListener('click', hidePopup);
+
+        function hidePopup() {
+            pwaPopup.classList.remove('show');
+            pwaOverlay.style.display = 'none';
+        }
+
+        // --- ALL ORIGINAL DATA LOGIC (NOT DELETED) ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
@@ -211,7 +212,7 @@
                         document.getElementById('user-invested').innerText = "₹ " + (data.totalInvested || 0).toLocaleString('en-IN');
                         document.getElementById('user-profit').innerText = "₹ " + (data.totalEarnings || 0).toLocaleString('en-IN');
 
-                        // Claim Notification Logic
+                        // Claim Notification (Original Logic)
                         const today = new Date().toDateString();
                         const hasActivePlans = data.activePlans && data.activePlans.length > 0;
                         const notClaimedToday = data.lastClaimDate !== today;
@@ -227,6 +228,11 @@
                 window.location.href = "login.html";
             }
         });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
     </script>
 </body>
 </html>
