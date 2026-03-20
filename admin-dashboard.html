@@ -61,9 +61,15 @@
         .btn-act { padding: 7px 12px; border-radius: 8px; border: none; font-weight: 700; font-size: 11px; cursor: pointer; }
         .btn-approve { background: #27ae60; color: white; }
         .btn-reject { background: #e74c3c; color: white; margin-left: 4px; }
+        .btn-view { background: #3498db; color: white; }
 
         .tab-view { display: none; }
         .tab-view.active { display: block; }
+
+        /* Modal Style */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; position: relative; }
+        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; }
 
         @media (max-width: 768px) {
             .sidebar { display: none; }
@@ -79,6 +85,7 @@
 <div class="sidebar">
     <div class="side-logo">KD</div>
     <div class="nav-link active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-house"></i> Dashboard</div>
+    <div class="nav-link" onclick="switchTab('users-list', this)"><i class="fa-solid fa-users"></i> All Users</div>
     <div class="nav-link" onclick="switchTab('deposits', this)"><i class="fa-solid fa-plus-circle"></i> Deposits</div>
     <div class="nav-link" onclick="switchTab('withdrawals', this)"><i class="fa-solid fa-minus-circle"></i> Withdrawals</div>
     <div class="nav-link" style="margin-top: auto; color: #ff7675;" onclick="adminLogout()"><i class="fa-solid fa-power-off"></i> Logout</div>
@@ -86,9 +93,9 @@
 
 <nav class="mobile-nav">
     <div class="m-link active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-house"></i>Home</div>
+    <div class="m-link" onclick="switchTab('users-list', this)"><i class="fa-solid fa-users"></i>Users</div>
     <div class="m-link" onclick="switchTab('deposits', this)"><i class="fa-solid fa-plus-circle"></i>Deposit</div>
     <div class="m-link" onclick="switchTab('withdrawals', this)"><i class="fa-solid fa-minus-circle"></i>Withdraw</div>
-    <div class="m-link" onclick="adminLogout()"><i class="fa-solid fa-power-off"></i>Exit</div>
 </nav>
 
 <div class="main-view">
@@ -98,6 +105,16 @@
             <div class="stat-card"><span>Total Members</span><h2 id="total-users">0</h2></div>
             <div class="stat-card"><span>Total Deposits</span><h2 id="total-dep-sum">₹0</h2></div>
             <div class="stat-card"><span>Pending Requests</span><h2 id="total-pending">0</h2></div>
+        </div>
+    </div>
+
+    <div id="users-list" class="tab-view">
+        <h1 style="margin-bottom: 20px;">All Registered Users</h1>
+        <div class="table-card">
+            <table>
+                <thead><tr><th>User ID</th><th>Email/Phone</th><th>Balance</th><th>Action</th></tr></thead>
+                <tbody id="users-table-body"></tbody>
+            </table>
         </div>
     </div>
 
@@ -122,10 +139,23 @@
     </div>
 </div>
 
+<div id="userModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2 id="m-user-id" style="margin-bottom: 15px; font-size: 18px; color: var(--primary);">User Details</h2>
+        <hr><br>
+        <div id="user-info-box">
+            <p><strong>Email/Phone:</strong> <span id="m-email"></span></p>
+            <p><strong>Balance:</strong> ₹<span id="m-balance"></span></p>
+            <p><strong>Investments:</strong> <span id="m-invest">Fetching...</span></p>
+        </div>
+    </div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -151,10 +181,49 @@
         el.classList.add('active');
     };
 
-    // --- REALTIME DATA ---
+    // --- REALTIME USERS & REGISTRATION FIX ---
     onSnapshot(collection(db, "users"), snap => {
-        document.getElementById('total-users').innerText = snap.size;
+        document.getElementById('total-users').innerText = snap.size; // This will update live
+        const userBody = document.getElementById('users-table-body');
+        userBody.innerHTML = "";
+        snap.forEach(u => {
+            const userData = u.data();
+            userBody.innerHTML += `<tr>
+                <td>${u.id.substring(0,8)}...</td>
+                <td>${userData.email || userData.phone || 'N/A'}</td>
+                <td>₹${userData.balance || 0}</td>
+                <td><button class="btn-act btn-view" onclick="viewUser('${u.id}')">VIEW INFO</button></td>
+            </tr>`;
+        });
     });
+
+    // --- VIEW USER DETAILS LOGIC ---
+    window.viewUser = async (uid) => {
+        document.getElementById('userModal').style.display = 'block';
+        document.getElementById('m-user-id').innerText = "User ID: " + uid;
+        
+        try {
+            const userDoc = await getDoc(doc(db, "users", uid));
+            if(userDoc.exists()) {
+                const data = userDoc.data();
+                document.getElementById('m-email').innerText = data.email || data.phone || 'N/A';
+                document.getElementById('m-balance').innerText = data.balance || 0;
+            }
+
+            // Fetch Investments for this user
+            const invQuery = query(collection(db, "investments"), where("uid", "==", uid));
+            const invSnap = await getDocs(invQuery);
+            let invText = invSnap.empty ? "No Investments found" : "";
+            invSnap.forEach(inv => {
+                const i = inv.data();
+                invText += `Plan: ${i.planName} | ₹${i.amount}<br>`;
+            });
+            document.getElementById('m-invest').innerHTML = invText;
+
+        } catch(e) { console.error(e); }
+    };
+
+    window.closeModal = () => { document.getElementById('userModal').style.display = 'none'; };
 
     // --- DEPOSITS LOGIC ---
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Pending")), snap => {
@@ -200,31 +269,21 @@
             const batch = writeBatch(db);
             batch.update(doc(db, "users", uid), { balance: increment(amt) });
             batch.update(doc(db, "deposits", docId), { status: "Approved" });
-            
-            // History entry
             const transRef = doc(collection(db, "transactions"));
-            batch.set(transRef, {
-                uid: uid, amount: amt, type: "Deposit", status: "Success", time: serverTimestamp()
-            });
-
+            batch.set(transRef, { uid: uid, amount: amt, type: "Deposit", status: "Success", time: serverTimestamp() });
             await batch.commit();
             alert("Deposit Added!");
         } catch(e) { alert(e.message); }
     };
 
-    // DONE WITHDRAWAL (Function you needed)
+    // DONE WITHDRAWAL
     window.doneWithdrawal = async (docId, uid, amt) => {
         if(!confirm("Payment done? Mark as complete?")) return;
         try {
             const batch = writeBatch(db);
             batch.update(doc(db, "withdrawals", docId), { status: "Success" });
-            
-            // Transaction History entry
             const transRef = doc(collection(db, "transactions"));
-            batch.set(transRef, {
-                uid: uid, amount: amt, type: "Withdrawal", status: "Success", time: serverTimestamp()
-            });
-
+            batch.set(transRef, { uid: uid, amount: amt, type: "Withdrawal", status: "Success", time: serverTimestamp() });
             await batch.commit();
             alert("Withdrawal marked as DONE!");
         } catch(e) { alert(e.message); }
@@ -236,7 +295,6 @@
         if (reason === null) return;
         try {
             const batch = writeBatch(db);
-            // Refund balance if withdrawal rejected
             if(coll === 'withdrawals' && uid) {
                 batch.update(doc(db, "users", uid), { balance: increment(amt) });
             }
