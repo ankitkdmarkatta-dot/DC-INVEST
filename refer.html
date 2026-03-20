@@ -62,6 +62,7 @@
         .copy-btn { 
             background: var(--accent); border: none; padding: 8px 15px; 
             border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 12px;
+            color: var(--primary);
         }
 
         .condition-alert {
@@ -191,8 +192,17 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                const myCode = userDoc.exists() ? userDoc.data().myReferralCode : user.uid.substring(0, 8).toUpperCase();
+                const userDocRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userDocRef);
+                
+                let myCode;
+                if (userDoc.exists() && userDoc.data().myReferralCode) {
+                    myCode = userDoc.data().myReferralCode;
+                } else {
+                    // Agar myReferralCode undefined hai, toh UID ke starting chars use karein
+                    myCode = user.uid.substring(0, 8).toUpperCase();
+                }
+
                 document.getElementById('ref-code').innerText = myCode;
                 loadMyReferrals(myCode);
             } else {
@@ -234,22 +244,24 @@
             });
         }
 
-        // Fixed Copy Link: Dynamically gets your domain
         window.copyCode = () => {
             const code = document.getElementById('ref-code').innerText;
-            const baseUrl = window.location.origin; // Ye current site ka link leta hai
+            if (code === "LOADING...") return;
+
+            const baseUrl = window.location.origin;
             const refLink = `${baseUrl}/signup.html?ref=${code}`;
             
             navigator.clipboard.writeText(refLink).then(() => {
-                alert("Link Copied: " + refLink);
+                alert("Referral Link Copied!");
             }).catch(() => {
+                // Fallback method for older browsers
                 const textArea = document.createElement("textarea");
                 textArea.value = refLink;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                alert("Link Copied!");
+                alert("Referral Link Copied!");
             });
         };
     </script>
