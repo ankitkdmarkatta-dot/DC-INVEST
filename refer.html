@@ -99,8 +99,22 @@
             font-weight: 700; color: var(--primary); font-size: 12px;
         }
         .ref-name { font-size: 13px; font-weight: 600; display: block; }
-        .status-success { color: var(--success); font-weight: 700; font-size: 11px; }
         .status-pending { color: #e67e22; font-weight: 700; font-size: 11px; }
+        
+        /* New Styles for Claim System */
+        .btn-claim {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-claim:active { transform: scale(0.9); }
+        .status-claimed { color: #94a3b8; font-weight: 700; font-size: 11px; }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -175,7 +189,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, collection, query, where, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -190,77 +204,110 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const userDocRef = doc(db, "users", user.uid);
-                const userDoc = await getDoc(userDocRef);
-                
-                let myCode;
-                if (userDoc.exists() && userDoc.data().myReferralCode) {
-                    myCode = userDoc.data().myReferralCode;
-                } else {
-                    // Agar myReferralCode undefined hai, toh UID ke starting chars use karein
-                    myCode = user.uid.substring(0, 8).toUpperCase();
-                }
+        let currentUserId = null;
 
-                document.getElementById('ref-code').innerText = myCode;
-                loadMyReferrals(myCode);
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                
+                // Real-time listener for current user to track 'claimedReferrals'
+                onSnapshot(doc(db, "users", user.uid), (userSnap) => {
+                    const userData = userSnap.data();
+                    if (userData) {
+                        const myCode = userData.myReferralCode || user.uid.substring(0, 8).toUpperCase();
+                        document.getElementById('ref-code').innerText = myCode;
+                        
+                        // Load friends but pass the latest list of claimed IDs
+                        loadMyReferrals(myCode, userData.claimedReferrals || []);
+                    }
+                });
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        function loadMyReferrals(code) {
+        function loadMyReferrals(code, claimedIds) {
             const q = query(collection(db, "users"), where("referredBy", "==", code));
+            
             onSnapshot(q, (snapshot) => {
                 const list = document.getElementById('referrals-list');
-                const countText = document.getElementById('ref-count');
+                document.getElementById('ref-count').innerText = `${snapshot.size} Joined`;
                 list.innerHTML = "";
-                countText.innerText = `${snapshot.size} Joined`;
-                
+
                 if (snapshot.empty) {
                     list.innerHTML = `<p style="text-align: center; font-size: 12px; color: #999; padding: 20px;">No friends joined yet.</p>`;
                     return;
                 }
 
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const hasInvested = data.activePlans && data.activePlans.length > 0;
+                snapshot.forEach((friendDoc) => {
+                    const friendData = friendDoc.data();
+                    const friendId = friendDoc.id;
+                    
+                    // Logic: Friend ne plan liya hai ya nahi
+                    const hasInvested = friendData.activePlans && friendData.activePlans.length > 0;
+                    // Logic: Humne is friend ka reward pehle claim kiya hai ya nahi
+                    const alreadyClaimed = claimedIds.includes(friendId);
+
+                    let statusHTML = '';
+                    if (alreadyClaimed) {
+                        statusHTML = `<span class="status-claimed"><i class="fa-solid fa-check-circle"></i> ₹50 Claimed</span>`;
+                    } else if (hasInvested) {
+                        statusHTML = `<button class="btn-claim" onclick="claimReward('${friendId}')">CLAIM ₹50</button>`;
+                    } else {
+                        statusHTML = `<span class="status-pending">Pending Invest</span>`;
+                    }
+
                     list.innerHTML += `
                         <div class="ref-item">
                             <div class="ref-user">
-                                <div class="ref-initial">${data.fullName ? data.fullName.charAt(0) : 'U'}</div>
+                                <div class="ref-initial">${friendData.fullName ? friendData.fullName.charAt(0) : 'U'}</div>
                                 <div>
-                                    <span class="ref-name">${data.fullName || 'User'}</span>
-                                    <span style="font-size:10px; color:#999;">Joined via your link</span>
+                                    <span class="ref-name">${friendData.fullName || 'User'}</span>
+                                    <span style="font-size:10px; color:#999;">Joined via link</span>
                                 </div>
                             </div>
-                            <span class="ref-status ${hasInvested ? 'status-success' : 'status-pending'}">
-                                ${hasInvested ? '₹50 Credited' : 'Pending Invest'}
-                            </span>
+                            <div id="status-box-${friendId}">${statusHTML}</div>
                         </div>
                     `;
                 });
             });
         }
 
+        // Action function for Claiming reward
+        window.claimReward = async (friendId) => {
+            if (!currentUserId) return;
+
+            // Optional: Button ko disable karein taaki multiple clicks na ho
+            const targetBtn = event.target;
+            targetBtn.disabled = true;
+            targetBtn.innerText = "Claiming...";
+
+            try {
+                const userRef = doc(db, "users", currentUserId);
+                
+                // Update Firestore: Increase balance and add friendId to claimed list
+                await updateDoc(userRef, {
+                    balance: increment(50),
+                    totalEarnings: increment(50),
+                    claimedReferrals: arrayUnion(friendId)
+                });
+
+                alert("₹50 added to your wallet successfully!");
+            } catch (err) {
+                console.error(err);
+                alert("Error claiming reward. Try again.");
+                targetBtn.disabled = false;
+                targetBtn.innerText = "CLAIM ₹50";
+            }
+        };
+
         window.copyCode = () => {
             const code = document.getElementById('ref-code').innerText;
             if (code === "LOADING...") return;
-
             const baseUrl = window.location.origin;
             const refLink = `${baseUrl}/signup.html?ref=${code}`;
             
             navigator.clipboard.writeText(refLink).then(() => {
-                alert("Referral Link Copied!");
-            }).catch(() => {
-                // Fallback method for older browsers
-                const textArea = document.createElement("textarea");
-                textArea.value = refLink;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
                 alert("Referral Link Copied!");
             });
         };
