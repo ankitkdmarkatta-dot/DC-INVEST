@@ -44,7 +44,18 @@
         .stat-box h4 { font-size: 16px; color: #fff; margin-top: 4px; }
         .stat-box p { font-size: 10px; opacity: 0.7; text-transform: uppercase; font-weight: 600; }
 
-        /* --- FLOATING INSTALL PROMPT --- */
+        /* --- CLAIM NOTIFICATION --- */
+        #claim-notify { display: none; background: #fff3cd; padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid #ffeeba; cursor: pointer; animation: pulse 2s infinite; }
+        .claim-flex { display: flex; align-items: center; gap: 12px; }
+
+        /* --- INFO SECTIONS --- */
+        .info-section { background: white; border-radius: 20px; padding: 20px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        .info-section h3 { color: var(--primary); font-size: 17px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .info-section h3 i { color: var(--accent); }
+        .info-content { font-size: 13.5px; line-height: 1.6; color: #555; }
+        .status-tag { display: inline-block; background: #e8f5e9; color: #2e7d32; padding: 5px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; margin-top: 10px; border: 1px solid #c8e6c9; }
+
+        /* --- INSTALL POPUP --- */
         #pwa-install-banner {
             position: fixed; bottom: 85px; left: 10px; right: 10px;
             background: #0d2542; border: 2px solid var(--cyan-glow);
@@ -54,22 +65,16 @@
             animation: slideUp 0.5s ease;
         }
         .pwa-info { display: flex; align-items: center; gap: 10px; }
-        .pwa-close-btn { color: #fff; font-size: 18px; cursor: pointer; padding-right: 5px; opacity: 0.7; }
+        .pwa-close-btn { color: #fff; font-size: 20px; cursor: pointer; padding-right: 10px; }
         .pwa-app-icon { width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--cyan-glow); }
-        .pwa-text-area { color: white; }
-        .pwa-text-area h4 { font-size: 13px; margin: 0; color: var(--cyan-glow); letter-spacing: 0.5px; }
-        .pwa-text-area p { font-size: 10px; margin: 0; opacity: 0.8; }
-        .pwa-install-btn {
-            background: var(--cyan-glow); color: #000; border: none;
-            padding: 7px 18px; border-radius: 8px; font-weight: 800;
-            font-size: 12px; cursor: pointer; text-transform: uppercase;
-        }
+        .pwa-text-area h4 { font-size: 13px; margin: 0; color: white; }
+        .pwa-text-area p { font-size: 10px; margin: 0; color: #aaa; }
+        .pwa-install-btn { background: var(--cyan-glow); color: #000; border: none; padding: 7px 18px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer; }
 
-        /* --- UI ELEMENTS --- */
-        #claim-notify { display: none; background: #fff3cd; padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid #ffeeba; cursor: pointer; animation: pulse 2s infinite; }
-        .info-section { background: white; border-radius: 20px; padding: 20px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        /* --- NAV --- */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; height: 75px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 25px rgba(0,0,0,0.08); z-index: 1000; }
-        .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; }
+        .nav-link { text-decoration: none; color: #94a3b8; text-align: center; flex: 1; font-size: 11px; }
+        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-link.active { color: var(--primary); }
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -82,7 +87,7 @@
     <header>
         <div class="logo-area">
             <div class="logo-container">
-                <div class="logo-inner"><img src="logo.png" alt="DC"></div>
+                <div class="logo-inner"><img src="logo.png" alt="DC" onerror="this.parentElement.innerHTML='<b>DC</b>'"></div>
             </div>
             <div class="brand-text">DC INVEST</div>
         </div>
@@ -100,7 +105,7 @@
         </div>
 
         <div id="claim-notify" onclick="window.location.href='account.html'">
-            <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="claim-flex">
                 <i class="fa-solid fa-coins" style="font-size: 24px; color: #856404;"></i>
                 <div class="claim-text"><b>Daily Profit Ready!</b><p style="font-size: 11px;">Click here to collect your daily income.</p></div>
             </div>
@@ -108,7 +113,24 @@
 
         <div class="info-section">
             <h3><i class="fa-solid fa-shield-halved"></i> 100% Secure Trading</h3>
-            <div class="info-content">Aapka capital AI-driven technical infrastructure mein secure rehta hai.</div>
+            <div class="info-content">
+                Aapka capital AI-driven technical infrastructure mein secure rehta hai. DC INVEST market ki sabse fast growth ka bharosa deta hai.
+            </div>
+            <div class="status-tag"><i class="fa-solid fa-circle-check"></i> System Verified</div>
+        </div>
+
+        <div class="info-section" style="border-left: 5px solid var(--accent);">
+            <h3><i class="fa-solid fa-bolt"></i> Instant Withdrawals</h3>
+            <div class="info-content">
+                Apne profit ko kisi bhi waqt seedha apne bank account mein transfer karein. No hidden charges, pure transparency.
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3><i class="fa-solid fa-gift"></i> Referral Bonus</h3>
+            <div class="info-content">
+                Dosto ko invite karein aur har referral par ₹50 se ₹500 tak ka instant bonus payein. Team banayein, zyada kamayein!
+            </div>
         </div>
     </main>
 
@@ -149,28 +171,21 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- PWA LOGIC (Login Based Show/Hide) ---
+        // --- PWA LOGIC (Session Based) ---
         let deferredPrompt;
         const banner = document.getElementById('pwa-install-banner');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-
-            // Session check: Agar user ne is session mein close nahi kiya hai tabhi dikhayein
-            const isClosedInSession = sessionStorage.getItem('pwaClosedInSession');
-            
-            if (!isClosedInSession) {
-                setTimeout(() => {
-                    banner.style.display = 'flex';
-                }, 2000);
+            if (!sessionStorage.getItem('pwaClosedInSession')) {
+                setTimeout(() => { banner.style.display = 'flex'; }, 2000);
             }
         });
 
         document.getElementById('install-btn').addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
                 deferredPrompt = null;
                 banner.style.display = 'none';
             }
@@ -178,11 +193,10 @@
 
         document.getElementById('close-banner').addEventListener('click', () => {
             banner.style.display = 'none';
-            // Session mein mark karein ki popup close ho chuka hai
             sessionStorage.setItem('pwaClosedInSession', 'true');
         });
 
-        // --- DATA LOGIC ---
+        // --- DATA LOGIC (Original) ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
@@ -202,15 +216,10 @@
                     }
                 });
             } else {
-                // Logout hote hi session storage clear ho jayega (ya login page par redirect)
                 sessionStorage.removeItem('pwaClosedInSession');
                 window.location.href = "login.html";
             }
         });
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js');
-        }
     </script>
 </body>
 </html>
