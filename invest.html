@@ -77,6 +77,7 @@
         }
         .buy-btn:active { transform: scale(0.98); }
 
+        /* Modal & UI Elements remain same */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.8);
@@ -269,7 +270,7 @@
         </div>
 
         <div class="plan-card">
-            <img src="https://images.pexels.com/photos/7562024/pexels-photo-7562024.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <img src="https://images.pexels.com/photos/1261824/pexels-photo-1261824.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Metaverse Land</div>
                 <div class="plan-info">
@@ -283,7 +284,7 @@
 
         <div class="plan-card">
             <div class="badge" style="background:gold; color:black;">Elite</div>
-            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=500" class="plan-img">
+            <img src="https://images.pexels.com/photos/1036936/pexels-photo-1036936.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Quantum Core</div>
                 <div class="plan-info">
@@ -309,7 +310,7 @@
         </div>
 
         <div class="plan-card">
-            <img src="https://images.unsplash.com/photo-1516192561569-206e30b1713d?auto=format&fit=crop&q=80&w=500" class="plan-img">
+            <img src="https://images.pexels.com/photos/2566581/pexels-photo-2566581.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Oil Rig Empire</div>
                 <div class="plan-info">
@@ -435,7 +436,7 @@
                         })
                     });
 
-                    // Referral Logic
+                    // Referral Logic (UNCHANGED)
                     if (userData.referredBy) {
                         const refCode = userData.referredBy.toUpperCase();
                         const q = query(collection(db, "users"), where("myReferralCode", "==", refCode));
@@ -481,6 +482,7 @@
                                 <div class="info-item"><span>Daily Profit</span><b style="color:var(--success);">₹${p.daily}</b></div>
                                 <div class="info-item"><span>Status</span><b style="color:#10b981;">Earning</b></div>
                             </div>
+                            <div style="margin-top:10px; font-size:10px; color:#94a3b8;">Purchased: ${new Date(p.purchaseDate).toLocaleDateString()}</div>
                         </div>`;
                     });
                 } else { noActive.style.display = "block"; }
