@@ -54,7 +54,7 @@
             background: white; border-radius: 20px; padding: 15px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.03); overflow-x: auto; 
         }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th { text-align: left; padding: 12px; color: #888; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid #f4f7f6; }
         td { padding: 14px 12px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #f4f7f6; }
         
@@ -65,6 +65,9 @@
 
         .tab-view { display: none; }
         .tab-view.active { display: block; }
+
+        .pay-details-box { font-size: 11px; line-height: 1.4; color: #444; }
+        .pay-details-box b { color: #2980b9; }
 
         /* Modal Style */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
@@ -133,7 +136,7 @@
         <h1 style="margin-bottom: 20px;">Withdrawal Requests</h1>
         <div class="table-card">
             <table>
-                <thead><tr><th>User ID</th><th>Amount</th><th>Method</th><th>Action</th></tr></thead>
+                <thead><tr><th>User ID</th><th>Amount</th><th>Method & Details</th><th>Action</th></tr></thead>
                 <tbody id="with-table-body"></tbody>
             </table>
         </div>
@@ -182,7 +185,7 @@
         el.classList.add('active');
     };
 
-    // --- DEPOSIT CALCULATION (Today & Total) ---
+    // --- DEPOSIT CALCULATION ---
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Approved")), (snap) => {
         let totalSum = 0;
         let todaySum = 0;
@@ -193,15 +196,11 @@
             const data = doc.data();
             const amt = parseFloat(data.amount) || 0;
             totalSum += amt;
-
             if (data.timestamp) {
                 const depTime = data.timestamp.seconds * 1000;
-                if (depTime >= todayStart) {
-                    todaySum += amt;
-                }
+                if (depTime >= todayStart) todaySum += amt;
             }
         });
-
         document.getElementById('total-dep-sum').innerText = "₹" + totalSum;
         document.getElementById('today-dep-sum').innerText = "₹" + todaySum;
     });
@@ -226,7 +225,6 @@
     window.viewUser = async (uid) => {
         document.getElementById('userModal').style.display = 'block';
         document.getElementById('m-user-id').innerText = "User ID: " + uid;
-        
         try {
             const userDoc = await getDoc(doc(db, "users", uid));
             if(userDoc.exists()) {
@@ -234,7 +232,6 @@
                 document.getElementById('m-email').innerText = data.email || data.phone || 'N/A';
                 document.getElementById('m-balance').innerText = data.balance || 0;
             }
-
             const invQuery = query(collection(db, "investments"), where("uid", "==", uid));
             const invSnap = await getDocs(invQuery);
             let invText = invSnap.empty ? "No Investments found" : "";
@@ -243,7 +240,6 @@
                 invText += `Plan: ${i.planName} | ₹${i.amount}<br>`;
             });
             document.getElementById('m-invest').innerHTML = invText;
-
         } catch(e) { console.error(e); }
     };
 
@@ -268,16 +264,32 @@
         });
     });
 
-    // --- PENDING WITHDRAWALS ---
+    // --- PENDING WITHDRAWALS (Updated for Payment Details) ---
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
         snap.forEach(d => {
             const row = d.data();
+            
+            // Logic to display UPI or Bank details based on method
+            let detailsHtml = "";
+            if(row.method === "UPI") {
+                detailsHtml = `<div class="pay-details-box"><b>UPI:</b> ${row.upi || 'N/A'}</div>`;
+            } else if(row.method === "BANK" || row.method === "Bank Transfer") {
+                detailsHtml = `<div class="pay-details-box">
+                    <b>A/C:</b> ${row.accountNo || 'N/A'}<br>
+                    <b>IFSC:</b> ${row.ifsc || 'N/A'}<br>
+                    <b>Bank:</b> ${row.bankName || 'N/A'}<br>
+                    <b>Name:</b> ${row.holderName || 'N/A'}
+                </div>`;
+            } else {
+                detailsHtml = row.method; // fallback
+            }
+
             body.innerHTML += `<tr>
                 <td>${row.uid.substring(0,6)}..</td>
                 <td>₹${row.amount}</td>
-                <td>${row.method}</td>
+                <td>${detailsHtml}</td>
                 <td>
                     <button class="btn-act btn-approve" onclick="doneWithdrawal('${d.id}', '${row.uid}', ${row.amount})">DONE</button>
                     <button class="btn-act btn-reject" onclick="rejectReq('withdrawals', '${d.id}', '${row.uid}', ${row.amount})">REJECT</button>
@@ -292,7 +304,6 @@
         try {
             const batch = writeBatch(db);
             batch.update(doc(db, "users", uid), { balance: increment(amt) });
-            // Added serverTimestamp to record approval time for 'Today' logic
             batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
             const transRef = doc(collection(db, "transactions"));
             batch.set(transRef, { uid: uid, amount: amt, type: "Deposit", status: "Success", time: serverTimestamp() });
