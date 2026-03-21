@@ -174,6 +174,19 @@
         </div>
 
         <div class="plan-card">
+            <img src="https://images.pexels.com/photos/4391470/pexels-photo-4391470.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Delivery Pro</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹500</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹200</b></div>
+                    <div class="info-item"><span>Days</span><b>5 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Delivery Pro', 500, 200, 5, 1000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
             <img src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">AI For Future</div>
@@ -183,6 +196,20 @@
                     <div class="info-item"><span>Days</span><b>12 Days</b></div>
                 </div>
                 <button class="buy-btn" onclick="openModal('AI For Future', 399, 133, 12, 1600)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <div class="badge" style="background:#10b981;">Hot</div>
+            <img src="https://images.pexels.com/photos/6169668/pexels-photo-6169668.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Fast Grocery</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹750</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹250</b></div>
+                    <div class="info-item"><span>Days</span><b>6 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Fast Grocery', 750, 250, 6, 1500)">ACTIVATE NOW</button>
             </div>
         </div>
 
@@ -248,7 +275,7 @@
                 <div class="plan-info">
                     <div class="info-item"><span>Cost</span><b>₹12000</b></div>
                     <div class="info-item"><span>Daily</span><b>₹4500</b></div>
-                    <div class="info-item)<span>Days</span><b>10 Days</b></div>
+                    <div class="info-item"><span>Days</span><b>10 Days</b></div>
                 </div>
                 <button class="buy-btn" style="background: #bc4e9c; color: white;" onclick="openModal('Metaverse Land', 12000, 4500, 10, 45000)">ACTIVATE NOW</button>
             </div>
@@ -256,7 +283,7 @@
 
         <div class="plan-card">
             <div class="badge" style="background:gold; color:black;">Elite</div>
-            <img src="https://images.pexels.com/photos/17483848/pexels-photo-17483848/free-photo-of-digital-technology-art.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Quantum Core</div>
                 <div class="plan-info">
@@ -282,7 +309,7 @@
         </div>
 
         <div class="plan-card">
-            <img src="https://images.pexels.com/photos/244124/pexels-photo-244124.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1516192561569-206e30b1713d?auto=format&fit=crop&q=80&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Oil Rig Empire</div>
                 <div class="plan-info">
@@ -338,7 +365,7 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc, arrayUnion, onSnapshot, increment, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // FIREBASE CONFIG (SAME AS BEFORE)
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
             authDomain: "win-ad891.firebaseapp.com",
@@ -379,11 +406,6 @@
 
         window.closeModal = () => { document.getElementById('order-modal').style.display = 'none'; }
 
-        function showSuccess() {
-            closeModal();
-            document.getElementById('success-overlay').style.display = 'flex';
-        }
-
         window.hideSuccess = () => {
             document.getElementById('success-overlay').style.display = 'none';
             showTab('active');
@@ -413,15 +435,13 @@
                         })
                     });
 
-                    // REFERRAL REWARD (₹50)
+                    // Referral Logic
                     if (userData.referredBy) {
                         const refCode = userData.referredBy.toUpperCase();
                         const q = query(collection(db, "users"), where("myReferralCode", "==", refCode));
                         const qSnap = await getDocs(q);
-
                         if (!qSnap.empty) {
-                            const inviterDoc = qSnap.docs[0];
-                            const inviterRef = doc(db, "users", inviterDoc.id);
+                            const inviterRef = doc(db, "users", qSnap.docs[0].id);
                             if (!userData.activePlans || userData.activePlans.length === 0) {
                                 await updateDoc(inviterRef, {
                                     balance: increment(50),
@@ -430,7 +450,8 @@
                             }
                         }
                     }
-                    showSuccess();
+                    document.getElementById('success-overlay').style.display = 'flex';
+                    closeModal();
                 } else {
                     alert("Insufficient Balance! Please recharge first.");
                 }
@@ -460,7 +481,6 @@
                                 <div class="info-item"><span>Daily Profit</span><b style="color:var(--success);">₹${p.daily}</b></div>
                                 <div class="info-item"><span>Status</span><b style="color:#10b981;">Earning</b></div>
                             </div>
-                            <div style="margin-top:10px; font-size:10px; color:#94a3b8;">Purchased: ${new Date(p.purchaseDate).toLocaleDateString()}</div>
                         </div>`;
                     });
                 } else { noActive.style.display = "block"; }
