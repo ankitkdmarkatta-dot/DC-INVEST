@@ -242,7 +242,7 @@
 
         <div class="plan-card">
             <div class="badge" style="background:#3b82f6;">Premium</div>
-            <img src="https://images.pexels.com/photos/6169120/pexels-photo-6169120.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=500&q=80" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Smart Logistics</div>
                 <div class="plan-info">
@@ -499,7 +499,6 @@
 
                 const userData = snap.data();
                 if ((userData.balance || 0) >= pData.price) {
-                    // Update User Profile
                     await updateDoc(userRef, {
                         balance: increment(-pData.price),
                         totalInvested: increment(pData.price),
@@ -512,7 +511,6 @@
                         })
                     });
 
-                    // REFERRAL BONUS LOGIC (₹50 for first investment)
                     if (userData.referredBy) {
                         const refCode = userData.referredBy.toUpperCase();
                         const q = query(collection(db, "users"), where("myReferralCode", "==", refCode));
@@ -520,7 +518,6 @@
                         
                         if (!qSnap.empty) {
                             const inviterRef = doc(db, "users", qSnap.docs[0].id);
-                            // Only give bonus if this is the user's very first plan
                             if (!userData.activePlans || userData.activePlans.length === 0) {
                                 await updateDoc(inviterRef, {
                                     balance: increment(50),
