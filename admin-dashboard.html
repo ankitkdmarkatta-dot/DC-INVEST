@@ -103,6 +103,7 @@
         <h1 style="margin-bottom: 20px;">Admin Overview</h1>
         <div class="stats-grid">
             <div class="stat-card"><span>Total Members</span><h2 id="total-users">0</h2></div>
+            <div class="stat-card" style="border-bottom-color: #3498db;"><span>Today's Deposit</span><h2 id="today-dep-sum">₹0</h2></div>
             <div class="stat-card"><span>Total Deposits</span><h2 id="total-dep-sum">₹0</h2></div>
             <div class="stat-card"><span>Pending Requests</span><h2 id="total-pending">0</h2></div>
         </div>
@@ -181,9 +182,33 @@
         el.classList.add('active');
     };
 
-    // --- REALTIME USERS & REGISTRATION FIX ---
+    // --- DEPOSIT CALCULATION (Today & Total) ---
+    onSnapshot(query(collection(db, "deposits"), where("status", "==", "Approved")), (snap) => {
+        let totalSum = 0;
+        let todaySum = 0;
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+        snap.forEach(doc => {
+            const data = doc.data();
+            const amt = parseFloat(data.amount) || 0;
+            totalSum += amt;
+
+            if (data.timestamp) {
+                const depTime = data.timestamp.seconds * 1000;
+                if (depTime >= todayStart) {
+                    todaySum += amt;
+                }
+            }
+        });
+
+        document.getElementById('total-dep-sum').innerText = "₹" + totalSum;
+        document.getElementById('today-dep-sum').innerText = "₹" + todaySum;
+    });
+
+    // --- REALTIME USERS ---
     onSnapshot(collection(db, "users"), snap => {
-        document.getElementById('total-users').innerText = snap.size; // This will update live
+        document.getElementById('total-users').innerText = snap.size;
         const userBody = document.getElementById('users-table-body');
         userBody.innerHTML = "";
         snap.forEach(u => {
@@ -197,7 +222,7 @@
         });
     });
 
-    // --- VIEW USER DETAILS LOGIC ---
+    // --- VIEW USER DETAILS ---
     window.viewUser = async (uid) => {
         document.getElementById('userModal').style.display = 'block';
         document.getElementById('m-user-id').innerText = "User ID: " + uid;
@@ -210,7 +235,6 @@
                 document.getElementById('m-balance').innerText = data.balance || 0;
             }
 
-            // Fetch Investments for this user
             const invQuery = query(collection(db, "investments"), where("uid", "==", uid));
             const invSnap = await getDocs(invQuery);
             let invText = invSnap.empty ? "No Investments found" : "";
@@ -225,7 +249,7 @@
 
     window.closeModal = () => { document.getElementById('userModal').style.display = 'none'; };
 
-    // --- DEPOSITS LOGIC ---
+    // --- PENDING DEPOSITS ---
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('dep-table-body');
         body.innerHTML = "";
@@ -244,7 +268,7 @@
         });
     });
 
-    // --- WITHDRAWALS LOGIC ---
+    // --- PENDING WITHDRAWALS ---
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
@@ -268,7 +292,8 @@
         try {
             const batch = writeBatch(db);
             batch.update(doc(db, "users", uid), { balance: increment(amt) });
-            batch.update(doc(db, "deposits", docId), { status: "Approved" });
+            // Added serverTimestamp to record approval time for 'Today' logic
+            batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
             const transRef = doc(collection(db, "transactions"));
             batch.set(transRef, { uid: uid, amount: amt, type: "Deposit", status: "Success", time: serverTimestamp() });
             await batch.commit();
