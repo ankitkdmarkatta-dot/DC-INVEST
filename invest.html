@@ -29,15 +29,16 @@
         }
 
         .logo-container {
-            width: 42px; height: 42px; padding: 2px;
+            width: 45px; height: 45px; padding: 3px;
             border-radius: 50%; background: var(--accent); margin-right: 12px;
+            display: flex; align-items: center; justify-content: center;
         }
         .logo-inner {
             width: 100%; height: 100%; background: #fff;
             border-radius: 50%; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
         }
-        .logo-inner img { width: 100%; height: 100%; object-fit: cover; }
+        .logo-inner img { width: 80%; height: 80%; object-fit: contain; }
 
         .tab-container { display: flex; gap: 10px; padding: 20px; max-width: 500px; margin: 0 auto; }
         .tab-btn {
@@ -321,6 +322,7 @@
                 <button class="buy-btn" onclick="openModal('FinTech Global', 1999, 520, 10, 5200)">ACTIVATE NOW</button>
             </div>
         </div>
+
         <div class="plan-card">
             <div class="badge">Vip Plan</div>
             <img src="https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
@@ -393,7 +395,7 @@
             <div class="plan-details">
                 <div class="plan-title">Oil Rig Empire</div>
                 <div class="plan-info">
-                    <div class="info-item"><span>Cost</span><b>₹50000</b></div>
+                    <div class="info-item"><span>Cost</span><b>₹5000</b></div>
                     <div class="info-item"><span>Daily</span><b>₹25000</b></div>
                     <div class="info-item"><span>Days</span><b>30 Days</b></div>
                 </div>
@@ -514,7 +516,6 @@
                         const refCode = userData.referredBy.toUpperCase();
                         const q = query(collection(db, "users"), where("myReferralCode", "==", refCode));
                         const qSnap = await getDocs(q);
-                        
                         if (!qSnap.empty) {
                             const inviterRef = doc(db, "users", qSnap.docs[0].id);
                             if (!userData.activePlans || userData.activePlans.length === 0) {
