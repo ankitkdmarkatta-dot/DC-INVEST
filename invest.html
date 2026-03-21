@@ -15,6 +15,7 @@
             --white: #ffffff;
             --text-muted: #64748b;
             --success: #10b981;
+            --hot: #ff4757;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -52,6 +53,13 @@
             background: white; border-radius: 25px; overflow: hidden;
             box-shadow: 0 8px 20px rgba(0,0,0,0.06); animation: slideUp 0.5s ease-out;
             border: 1px solid rgba(0,0,0,0.03); margin-bottom: 15px;
+            position: relative;
+        }
+        .badge {
+            position: absolute; top: 15px; right: 15px;
+            background: var(--hot); color: white; padding: 5px 12px;
+            border-radius: 20px; font-size: 10px; font-weight: 800;
+            z-index: 10; text-transform: uppercase;
         }
         .plan-img { width: 100%; height: 180px; object-fit: cover; background: #f0f0f0; }
         .plan-details { padding: 18px; }
@@ -65,8 +73,9 @@
             width: 100%; background: var(--accent); border: none;
             padding: 14px; border-radius: 15px; margin-top: 15px;
             font-weight: 800; color: var(--primary); cursor: pointer;
-            box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3);
+            box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3); transition: 0.2s;
         }
+        .buy-btn:active { transform: scale(0.98); }
 
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0;
@@ -136,6 +145,7 @@
     </div>
 
     <div id="buy-plans-section" class="plans-grid">
+        
         <div class="plan-card">
             <img src="https://images.pexels.com/photos/379419/pexels-photo-379419.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
             <div class="plan-details">
@@ -146,6 +156,20 @@
                     <div class="info-item"><span>Days</span><b>10 Days</b></div>
                 </div>
                 <button class="buy-btn" onclick="openModal('Fuel Mini', 200, 100, 10, 1000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <div class="badge" style="background:#e23744;">New</div>
+            <img src="https://images.pexels.com/photos/4393426/pexels-photo-4393426.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Zomato Special</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹250</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹175</b></div>
+                    <div class="info-item"><span>Days</span><b>2 Days</b></div>
+                </div>
+                <button class="buy-btn" style="background:#e23744; color:white;" onclick="openModal('Zomato Special', 250, 175, 2, 350)">ACTIVATE NOW</button>
             </div>
         </div>
 
@@ -163,80 +187,110 @@
         </div>
 
         <div class="plan-card">
-            <img src="https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
-            <div class="plan-details">
-                <div class="plan-title">Petrol Pro</div>
-                <div class="plan-info">
-                    <div class="info-item"><span>Cost</span><b>₹500</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹194</b></div>
-                    <div class="info-item"><span>Days</span><b>18 Days</b></div>
-                </div>
-                <button class="buy-btn" onclick="openModal('Petrol Pro', 500, 194, 18, 3500)">ACTIVATE NOW</button>
-            </div>
-        </div>
-
-        <div class="plan-card">
-            <img src="https://images.pexels.com/photos/63238/pexels-photo-63238.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
-            <div class="plan-details">
-                <div class="plan-title">Telecom Services</div>
-                <div class="plan-info">
-                    <div class="info-item"><span>Cost</span><b>₹599</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹200</b></div>
-                    <div class="info-item"><span>Days</span><b>16 Days</b></div>
-                </div>
-                <button class="buy-btn" onclick="openModal('Telecom Services', 599, 200, 16, 3200)">ACTIVATE NOW</button>
-            </div>
-        </div>
-
-        <div class="plan-card">
+            <div class="badge">Popular</div>
             <img src="https://images.pexels.com/photos/3183158/pexels-photo-3183158.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Corporate Tech</div>
                 <div class="plan-info">
                     <div class="info-item"><span>Cost</span><b>₹999</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹333</b></div>
-                    <div class="info-item"><span>Days</span><b>30 Days</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹100</b></div>
+                    <div class="info-item"><span>Days</span><b>12 Days</b></div>
                 </div>
-                <button class="buy-btn" onclick="openModal('Corporate Tech', 999, 333, 30, 10000)">ACTIVATE NOW</button>
+                <button class="buy-btn" onclick="openModal('Corporate Tech', 999, 100, 12, 1200)">ACTIVATE NOW</button>
             </div>
         </div>
 
         <div class="plan-card">
+            <div class="badge">High ROI</div>
             <img src="https://images.pexels.com/photos/2599244/pexels-photo-2599244.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Robotics Alpha</div>
                 <div class="plan-info">
                     <div class="info-item"><span>Cost</span><b>₹1500</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹500</b></div>
-                    <div class="info-item"><span>Days</span><b>25 Days</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹437.5</b></div>
+                    <div class="info-item"><span>Days</span><b>8 Days</b></div>
                 </div>
-                <button class="buy-btn" onclick="openModal('Robotics Alpha', 1500, 500, 25, 12500)">ACTIVATE NOW</button>
+                <button class="buy-btn" onclick="openModal('Robotics Alpha', 1500, 437.5, 8, 3500)">ACTIVATE NOW</button>
             </div>
         </div>
 
         <div class="plan-card">
-            <img src="https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
-            <div class="plan-details">
-                <div class="plan-title">Cloud Server Pro</div>
-                <div class="plan-info">
-                    <div class="info-item"><span>Cost</span><b>₹2500</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹900</b></div>
-                    <div class="info-item"><span>Days</span><b>20 Days</b></div>
-                </div>
-                <button class="buy-btn" onclick="openModal('Cloud Server Pro', 2500, 900, 20, 18000)">ACTIVATE NOW</button>
-            </div>
-        </div>
-
-        <div class="plan-card">
+            <div class="badge">Vip Plan</div>
             <img src="https://images.pexels.com/photos/356036/pexels-photo-356036.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
             <div class="plan-details">
                 <div class="plan-title">Green Energy</div>
                 <div class="plan-info">
                     <div class="info-item"><span>Cost</span><b>₹5000</b></div>
-                    <div class="info-item"><span>Daily</span><b>₹1800</b></div>
-                    <div class="info-item"><span>Days</span><b>45 Days</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹1250</b></div>
+                    <div class="info-item"><span>Days</span><b>20 Days</b></div>
                 </div>
-                <button class="buy-btn" onclick="openModal('Green Energy', 5000, 1800, 45, 81000)">ACTIVATE NOW</button>
+                <button class="buy-btn" onclick="openModal('Green Energy', 5000, 1250, 20, 25000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/586030/pexels-photo-586030.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">SpaceX Satellite</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹8000</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹2500</b></div>
+                    <div class="info-item"><span>Days</span><b>15 Days</b></div>
+                </div>
+                <button class="buy-btn" style="background: #2575fc; color: white;" onclick="openModal('SpaceX Satellite', 8000, 2500, 15, 37500)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/7562024/pexels-photo-7562024.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Metaverse Land</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹12000</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹4500</b></div>
+                    <div class="info-item)<span>Days</span><b>10 Days</b></div>
+                </div>
+                <button class="buy-btn" style="background: #bc4e9c; color: white;" onclick="openModal('Metaverse Land', 12000, 4500, 10, 45000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <div class="badge" style="background:gold; color:black;">Elite</div>
+            <img src="https://images.pexels.com/photos/17483848/pexels-photo-17483848/free-photo-of-digital-technology-art.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Quantum Core</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹20000</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹10000</b></div>
+                    <div class="info-item"><span>Days</span><b>7 Days</b></div>
+                </div>
+                <button class="buy-btn" style="background: #000; color: #f1c40f;" onclick="openModal('Quantum Core', 20000, 10000, 7, 70000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/110844/pexels-photo-110844.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Tesla EV Node</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹35000</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹15000</b></div>
+                    <div class="info-item"><span>Days</span><b>12 Days</b></div>
+                </div>
+                <button class="buy-btn" onclick="openModal('Tesla EV Node', 35000, 15000, 12, 180000)">ACTIVATE NOW</button>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <img src="https://images.pexels.com/photos/244124/pexels-photo-244124.jpeg?auto=compress&cs=tinysrgb&w=500" class="plan-img">
+            <div class="plan-details">
+                <div class="plan-title">Oil Rig Empire</div>
+                <div class="plan-info">
+                    <div class="info-item"><span>Cost</span><b>₹50000</b></div>
+                    <div class="info-item"><span>Daily</span><b>₹25000</b></div>
+                    <div class="info-item"><span>Days</span><b>30 Days</b></div>
+                </div>
+                <button class="buy-btn" style="background: #1a4a80; color: white;" onclick="openModal('Oil Rig Empire', 50000, 25000, 30, 750000)">ACTIVATE NOW</button>
             </div>
         </div>
     </div>
@@ -284,6 +338,7 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc, arrayUnion, onSnapshot, increment, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // FIREBASE CONFIG (SAME AS BEFORE)
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
             authDomain: "win-ad891.firebaseapp.com",
@@ -346,8 +401,6 @@
 
                 const userData = snap.data();
                 if ((userData.balance || 0) >= pData.price) {
-                    
-                    // --- 1. Main Transaction (Deduct balance and Add Plan) ---
                     await updateDoc(userRef, {
                         balance: increment(-pData.price),
                         totalInvested: increment(pData.price),
@@ -360,18 +413,15 @@
                         })
                     });
 
-                    // --- 2. Referral Logic (If user has a referrer) ---
+                    // REFERRAL REWARD (₹50)
                     if (userData.referredBy) {
                         const refCode = userData.referredBy.toUpperCase();
-                        // Find the inviter who owns this referral code
                         const q = query(collection(db, "users"), where("myReferralCode", "==", refCode));
                         const qSnap = await getDocs(q);
 
                         if (!qSnap.empty) {
                             const inviterDoc = qSnap.docs[0];
                             const inviterRef = doc(db, "users", inviterDoc.id);
-                            
-                            // Check if this was the user's first investment ever to avoid multiple referral rewards
                             if (!userData.activePlans || userData.activePlans.length === 0) {
                                 await updateDoc(inviterRef, {
                                     balance: increment(50),
@@ -380,7 +430,6 @@
                             }
                         }
                     }
-
                     showSuccess();
                 } else {
                     alert("Insufficient Balance! Please recharge first.");
