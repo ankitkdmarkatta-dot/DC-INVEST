@@ -82,8 +82,7 @@
             font-size: 10px; font-weight: 700; padding: 2px 8px;
             border-radius: 6px; text-transform: uppercase;
         }
-        .status-success { background: #dcfce7; color: var(--success); }
-        .status-approved { background: #dcfce7; color: var(--success); }
+        .status-success, .status-approved { background: #dcfce7; color: var(--success); }
         .status-pending { background: #fef3c7; color: var(--warning); }
         .status-failed, .status-rejected { background: #fee2e2; color: var(--danger); }
 
@@ -158,25 +157,39 @@
         });
 
         function loadHistory(uid) {
-            // Admin code uses 'uid' instead of 'userId'
-            const q = query(
-                collection(db, "transactions"), 
-                where("uid", "==", uid)
-            );
+            // Dono collections ('transactions' aur 'deposits') ko monitor karna zaroori hai
+            const qTrans = query(collection(db, "transactions"), where("uid", "==", uid));
+            const qDeps = query(collection(db, "deposits"), where("uid", "==", uid));
 
-            onSnapshot(q, (snapshot) => {
-                allTransactions = [];
-                snapshot.forEach((doc) => {
-                    allTransactions.push({ id: doc.id, ...doc.data() });
+            const syncData = () => {
+                // Sorting logic: time (transactions) aur timestamp (deposits) dono handle karein
+                allTransactions.sort((a, b) => {
+                    const valA = a.time?.seconds || a.timestamp?.seconds || 0;
+                    const valB = b.time?.seconds || b.timestamp?.seconds || 0;
+                    return valB - valA;
                 });
-
-                // Sort by time (Newest first)
-                allTransactions.sort((a, b) => (b.time?.seconds || 0) - (a.time?.seconds || 0));
-                
                 renderList();
-            }, (error) => {
-                console.error(error);
-                document.getElementById('history-list').innerHTML = `<p style="text-align:center; color:red; margin-top:20px;">Error loading data</p>`;
+            };
+
+            // Listen to Transactions
+            onSnapshot(qTrans, (snapshot) => {
+                const trans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                allTransactions = allTransactions.filter(t => !trans.some(nt => nt.id === t.id && !t.isDepositDoc));
+                allTransactions = [...allTransactions, ...trans];
+                syncData();
+            });
+
+            // Listen to Deposits
+            onSnapshot(qDeps, (snapshot) => {
+                const deps = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data(), 
+                    type: 'Deposit', 
+                    isDepositDoc: true 
+                }));
+                allTransactions = allTransactions.filter(t => !deps.some(nd => nd.id === t.id));
+                allTransactions = [...allTransactions, ...deps];
+                syncData();
             });
         }
 
@@ -186,21 +199,22 @@
 
             const filtered = currentFilter === 'all' 
                 ? allTransactions 
-                : allTransactions.filter(t => t.type === currentFilter);
+                : allTransactions.filter(t => t.type && t.type.toLowerCase() === currentFilter.toLowerCase());
 
             if (filtered.length === 0) {
                 list.innerHTML = `<div style="text-align:center; margin-top:50px;">
                     <i class="fa-solid fa-folder-open" style="font-size:40px; color:#ddd;"></i>
-                    <p style="color:#999; font-size:13px; margin-top:10px">No ${currentFilter === 'all' ? '' : currentFilter.toLowerCase()} transactions</p>
+                    <p style="color:#999; font-size:13px; margin-top:10px">No transactions found</p>
                 </div>`;
                 return;
             }
 
             filtered.forEach((data) => {
-                const isDeposit = data.type === 'Deposit';
-                const date = data.time ? new Date(data.time.seconds * 1000).toLocaleString('en-IN', {
+                const isDeposit = data.type && data.type.toLowerCase() === 'deposit';
+                const timeData = data.time || data.timestamp;
+                const date = timeData ? new Date(timeData.seconds * 1000).toLocaleString('en-IN', {
                     day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
-                }) : 'Just now';
+                }) : 'Processing...';
                 
                 const statusStr = data.status || 'Pending';
                 const statusClass = statusStr.toLowerCase();
@@ -227,13 +241,10 @@
 
         window.filterData = (type) => {
             currentFilter = type;
-            
-            // UI Update
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             if(type === 'all') document.getElementById('tab-all').classList.add('active');
             else if(type === 'Deposit') document.getElementById('tab-deposit').classList.add('active');
             else if(type === 'Withdrawal') document.getElementById('tab-withdraw').classList.add('active');
-            
             renderList();
         };
     </script>
