@@ -33,13 +33,13 @@
 
         .main-view { margin-left: 260px; width: calc(100% - 260px); padding: 30px; transition: 0.3s; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { 
-            background: white; padding: 20px; border-radius: 20px; 
+            background: white; padding: 25px; border-radius: 20px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-bottom: 4px solid var(--accent);
         }
         .stat-card span { font-size: 11px; color: #777; font-weight: 700; text-transform: uppercase; }
-        .stat-card h2 { font-size: 24px; font-weight: 800; margin-top: 5px; }
+        .stat-card h2 { font-size: 28px; font-weight: 800; margin-top: 5px; }
 
         .table-card { 
             background: white; border-radius: 20px; padding: 15px; 
@@ -88,8 +88,7 @@
             <div class="stat-card"><span>Total Members</span><h2 id="total-users">0</h2></div>
             <div class="stat-card"><span>Today's Deposit</span><h2 id="today-dep-sum">₹0</h2></div>
             <div class="stat-card"><span>Total Deposits</span><h2 id="total-dep-sum">₹0</h2></div>
-            <div class="stat-card"><span>Pending Requests</span><h2 id="total-pending">0</h2></div>
-        </div>
+            </div>
     </div>
 
     <div id="users-list" class="tab-view">
@@ -166,6 +165,7 @@
         el.classList.add('active');
     };
 
+    // Dashboard Total and Today Stats
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Approved")), (snap) => {
         let total = 0, today = 0;
         const startOfDay = new Date().setHours(0,0,0,0);
@@ -198,7 +198,7 @@
     });
 
     window.deleteUserAccount = async (uid) => {
-        if(!confirm("Warning! Is user ka sara data (Investments, Deposits, Transactions) delete ho jayega. Continue?")) return;
+        if(!confirm("Warning! Is user ka sara data delete ho jayega. Continue?")) return;
         try {
             const batch = writeBatch(db);
             batch.delete(doc(db, "users", uid));
@@ -235,6 +235,7 @@
 
     window.closeModal = () => document.getElementById('userModal').style.display = 'none';
 
+    // Deposits logic with History
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('dep-table-body');
         body.innerHTML = "";
@@ -256,7 +257,6 @@
         const batch = writeBatch(db);
         batch.update(doc(db, "users", uid), { balance: increment(amt) });
         batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
-        // Create History Entry
         batch.set(doc(collection(db, "transactions")), {
             uid: uid,
             amount: amt,
@@ -268,10 +268,10 @@
         alert("Amount Added and History Updated!");
     };
 
+    // Withdrawals logic with History
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
-        document.getElementById('total-pending').innerText = snap.size;
         snap.forEach(d => {
             const row = d.data();
             const details = row.details || {};
@@ -294,7 +294,6 @@
         const batch = writeBatch(db);
         batch.update(doc(db, "withdrawals", id), { status: stat });
         if(stat === 'Rejected' && uid) batch.update(doc(db, "users", uid), { balance: increment(amt) });
-        // Create History Entry
         batch.set(doc(collection(db, "transactions")), {
             uid: uid,
             amount: amt,
