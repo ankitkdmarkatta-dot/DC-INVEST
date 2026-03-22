@@ -139,7 +139,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp, getDocs, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -228,7 +228,7 @@
             const invData = i.data();
             text += `<div style="background:#f4f7f6; padding:5px; margin-bottom:5px; border-radius:5px;">
                         <b>Plan:</b> ${invData.planName} | <b>Amt:</b> ₹${invData.amount}
-                     </div>`;
+                      </div>`;
         });
         document.getElementById('m-invest').innerHTML = text || "No active investments";
     };
@@ -242,7 +242,7 @@
         snap.forEach(d => {
             const row = d.data();
             body.innerHTML += `<tr>
-                <td>${row.uid.substring(0,6)}..</td>
+                <td>${row.uid ? row.uid.substring(0,6) : 'N/A'}..</td>
                 <td>₹${row.amount}</td>
                 <td>${row.utr}</td>
                 <td>
@@ -254,18 +254,25 @@
     });
 
     window.approveDep = async (docId, uid, amt) => {
-        const batch = writeBatch(db);
-        batch.update(doc(db, "users", uid), { balance: increment(amt) });
-        batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
-        batch.set(doc(collection(db, "transactions")), {
-            uid: uid,
-            amount: amt,
-            type: "Deposit",
-            status: "Success",
-            timestamp: serverTimestamp()
-        });
-        await batch.commit();
-        alert("Amount Added and History Updated!");
+        try {
+            const batch = writeBatch(db);
+            batch.update(doc(db, "users", uid), { balance: increment(amt) });
+            batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
+            
+            // Fix: Using docId as transaction ID to prevent duplicates
+            const transRef = doc(db, "transactions", docId); 
+            batch.set(transRef, {
+                uid: uid,
+                amount: amt,
+                type: "Deposit",
+                status: "Success",
+                timestamp: serverTimestamp(),
+                refId: docId
+            });
+            
+            await batch.commit();
+            alert("Amount Added and History Updated!");
+        } catch (e) { alert("Error approving deposit."); }
     };
 
     // Withdrawals logic with History
@@ -291,18 +298,25 @@
     });
 
     window.actionWith = async (id, stat, uid, amt) => {
-        const batch = writeBatch(db);
-        batch.update(doc(db, "withdrawals", id), { status: stat });
-        if(stat === 'Rejected' && uid) batch.update(doc(db, "users", uid), { balance: increment(amt) });
-        batch.set(doc(collection(db, "transactions")), {
-            uid: uid,
-            amount: amt,
-            type: "Withdrawal",
-            status: stat,
-            timestamp: serverTimestamp()
-        });
-        await batch.commit();
-        alert("Withdrawal Processed!");
+        try {
+            const batch = writeBatch(db);
+            batch.update(doc(db, "withdrawals", id), { status: stat });
+            if(stat === 'Rejected' && uid) batch.update(doc(db, "users", uid), { balance: increment(amt) });
+            
+            // Fix: Using id as transaction ID to prevent duplicates
+            const transRef = doc(db, "transactions", id);
+            batch.set(transRef, {
+                uid: uid,
+                amount: amt,
+                type: "Withdrawal",
+                status: stat,
+                timestamp: serverTimestamp(),
+                refId: id
+            });
+            
+            await batch.commit();
+            alert("Withdrawal Processed!");
+        } catch (e) { alert("Error processing withdrawal."); }
     };
 
     window.rejectReq = async (coll, id) => {
