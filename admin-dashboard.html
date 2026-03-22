@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KD Admin | Master Responsive</title>
+    <title>KD Admin | Master Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -17,15 +17,6 @@
             transition: 0.3s; z-index: 1000; 
         }
         
-        .mobile-nav { 
-            display: none; position: fixed; bottom: 0; width: 100%; 
-            background: var(--primary); justify-content: space-around; 
-            padding: 12px 0; z-index: 1001; box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-        }
-        .mobile-nav div { color: rgba(255,255,255,0.6); text-align: center; font-size: 10px; cursor: pointer; }
-        .mobile-nav div i { font-size: 20px; display: block; margin-bottom: 4px; }
-        .mobile-nav div.active { color: var(--accent); }
-
         .side-logo { 
             width: 70px; height: 70px; background: var(--accent); border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
@@ -66,8 +57,8 @@
         .tab-view { display: none; }
         .tab-view.active { display: block; }
 
-        .pay-details-box { background: #fdf9e7; padding: 8px; border-radius: 6px; font-size: 11px; line-height: 1.4; color: #444; border-left: 3px solid var(--accent); }
-        .pay-details-box b { color: #2980b9; }
+        .pay-details-box { background: #fdf9e7; padding: 10px; border-radius: 8px; font-size: 11px; line-height: 1.5; color: #333; border-left: 3px solid var(--accent); }
+        .pay-details-box b { color: #0d2542; }
 
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
         .modal-content { background: white; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; position: relative; }
@@ -75,10 +66,7 @@
 
         @media (max-width: 768px) {
             .sidebar { display: none; }
-            .mobile-nav { display: flex; }
-            .main-view { margin-left: 0; width: 100%; padding: 20px; padding-bottom: 100px; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            h1 { font-size: 22px; }
+            .main-view { margin-left: 0; width: 100%; padding: 20px; }
         }
     </style>
 </head>
@@ -93,19 +81,12 @@
     <div class="nav-link" style="margin-top: auto; color: #ff7675;" onclick="adminLogout()"><i class="fa-solid fa-power-off"></i> Logout</div>
 </div>
 
-<nav class="mobile-nav">
-    <div class="m-link active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-house"></i>Home</div>
-    <div class="m-link" onclick="switchTab('users-list', this)"><i class="fa-solid fa-users"></i>Users</div>
-    <div class="m-link" onclick="switchTab('deposits', this)"><i class="fa-solid fa-plus-circle"></i>Deposit</div>
-    <div class="m-link" onclick="switchTab('withdrawals', this)"><i class="fa-solid fa-minus-circle"></i>Withdraw</div>
-</nav>
-
 <div class="main-view">
     <div id="dashboard" class="tab-view active">
         <h1 style="margin-bottom: 20px;">Admin Overview</h1>
         <div class="stats-grid">
             <div class="stat-card"><span>Total Members</span><h2 id="total-users">0</h2></div>
-            <div class="stat-card" style="border-bottom-color: #3498db;"><span>Today's Deposit</span><h2 id="today-dep-sum">₹0</h2></div>
+            <div class="stat-card"><span>Today's Deposit</span><h2 id="today-dep-sum">₹0</h2></div>
             <div class="stat-card"><span>Total Deposits</span><h2 id="total-dep-sum">₹0</h2></div>
             <div class="stat-card"><span>Pending Requests</span><h2 id="total-pending">0</h2></div>
         </div>
@@ -135,7 +116,7 @@
         <h1 style="margin-bottom: 20px;">Withdrawal Requests</h1>
         <div class="table-card">
             <table>
-                <thead><tr><th>User ID</th><th>Amount</th><th>Method & Details</th><th>Action</th></tr></thead>
+                <thead><tr><th>User ID</th><th>Amount</th><th>Account Details</th><th>Action</th></tr></thead>
                 <tbody id="with-table-body"></tbody>
             </table>
         </div>
@@ -145,10 +126,10 @@
 <div id="userModal" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal()">&times;</span>
-        <h2 id="m-user-id" style="margin-bottom: 15px; font-size: 18px; color: var(--primary);">User Details</h2>
+        <h2 id="m-user-id" style="margin-bottom: 15px; font-size: 18px;">User Details</h2>
         <hr><br>
         <div id="user-info-box">
-            <p><strong>Email/Phone:</strong> <span id="m-email"></span></p>
+            <p><strong>Contact:</strong> <span id="m-email"></span></p>
             <p><strong>Balance:</strong> ₹<span id="m-balance"></span></p>
             <p><strong>Investments:</strong> <span id="m-invest">Fetching...</span></p>
         </div>
@@ -179,41 +160,35 @@
 
     window.switchTab = (tabId, el) => {
         document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.nav-link, .m-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         el.classList.add('active');
     };
 
-    // --- DEPOSIT CALCULATION ---
+    // DASHBOARD & STATS
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Approved")), (snap) => {
-        let totalSum = 0;
-        let todaySum = 0;
-        const now = new Date();
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-        snap.forEach(doc => {
-            const data = doc.data();
-            const amt = parseFloat(data.amount) || 0;
-            totalSum += amt;
-            if (data.timestamp) {
-                const depTime = data.timestamp.seconds * 1000;
-                if (depTime >= todayStart) todaySum += amt;
-            }
+        let total = 0, today = 0;
+        const startOfDay = new Date().setHours(0,0,0,0);
+        snap.forEach(d => {
+            const data = d.data();
+            total += parseFloat(data.amount) || 0;
+            if (data.timestamp && data.timestamp.seconds * 1000 >= startOfDay) today += parseFloat(data.amount) || 0;
         });
-        document.getElementById('total-dep-sum').innerText = "₹" + totalSum;
-        document.getElementById('today-dep-sum').innerText = "₹" + todaySum;
+        document.getElementById('total-dep-sum').innerText = "₹" + total;
+        document.getElementById('today-dep-sum').innerText = "₹" + today;
     });
 
-    // --- REALTIME USERS ---
+    // USERS LIST
     onSnapshot(collection(db, "users"), snap => {
         document.getElementById('total-users').innerText = snap.size;
-        const userBody = document.getElementById('users-table-body');
-        userBody.innerHTML = "";
+        const body = document.getElementById('users-table-body');
+        body.innerHTML = "";
         snap.forEach(u => {
-            const userData = u.data();
-            userBody.innerHTML += `<tr>
+            const data = u.data();
+            body.innerHTML += `<tr>
                 <td>${u.id.substring(0,8)}...</td>
-                <td>${userData.email || userData.phone || 'N/A'}</td>
-                <td>₹${userData.balance || 0}</td>
+                <td>${data.email || data.phone || 'N/A'}</td>
+                <td>₹${data.balance || 0}</td>
                 <td><button class="btn-act btn-view" onclick="viewUser('${u.id}')">VIEW INFO</button></td>
             </tr>`;
         });
@@ -221,28 +196,21 @@
 
     window.viewUser = async (uid) => {
         document.getElementById('userModal').style.display = 'block';
-        document.getElementById('m-user-id').innerText = "User ID: " + uid;
-        try {
-            const userDoc = await getDoc(doc(db, "users", uid));
-            if(userDoc.exists()) {
-                const data = userDoc.data();
-                document.getElementById('m-email').innerText = data.email || data.phone || 'N/A';
-                document.getElementById('m-balance').innerText = data.balance || 0;
-            }
-            const invQuery = query(collection(db, "investments"), where("uid", "==", uid));
-            const invSnap = await getDocs(invQuery);
-            let invText = invSnap.empty ? "No Investments found" : "";
-            invSnap.forEach(inv => {
-                const i = inv.data();
-                invText += `Plan: ${i.planName} | ₹${i.amount}<br>`;
-            });
-            document.getElementById('m-invest').innerHTML = invText;
-        } catch(e) { console.error(e); }
+        const uDoc = await getDoc(doc(db, "users", uid));
+        if(uDoc.exists()) {
+            const d = uDoc.data();
+            document.getElementById('m-email').innerText = d.email || d.phone;
+            document.getElementById('m-balance').innerText = d.balance || 0;
+        }
+        const invs = await getDocs(query(collection(db, "investments"), where("uid", "==", uid)));
+        let text = "";
+        invs.forEach(i => text += `${i.data().planName}: ₹${i.data().amount}<br>`);
+        document.getElementById('m-invest').innerHTML = text || "No investments";
     };
 
-    window.closeModal = () => { document.getElementById('userModal').style.display = 'none'; };
+    window.closeModal = () => document.getElementById('userModal').style.display = 'none';
 
-    // --- PENDING DEPOSITS ---
+    // DEPOSIT APPROVAL
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('dep-table-body');
         body.innerHTML = "";
@@ -261,82 +229,48 @@
         });
     });
 
-    // --- PENDING WITHDRAWALS (FIXED: MULTI-KEY DETECTION) ---
+    window.approveDep = async (docId, uid, amt) => {
+        const batch = writeBatch(db);
+        batch.update(doc(db, "users", uid), { balance: increment(amt) });
+        batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
+        await batch.commit();
+        alert("Added!");
+    };
+
+    // WITHDRAWAL LOGIC (FIXED)
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
         snap.forEach(d => {
             const row = d.data();
-            let detailsHtml = "";
-            const method = (row.method || "").toUpperCase();
-
-            if(method === "UPI") {
-                // Detecting any possible UPI key
-                const upiVal = row.upi || row.upiId || row.upiID || 'N/A';
-                detailsHtml = `<div class="pay-details-box"><b>UPI:</b> ${upiVal}</div>`;
-            } else {
-                // Detecting any possible Bank keys from Screenshot 103
-                const hName = row.holderName || row.holder || row.Name || 'N/A';
-                const accNum = row.accountNo || row.accountNumber || row.accNo || 'N/A';
-                const ifsc = row.ifscCode || row.ifsc || row.IFSC || 'N/A';
-                const bName = row.bankName || row.bank || 'Bank';
-
-                detailsHtml = `<div class="pay-details-box">
-                    <b>H:</b> ${hName}<br>
-                    <b>A:</b> ${accNum}<br>
-                    <b>I:</b> ${ifsc}
-                </div>`;
-            }
+            // Matching exact keys from screenshot 103
+            const holder = row.holderName || row.holder || row.Name || "N/A";
+            const accNum = row.accountNo || row.accountNumber || row.Account || "N/A";
+            const ifsc = row.ifscCode || row.ifsc || row.IFSC || "N/A";
 
             body.innerHTML += `<tr>
-                <td>${row.uid ? row.uid.substring(0,6) : 'Err'}..</td>
+                <td>${row.uid.substring(0,6)}..</td>
                 <td>₹${row.amount}</td>
-                <td>${detailsHtml}</td>
+                <td><div class="pay-details-box"><b>Holder:</b> ${holder}<br><b>A/C:</b> ${accNum}<br><b>IFSC:</b> ${ifsc}</div></td>
                 <td>
-                    <button class="btn-act btn-approve" style="background:#27ae60; color:white;" onclick="doneWithdrawal('${d.id}', '${row.uid}', ${row.amount})">DONE</button>
-                    <button class="btn-act btn-reject" onclick="rejectReq('withdrawals', '${d.id}', '${row.uid}', ${row.amount})">REJECT</button>
+                    <button class="btn-act btn-approve" onclick="actionWith('${d.id}', 'Success')">DONE</button>
+                    <button class="btn-act btn-reject" onclick="actionWith('${d.id}', 'Rejected', '${row.uid}', ${row.amount})">REJECT</button>
                 </td>
             </tr>`;
         });
     });
 
-    window.approveDep = async (docId, uid, amt) => {
-        if(!confirm("Verify UTR? Confirm to add balance.")) return;
-        try {
-            const batch = writeBatch(db);
-            batch.update(doc(db, "users", uid), { balance: increment(amt) });
-            batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
-            const transRef = doc(collection(db, "transactions"));
-            batch.set(transRef, { uid: uid, amount: amt, type: "Deposit", status: "Success", time: serverTimestamp() });
-            await batch.commit();
-            alert("Deposit Added!");
-        } catch(e) { alert(e.message); }
+    window.actionWith = async (id, stat, uid=null, amt=0) => {
+        const batch = writeBatch(db);
+        batch.update(doc(db, "withdrawals", id), { status: stat });
+        if(stat === 'Rejected' && uid) batch.update(doc(db, "users", uid), { balance: increment(amt) });
+        await batch.commit();
+        alert("Action completed!");
     };
 
-    window.doneWithdrawal = async (docId, uid, amt) => {
-        if(!confirm("Payment done? Mark as complete?")) return;
-        try {
-            const batch = writeBatch(db);
-            batch.update(doc(db, "withdrawals", docId), { status: "Success" });
-            const transRef = doc(collection(db, "transactions"));
-            batch.set(transRef, { uid: uid, amount: amt, type: "Withdrawal", status: "Success", time: serverTimestamp() });
-            await batch.commit();
-            alert("Withdrawal marked as DONE!");
-        } catch(e) { alert(e.message); }
-    };
-
-    window.rejectReq = async (coll, docId, uid = null, amt = 0) => {
-        const reason = prompt("Rejection Reason:");
-        if (reason === null) return;
-        try {
-            const batch = writeBatch(db);
-            if(coll === 'withdrawals' && uid) {
-                batch.update(doc(db, "users", uid), { balance: increment(amt) });
-            }
-            batch.update(doc(db, coll, docId), { status: "Rejected", remark: reason });
-            await batch.commit();
-            alert("Rejected Successfully!");
-        } catch(e) { alert(e.message); }
+    window.rejectReq = async (coll, id) => {
+        await updateDoc(doc(db, coll, id), { status: "Rejected" });
+        alert("Rejected!");
     };
 
     window.adminLogout = () => { signOut(auth); window.location.href = "adminlogin.html"; };
