@@ -264,26 +264,33 @@
         });
     });
 
-    // --- PENDING WITHDRAWALS (Updated for Payment Details) ---
+    // --- PENDING WITHDRAWALS (Updated for Smart Detection) ---
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
         snap.forEach(d => {
             const row = d.data();
             
-            // Logic to display UPI or Bank details based on method
             let detailsHtml = "";
-            if(row.method === "UPI") {
-                detailsHtml = `<div class="pay-details-box"><b>UPI:</b> ${row.upi || 'N/A'}</div>`;
-            } else if(row.method === "BANK" || row.method === "Bank Transfer") {
+            const method = (row.method || "").toUpperCase();
+
+            if(method === "UPI") {
+                detailsHtml = `<div class="pay-details-box"><b>UPI:</b> ${row.upi || row.upiId || 'N/A'}</div>`;
+            } else if(method.includes("BANK") || method.includes("DIRECT")) {
+                // Smart check for multiple possible key names from your database
+                const hName = row.holderName || row.holder || row.name || 'N/A';
+                const accNum = row.accountNo || row.accNo || row.account || 'N/A';
+                const ifsc = row.ifscCode || row.ifsc || 'N/A';
+                const bName = row.bankName || row.bank || 'N/A';
+
                 detailsHtml = `<div class="pay-details-box">
-                    <b>A/C:</b> ${row.accountNo || 'N/A'}<br>
-                    <b>IFSC:</b> ${row.ifsc || 'N/A'}<br>
-                    <b>Bank:</b> ${row.bankName || 'N/A'}<br>
-                    <b>Name:</b> ${row.holderName || 'N/A'}
+                    <b>Holder:</b> ${hName}<br>
+                    <b>A/C:</b> ${accNum}<br>
+                    <b>IFSC:</b> ${ifsc}<br>
+                    <b>Bank:</b> ${bName}
                 </div>`;
             } else {
-                detailsHtml = row.method; // fallback
+                detailsHtml = row.method || "N/A";
             }
 
             body.innerHTML += `<tr>
@@ -291,7 +298,7 @@
                 <td>₹${row.amount}</td>
                 <td>${detailsHtml}</td>
                 <td>
-                    <button class="btn-act btn-approve" onclick="doneWithdrawal('${d.id}', '${row.uid}', ${row.amount})">DONE</button>
+                    <button class="btn-act btn-done" style="background:#27ae60; color:white;" onclick="doneWithdrawal('${d.id}', '${row.uid}', ${row.amount})">DONE</button>
                     <button class="btn-act btn-reject" onclick="rejectReq('withdrawals', '${d.id}', '${row.uid}', ${row.amount})">REJECT</button>
                 </td>
             </tr>`;
