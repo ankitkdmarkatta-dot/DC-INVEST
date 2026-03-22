@@ -7,116 +7,139 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; --white: #fff; }
+        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; --white: #fff; --danger: #e74c3c; --success: #27ae60; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--primary); }
+        body { background: var(--bg); color: var(--primary); overflow-x: hidden; }
 
+        /* SIDEBAR NAVIGATION */
         .sidebar { 
             width: 260px; background: var(--primary); height: 100vh; position: fixed; 
             color: white; padding: 30px 20px; display: flex; flex-direction: column; 
-            transition: 0.3s; z-index: 1000; 
+            transition: 0.4s; z-index: 1000; box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
-        
         .side-logo { 
-            width: 70px; height: 70px; background: var(--accent); border-radius: 50%; 
+            width: 80px; height: 80px; background: var(--accent); border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
-            font-weight: 900; color: var(--primary); font-size: 26px; 
-            margin: 0 auto 40px; border: 3px solid rgba(255,255,255,0.2); 
+            font-weight: 900; color: var(--primary); font-size: 28px; 
+            margin: 0 auto 40px; border: 4px solid rgba(255,255,255,0.1);
         }
-        
         .nav-link { 
-            padding: 14px 18px; border-radius: 12px; color: rgba(255,255,255,0.7); 
-            cursor: pointer; display: flex; align-items: center; gap: 12px; 
-            margin-bottom: 8px; font-weight: 600; transition: 0.3s; 
+            padding: 15px 20px; border-radius: 12px; color: rgba(255,255,255,0.6); 
+            cursor: pointer; display: flex; align-items: center; gap: 15px; 
+            margin-bottom: 10px; font-weight: 600; transition: 0.3s; 
         }
-        .nav-link.active { background: var(--accent); color: var(--primary); }
+        .nav-link i { font-size: 18px; width: 25px; }
+        .nav-link:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .nav-link.active { background: var(--accent); color: var(--primary); box-shadow: 0 4px 12px rgba(241, 196, 15, 0.3); }
 
-        .main-view { margin-left: 260px; width: calc(100% - 260px); padding: 30px; transition: 0.3s; }
+        /* MAIN CONTENT AREA */
+        .main-view { margin-left: 260px; width: calc(100% - 260px); padding: 40px; transition: 0.4s; min-height: 100vh; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 25px; color: var(--primary); display: flex; align-items: center; gap: 12px; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        /* DASHBOARD CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 40px; }
         .stat-card { 
-            background: white; padding: 20px; border-radius: 20px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-bottom: 4px solid var(--accent);
+            background: white; padding: 25px; border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); border-bottom: 5px solid var(--accent);
+            display: flex; flex-direction: column; gap: 5px; transition: transform 0.3s;
         }
-        .stat-card span { font-size: 11px; color: #777; font-weight: 700; text-transform: uppercase; }
-        .stat-card h2 { font-size: 24px; font-weight: 800; margin-top: 5px; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card span { font-size: 12px; color: #888; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card h2 { font-size: 30px; font-weight: 800; color: var(--primary); }
 
+        /* DATA TABLES */
         .table-card { 
-            background: white; border-radius: 20px; padding: 15px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03); overflow-x: auto; 
+            background: white; border-radius: 24px; padding: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); overflow-x: auto; 
         }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { text-align: left; padding: 12px; color: #888; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid #f4f7f6; }
-        td { padding: 14px 12px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #f4f7f6; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { text-align: left; padding: 15px; color: #aaa; font-size: 12px; text-transform: uppercase; font-weight: 700; border-bottom: 2px solid #f8fafb; }
+        td { padding: 18px 15px; font-size: 14px; font-weight: 600; border-bottom: 1px solid #f8fafb; color: #444; }
         
-        .btn-act { padding: 7px 12px; border-radius: 8px; border: none; font-weight: 700; font-size: 11px; cursor: pointer; }
-        .btn-approve { background: #27ae60; color: white; }
-        .btn-reject { background: #e74c3c; color: white; margin-left: 4px; }
+        /* ACTION BUTTONS */
+        .btn-act { padding: 8px 16px; border-radius: 10px; border: none; font-weight: 700; font-size: 12px; cursor: pointer; transition: 0.2s; }
+        .btn-approve { background: var(--success); color: white; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2); }
+        .btn-reject { background: var(--danger); color: white; margin-left: 5px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
         .btn-view { background: #3498db; color: white; }
+        .btn-act:active { transform: scale(0.95); }
+
+        /* PAYMENT INFO BOX */
+        .pay-details-box { 
+            background: #fff9e6; padding: 12px; border-radius: 12px; font-size: 12px; 
+            line-height: 1.6; color: #555; border-left: 4px solid var(--accent); 
+        }
+        .pay-details-box b { color: var(--primary); font-weight: 700; }
+
+        /* MODAL WINDOW */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(13, 37, 66, 0.6); backdrop-filter: blur(5px); }
+        .modal-content { 
+            background: white; margin: 5% auto; padding: 30px; border-radius: 24px; 
+            width: 90%; max-width: 550px; position: relative; animation: slideDown 0.4s ease;
+        }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-modal { position: absolute; right: 25px; top: 20px; font-size: 28px; cursor: pointer; color: #ccc; }
 
         .tab-view { display: none; }
         .tab-view.active { display: block; }
 
-        .pay-details-box { background: #fdf9e7; padding: 10px; border-radius: 8px; font-size: 11px; line-height: 1.5; color: #333; border-left: 3px solid var(--accent); }
-        .pay-details-box b { color: #0d2542; }
-
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-        .modal-content { background: white; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; position: relative; }
-        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; }
-
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .sidebar { display: none; }
+            .sidebar { transform: translateX(-100%); width: 0; padding: 0; }
             .main-view { margin-left: 0; width: 100%; padding: 20px; }
+            .sidebar.show { transform: translateX(0); width: 260px; padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
     <div class="side-logo">KD</div>
-    <div class="nav-link active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-house"></i> Dashboard</div>
-    <div class="nav-link" onclick="switchTab('users-list', this)"><i class="fa-solid fa-users"></i> All Users</div>
-    <div class="nav-link" onclick="switchTab('deposits', this)"><i class="fa-solid fa-plus-circle"></i> Deposits</div>
-    <div class="nav-link" onclick="switchTab('withdrawals', this)"><i class="fa-solid fa-minus-circle"></i> Withdrawals</div>
-    <div class="nav-link" style="margin-top: auto; color: #ff7675;" onclick="adminLogout()"><i class="fa-solid fa-power-off"></i> Logout</div>
+    <div class="nav-link active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-grid-2"></i> Dashboard</div>
+    <div class="nav-link" onclick="switchTab('users-list', this)"><i class="fa-solid fa-user-group"></i> All Users</div>
+    <div class="nav-link" onclick="switchTab('deposits', this)"><i class="fa-solid fa-arrow-down-to-line"></i> Deposits</div>
+    <div class="nav-link" onclick="switchTab('withdrawals', this)"><i class="fa-solid fa-arrow-up-from-line"></i> Withdrawals</div>
+    
+    <div class="nav-link" style="margin-top: auto; color: #ff7675;" onclick="adminLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </div>
 </div>
 
 <div class="main-view">
     <div id="dashboard" class="tab-view active">
-        <h1 style="margin-bottom: 20px;">Admin Overview</h1>
+        <h1><i class="fa-solid fa-chart-pie"></i> Admin Overview</h1>
         <div class="stats-grid">
-            <div class="stat-card"><span>Total Members</span><h2 id="total-users">0</h2></div>
+            <div class="stat-card"><span>Registered Members</span><h2 id="total-users">0</h2></div>
             <div class="stat-card"><span>Today's Deposit</span><h2 id="today-dep-sum">₹0</h2></div>
-            <div class="stat-card"><span>Total Deposits</span><h2 id="total-dep-sum">₹0</h2></div>
+            <div class="stat-card"><span>Overall Deposits</span><h2 id="total-dep-sum">₹0</h2></div>
             <div class="stat-card"><span>Pending Requests</span><h2 id="total-pending">0</h2></div>
         </div>
     </div>
 
     <div id="users-list" class="tab-view">
-        <h1 style="margin-bottom: 20px;">All Registered Users</h1>
+        <h1><i class="fa-solid fa-users"></i> User Management</h1>
         <div class="table-card">
             <table>
-                <thead><tr><th>User ID</th><th>Email/Phone</th><th>Balance</th><th>Action</th></tr></thead>
+                <thead><tr><th>User ID</th><th>Email / Phone</th><th>Account Balance</th><th>Action</th></tr></thead>
                 <tbody id="users-table-body"></tbody>
             </table>
         </div>
     </div>
 
     <div id="deposits" class="tab-view">
-        <h1 style="margin-bottom: 20px;">Deposit Approval</h1>
+        <h1><i class="fa-solid fa-circle-plus"></i> Pending Deposits</h1>
         <div class="table-card">
             <table>
-                <thead><tr><th>User ID</th><th>Amount</th><th>UTR/Ref</th><th>Action</th></tr></thead>
+                <thead><tr><th>User ID</th><th>Amount</th><th>UTR Number</th><th>Action</th></tr></thead>
                 <tbody id="dep-table-body"></tbody>
             </table>
         </div>
     </div>
 
     <div id="withdrawals" class="tab-view">
-        <h1 style="margin-bottom: 20px;">Withdrawal Requests</h1>
+        <h1><i class="fa-solid fa-circle-minus"></i> Withdrawal Requests</h1>
         <div class="table-card">
             <table>
-                <thead><tr><th>User ID</th><th>Amount</th><th>Account Details</th><th>Action</th></tr></thead>
+                <thead><tr><th>User ID</th><th>Requested Amount</th><th>Banking Details</th><th>Action</th></tr></thead>
                 <tbody id="with-table-body"></tbody>
             </table>
         </div>
@@ -126,12 +149,15 @@
 <div id="userModal" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal()">&times;</span>
-        <h2 id="m-user-id" style="margin-bottom: 15px; font-size: 18px;">User Details</h2>
-        <hr><br>
+        <h2 style="margin-bottom: 20px;">User Profile</h2>
+        <hr style="opacity: 0.1; margin-bottom: 20px;">
         <div id="user-info-box">
-            <p><strong>Contact:</strong> <span id="m-email"></span></p>
-            <p><strong>Balance:</strong> ₹<span id="m-balance"></span></p>
-            <p><strong>Investments:</strong> <div id="m-invest" style="margin-top:10px; font-size:12px;">Fetching...</div></p>
+            <p style="margin-bottom: 10px;"><strong>Login Info:</strong> <span id="m-email"></span></p>
+            <p style="margin-bottom: 10px;"><strong>Available Balance:</strong> ₹<span id="m-balance"></span></p>
+            <p style="margin-bottom: 5px;"><strong>Active Investments:</strong></p>
+            <div id="m-invest" style="max-height: 200px; overflow-y: auto; background: #f9f9f9; padding: 15px; border-radius: 12px; font-size: 13px;">
+                Fetching data...
+            </div>
         </div>
     </div>
 </div>
@@ -154,11 +180,12 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Authentication Check
+    // LOGIN GUARD
     onAuthStateChanged(auth, (user) => {
         if (!user || user.email !== "adminkd@gmail.com") window.location.href = "adminlogin.html";
     });
 
+    // NAVIGATION SWITCHER
     window.switchTab = (tabId, el) => {
         document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -166,7 +193,7 @@
         el.classList.add('active');
     };
 
-    // Dashboard Stats (Today vs Total)
+    // DASHBOARD CALCULATIONS
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Approved")), (snap) => {
         let total = 0, today = 0;
         const startOfDay = new Date().setHours(0,0,0,0);
@@ -180,22 +207,23 @@
         document.getElementById('today-dep-sum').innerText = "₹" + today;
     });
 
-    // Users List with View Action
+    // USERS SNAPSHOT
     onSnapshot(collection(db, "users"), snap => {
         document.getElementById('total-users').innerText = snap.size;
         const body = document.getElementById('users-table-body');
         body.innerHTML = "";
         snap.forEach(u => {
-            const data = u.data();
+            const d = u.data();
             body.innerHTML += `<tr>
                 <td>${u.id.substring(0,8)}...</td>
-                <td>${data.email || data.phone || 'N/A'}</td>
-                <td>₹${data.balance || 0}</td>
-                <td><button class="btn-act btn-view" onclick="viewUser('${u.id}')">VIEW INFO</button></td>
+                <td>${d.email || d.phone || 'N/A'}</td>
+                <td>₹${d.balance || 0}</td>
+                <td><button class="btn-act btn-view" onclick="viewUser('${u.id}')">MANAGE</button></td>
             </tr>`;
         });
     });
 
+    // USER MODAL & INVESTMENT LOGIC
     window.viewUser = async (uid) => {
         document.getElementById('userModal').style.display = 'block';
         const uDoc = await getDoc(doc(db, "users", uid));
@@ -205,32 +233,31 @@
             document.getElementById('m-balance').innerText = d.balance || 0;
         }
         
-        // Fetch User's Active Plans
         const invs = await getDocs(query(collection(db, "investments"), where("uid", "==", uid)));
-        let text = "";
+        let invHtml = "";
         invs.forEach(i => {
-            const invData = i.data();
-            text += `<div style="background:#f4f7f6; padding:5px; margin-bottom:5px; border-radius:5px;">
-                        <b>Plan:</b> ${invData.planName} | <b>Amt:</b> ₹${invData.amount}
-                     </div>`;
+            const inv = i.data();
+            invHtml += `<div style="padding:10px; border-bottom:1px solid #eee;">
+                <b>Plan:</b> ${inv.planName} <br> <b>Amount:</b> ₹${inv.amount}
+            </div>`;
         });
-        document.getElementById('m-invest').innerHTML = text || "No active investments";
+        document.getElementById('m-invest').innerHTML = invHtml || "No active investment found.";
     };
 
     window.closeModal = () => document.getElementById('userModal').style.display = 'none';
 
-    // Deposit Approval Logic
+    // DEPOSIT APPROVAL (ADD BALANCE)
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('dep-table-body');
         body.innerHTML = "";
         snap.forEach(d => {
-            const row = d.data();
+            const r = d.data();
             body.innerHTML += `<tr>
-                <td>${row.uid.substring(0,6)}..</td>
-                <td>₹${row.amount}</td>
-                <td>${row.utr}</td>
+                <td>${r.uid.substring(0,6)}..</td>
+                <td>₹${r.amount}</td>
+                <td>${r.utr}</td>
                 <td>
-                    <button class="btn-act btn-approve" onclick="approveDep('${d.id}', '${row.uid}', ${row.amount})">ADD</button>
+                    <button class="btn-act btn-approve" onclick="approveDep('${d.id}', '${r.uid}', ${r.amount})">ADD</button>
                     <button class="btn-act btn-reject" onclick="rejectReq('deposits', '${d.id}')">REJECT</button>
                 </td>
             </tr>`;
@@ -242,10 +269,10 @@
         batch.update(doc(db, "users", uid), { balance: increment(amt) });
         batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
         await batch.commit();
-        alert("Amount Added Successfully!");
+        alert("Balance Added to User Account!");
     };
 
-    // Withdrawal Processing (FIXED for details object)
+    // WITHDRAWAL PROCESSING (MATCHING NESTED DETAILS)
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
@@ -253,13 +280,13 @@
         
         snap.forEach(d => {
             const row = d.data();
-            const details = row.details || {}; // Corrected: Accessing 'details' object
+            const details = row.details || {}; // Accessing nested object
             let detailsHtml = "";
 
             if(row.method === "upi") {
-                detailsHtml = `<b>UPI ID:</b> ${details.upi || 'N/A'}`;
+                detailsHtml = `<b>UPI:</b> ${details.upi || 'N/A'}`;
             } else {
-                // Matching withdraw.html fields
+                // withdraw.html keys: name, acc, ifsc
                 detailsHtml = `<b>Holder:</b> ${details.name || 'N/A'}<br>
                                <b>A/C:</b> ${details.acc || 'N/A'}<br>
                                <b>IFSC:</b> ${details.ifsc || 'N/A'}`;
@@ -278,17 +305,19 @@
     });
 
     window.actionWith = async (id, stat, uid=null, amt=0) => {
+        if(!confirm("Are you sure about this action?")) return;
         const batch = writeBatch(db);
         batch.update(doc(db, "withdrawals", id), { status: stat });
-        // Return balance if rejected
+        // Refund balance if rejected
         if(stat === 'Rejected' && uid) batch.update(doc(db, "users", uid), { balance: increment(amt) });
         await batch.commit();
-        alert("Withdrawal Status Updated!");
+        alert("Withdrawal Status Finalized!");
     };
 
     window.rejectReq = async (coll, id) => {
+        if(!confirm("Confirm Reject?")) return;
         await updateDoc(doc(db, coll, id), { status: "Rejected" });
-        alert("Request Rejected!");
+        alert("Request Rejected.");
     };
 
     window.adminLogout = () => { signOut(auth); window.location.href = "adminlogin.html"; };
