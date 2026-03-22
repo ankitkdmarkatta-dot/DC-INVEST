@@ -11,32 +11,63 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg); color: var(--primary); }
 
-        /* Sidebar & Layout */
-        .sidebar { width: 260px; background: var(--primary); height: 100vh; position: fixed; color: white; padding: 30px 20px; display: flex; flex-direction: column; z-index: 1000; }
-        .side-logo { width: 70px; height: 70px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; color: var(--primary); font-size: 26px; margin: 0 auto 40px; border: 3px solid rgba(255,255,255,0.2); }
-        .nav-link { padding: 14px 18px; border-radius: 12px; color: rgba(255,255,255,0.7); cursor: pointer; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font-weight: 600; transition: 0.3s; }
+        .sidebar { 
+            width: 260px; background: var(--primary); height: 100vh; position: fixed; 
+            color: white; padding: 30px 20px; display: flex; flex-direction: column; 
+            transition: 0.3s; z-index: 1000; 
+        }
+        
+        .side-logo { 
+            width: 70px; height: 70px; background: var(--accent); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 900; color: var(--primary); font-size: 26px; 
+            margin: 0 auto 40px; border: 3px solid rgba(255,255,255,0.2); 
+        }
+        
+        .nav-link { 
+            padding: 14px 18px; border-radius: 12px; color: rgba(255,255,255,0.7); 
+            cursor: pointer; display: flex; align-items: center; gap: 12px; 
+            margin-bottom: 8px; font-weight: 600; transition: 0.3s; 
+        }
         .nav-link.active { background: var(--accent); color: var(--primary); }
-        .main-view { margin-left: 260px; width: calc(100% - 260px); padding: 30px; }
 
-        /* Stats & Cards */
+        .main-view { margin-left: 260px; width: calc(100% - 260px); padding: 30px; transition: 0.3s; }
+
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-bottom: 4px solid var(--accent); }
+        .stat-card { 
+            background: white; padding: 20px; border-radius: 20px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-bottom: 4px solid var(--accent);
+        }
         .stat-card span { font-size: 11px; color: #777; font-weight: 700; text-transform: uppercase; }
         .stat-card h2 { font-size: 24px; font-weight: 800; margin-top: 5px; }
 
-        /* Tables */
-        .table-card { background: white; border-radius: 20px; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); overflow-x: auto; }
+        .table-card { 
+            background: white; border-radius: 20px; padding: 15px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03); overflow-x: auto; 
+        }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th { text-align: left; padding: 12px; color: #888; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid #f4f7f6; }
         td { padding: 14px 12px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #f4f7f6; }
+        
+        .btn-act { padding: 7px 12px; border-radius: 8px; border: none; font-weight: 700; font-size: 11px; cursor: pointer; }
+        .btn-approve { background: #27ae60; color: white; }
+        .btn-reject { background: #e74c3c; color: white; margin-left: 4px; }
+        .btn-view { background: #3498db; color: white; }
 
-        /* Buttons & Badges */
-        .btn-act { padding: 7px 12px; border-radius: 8px; border: none; font-weight: 700; font-size: 11px; cursor: pointer; color: white; }
-        .pay-details-box { background: #fdf9e7; padding: 10px; border-radius: 8px; font-size: 11px; border-left: 4px solid #f1c40f; line-height: 1.6; color: #333; }
         .tab-view { display: none; }
         .tab-view.active { display: block; }
 
-        @media (max-width: 768px) { .sidebar { display: none; } .main-view { margin-left: 0; width: 100%; } }
+        .pay-details-box { background: #fdf9e7; padding: 10px; border-radius: 8px; font-size: 11px; line-height: 1.5; color: #333; border-left: 3px solid var(--accent); }
+        .pay-details-box b { color: #0d2542; }
+
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; position: relative; }
+        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-view { margin-left: 0; width: 100%; padding: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -52,26 +83,27 @@
 
 <div class="main-view">
     <div id="dashboard" class="tab-view active">
-        <h1>Dashboard Overview</h1>
+        <h1 style="margin-bottom: 20px;">Admin Overview</h1>
         <div class="stats-grid">
-            <div class="stat-card"><span>Total Users</span><h2 id="total-users">0</h2></div>
+            <div class="stat-card"><span>Total Members</span><h2 id="total-users">0</h2></div>
+            <div class="stat-card"><span>Today's Deposit</span><h2 id="today-dep-sum">₹0</h2></div>
             <div class="stat-card"><span>Total Deposits</span><h2 id="total-dep-sum">₹0</h2></div>
             <div class="stat-card"><span>Pending Requests</span><h2 id="total-pending">0</h2></div>
         </div>
     </div>
 
     <div id="users-list" class="tab-view">
-        <h1>Registered Users</h1>
+        <h1 style="margin-bottom: 20px;">All Registered Users</h1>
         <div class="table-card">
             <table>
-                <thead><tr><th>User ID</th><th>Contact</th><th>Balance</th><th>Action</th></tr></thead>
+                <thead><tr><th>User ID</th><th>Email/Phone</th><th>Balance</th><th>Action</th></tr></thead>
                 <tbody id="users-table-body"></tbody>
             </table>
         </div>
     </div>
 
     <div id="deposits" class="tab-view">
-        <h1>Deposit Requests</h1>
+        <h1 style="margin-bottom: 20px;">Deposit Approval</h1>
         <div class="table-card">
             <table>
                 <thead><tr><th>User ID</th><th>Amount</th><th>UTR/Ref</th><th>Action</th></tr></thead>
@@ -81,20 +113,33 @@
     </div>
 
     <div id="withdrawals" class="tab-view">
-        <h1>Withdrawal Requests</h1>
+        <h1 style="margin-bottom: 20px;">Withdrawal Requests</h1>
         <div class="table-card">
             <table>
-                <thead><tr><th>User ID</th><th>Amount</th><th>Payment Details</th><th>Action</th></tr></thead>
+                <thead><tr><th>User ID</th><th>Amount</th><th>Account Details</th><th>Action</th></tr></thead>
                 <tbody id="with-table-body"></tbody>
             </table>
         </div>
     </div>
 </div>
 
+<div id="userModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2 id="m-user-id" style="margin-bottom: 15px; font-size: 18px;">User Details</h2>
+        <hr><br>
+        <div id="user-info-box">
+            <p><strong>Contact:</strong> <span id="m-email"></span></p>
+            <p><strong>Balance:</strong> ₹<span id="m-balance"></span></p>
+            <p><strong>Investments:</strong> <div id="m-invest" style="margin-top:10px; font-size:12px;">Fetching...</div></p>
+        </div>
+    </div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -109,6 +154,11 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Authentication Check
+    onAuthStateChanged(auth, (user) => {
+        if (!user || user.email !== "adminkd@gmail.com") window.location.href = "adminlogin.html";
+    });
+
     window.switchTab = (tabId, el) => {
         document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -116,40 +166,86 @@
         el.classList.add('active');
     };
 
-    // 1. DASHBOARD & USERS LOGIC
+    // Dashboard Stats (Today vs Total)
+    onSnapshot(query(collection(db, "deposits"), where("status", "==", "Approved")), (snap) => {
+        let total = 0, today = 0;
+        const startOfDay = new Date().setHours(0,0,0,0);
+        snap.forEach(d => {
+            const data = d.data();
+            const amt = parseFloat(data.amount) || 0;
+            total += amt;
+            if (data.timestamp && data.timestamp.seconds * 1000 >= startOfDay) today += amt;
+        });
+        document.getElementById('total-dep-sum').innerText = "₹" + total;
+        document.getElementById('today-dep-sum').innerText = "₹" + today;
+    });
+
+    // Users List with View Action
     onSnapshot(collection(db, "users"), snap => {
         document.getElementById('total-users').innerText = snap.size;
         const body = document.getElementById('users-table-body');
         body.innerHTML = "";
         snap.forEach(u => {
-            const d = u.data();
-            body.innerHTML += `<tr><td>${u.id.substring(0,6)}</td><td>${d.email || d.phone || 'N/A'}</td><td>₹${d.balance || 0}</td><td><button class="btn-act" style="background:#3498db">VIEW</button></td></tr>`;
+            const data = u.data();
+            body.innerHTML += `<tr>
+                <td>${u.id.substring(0,8)}...</td>
+                <td>${data.email || data.phone || 'N/A'}</td>
+                <td>₹${data.balance || 0}</td>
+                <td><button class="btn-act btn-view" onclick="viewUser('${u.id}')">VIEW INFO</button></td>
+            </tr>`;
         });
     });
 
-    // 2. DEPOSIT APPROVAL (ADD BALANCE)
+    window.viewUser = async (uid) => {
+        document.getElementById('userModal').style.display = 'block';
+        const uDoc = await getDoc(doc(db, "users", uid));
+        if(uDoc.exists()) {
+            const d = uDoc.data();
+            document.getElementById('m-email').innerText = d.email || d.phone;
+            document.getElementById('m-balance').innerText = d.balance || 0;
+        }
+        
+        // Fetch User's Active Plans
+        const invs = await getDocs(query(collection(db, "investments"), where("uid", "==", uid)));
+        let text = "";
+        invs.forEach(i => {
+            const invData = i.data();
+            text += `<div style="background:#f4f7f6; padding:5px; margin-bottom:5px; border-radius:5px;">
+                        <b>Plan:</b> ${invData.planName} | <b>Amt:</b> ₹${invData.amount}
+                     </div>`;
+        });
+        document.getElementById('m-invest').innerHTML = text || "No active investments";
+    };
+
+    window.closeModal = () => document.getElementById('userModal').style.display = 'none';
+
+    // Deposit Approval Logic
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('dep-table-body');
         body.innerHTML = "";
-        let depTotal = 0;
         snap.forEach(d => {
-            const r = d.data();
-            body.innerHTML += `<tr><td>${r.uid.substring(0,6)}</td><td>₹${r.amount}</td><td>${r.utr}</td><td>
-                <button class="btn-act" style="background:#27ae60" onclick="approveDep('${d.id}','${r.uid}',${r.amount})">ADD</button>
-                <button class="btn-act" style="background:#e74c3c" onclick="rejectReq('deposits','${d.id}')">REJECT</button>
-            </td></tr>`;
+            const row = d.data();
+            body.innerHTML += `<tr>
+                <td>${row.uid.substring(0,6)}..</td>
+                <td>₹${row.amount}</td>
+                <td>${row.utr}</td>
+                <td>
+                    <button class="btn-act btn-approve" onclick="approveDep('${d.id}', '${row.uid}', ${row.amount})">ADD</button>
+                    <button class="btn-act btn-reject" onclick="rejectReq('deposits', '${d.id}')">REJECT</button>
+                </td>
+            </tr>`;
         });
     });
 
-    window.approveDep = async (id, uid, amt) => {
+    window.approveDep = async (docId, uid, amt) => {
         const batch = writeBatch(db);
         batch.update(doc(db, "users", uid), { balance: increment(amt) });
-        batch.update(doc(db, "deposits", id), { status: "Approved" });
+        batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
         await batch.commit();
-        alert("Deposit Approved!");
+        alert("Amount Added Successfully!");
     };
 
-    // 3. WITHDRAWAL PROCESSING (MATCHING withdraw.html)
+    // Withdrawal Processing (FIXED for details object)
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
@@ -157,25 +253,25 @@
         
         snap.forEach(d => {
             const row = d.data();
-            const details = row.details || {}; // 'details' object ko access kar rahe hain
-            let displayDetails = "";
+            const details = row.details || {}; // Corrected: Accessing 'details' object
+            let detailsHtml = "";
 
             if(row.method === "upi") {
-                displayDetails = `<b>UPI:</b> ${details.upi || 'N/A'}`;
+                detailsHtml = `<b>UPI ID:</b> ${details.upi || 'N/A'}`;
             } else {
-                // withdraw.html ke keys: name, acc, ifsc
-                displayDetails = `<b>Holder:</b> ${details.name || 'N/A'}<br>
-                                  <b>A/C:</b> ${details.acc || 'N/A'}<br>
-                                  <b>IFSC:</b> ${details.ifsc || 'N/A'}`;
+                // Matching withdraw.html fields
+                detailsHtml = `<b>Holder:</b> ${details.name || 'N/A'}<br>
+                               <b>A/C:</b> ${details.acc || 'N/A'}<br>
+                               <b>IFSC:</b> ${details.ifsc || 'N/A'}`;
             }
 
             body.innerHTML += `<tr>
                 <td>${row.uid ? row.uid.substring(0,6) : 'N/A'}</td>
                 <td>₹${row.amount}</td>
-                <td><div class="pay-details-box">${displayDetails}</div></td>
+                <td><div class="pay-details-box">${detailsHtml}</div></td>
                 <td>
-                    <button class="btn-act" style="background:#27ae60" onclick="actionWith('${d.id}','Success')">DONE</button>
-                    <button class="btn-act" style="background:#e74c3c" onclick="actionWith('${d.id}','Rejected','${row.uid}',${row.amount})">REJECT</button>
+                    <button class="btn-act btn-approve" onclick="actionWith('${d.id}', 'Success')">DONE</button>
+                    <button class="btn-act btn-reject" onclick="actionWith('${d.id}', 'Rejected', '${row.uid}', ${row.amount})">REJECT</button>
                 </td>
             </tr>`;
         });
@@ -184,18 +280,18 @@
     window.actionWith = async (id, stat, uid=null, amt=0) => {
         const batch = writeBatch(db);
         batch.update(doc(db, "withdrawals", id), { status: stat });
-        // Agar Reject hua toh balance user ko wapas milega
+        // Return balance if rejected
         if(stat === 'Rejected' && uid) batch.update(doc(db, "users", uid), { balance: increment(amt) });
         await batch.commit();
-        alert("Withdrawal Updated!");
+        alert("Withdrawal Status Updated!");
     };
 
     window.rejectReq = async (coll, id) => {
         await updateDoc(doc(db, coll, id), { status: "Rejected" });
-        alert("Rejected!");
+        alert("Request Rejected!");
     };
 
-    window.adminLogout = () => { signOut(auth); window.location.href="adminlogin.html"; };
+    window.adminLogout = () => { signOut(auth); window.location.href = "adminlogin.html"; };
 </script>
 </body>
 </html>
