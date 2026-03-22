@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KD Admin | Master Panel</title>
+    <title>KD Admin | Responsive</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; --white: #fff; --success: #27ae60; --danger: #e74c3c; }
+        :root { --primary: #0d2542; --accent: #f1c40f; --bg: #f4f7f6; --white: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg); color: var(--primary); }
 
-        /* Sidebar & Layout */
         .sidebar { 
             width: 260px; background: var(--primary); height: 100vh; position: fixed; 
             color: white; padding: 30px 20px; display: flex; flex-direction: column; 
             transition: 0.3s; z-index: 1000; 
         }
+        
         .mobile-nav { 
             display: none; position: fixed; bottom: 0; width: 100%; 
             background: var(--primary); justify-content: space-around; 
@@ -42,7 +42,6 @@
 
         .main-view { margin-left: 260px; width: calc(100% - 260px); padding: 30px; transition: 0.3s; }
 
-        /* Cards & Tables */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { 
             background: white; padding: 20px; border-radius: 20px; 
@@ -55,44 +54,32 @@
             background: white; border-radius: 20px; padding: 15px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.03); overflow-x: auto; 
         }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
         th { text-align: left; padding: 12px; color: #888; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid #f4f7f6; }
-        td { padding: 14px 12px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #f4f7f6; vertical-align: middle; }
+        td { padding: 14px 12px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #f4f7f6; }
         
-        /* Buttons */
-        .btn-act { padding: 8px 14px; border-radius: 8px; border: none; font-weight: 700; font-size: 11px; cursor: pointer; transition: 0.2s; }
-        .btn-approve { background: var(--success); color: white; }
-        .btn-reject { background: var(--danger); color: white; margin-left: 4px; }
+        .btn-act { padding: 7px 12px; border-radius: 8px; border: none; font-weight: 700; font-size: 11px; cursor: pointer; }
+        .btn-approve { background: #27ae60; color: white; }
+        .btn-reject { background: #e74c3c; color: white; margin-left: 4px; }
         .btn-view { background: #3498db; color: white; }
-        .btn-act:hover { opacity: 0.8; transform: translateY(-1px); }
 
         .tab-view { display: none; }
         .tab-view.active { display: block; }
 
-        /* Withdrawal Details Box - IMPROVED */
-        .pay-info-container {
-            background: #f8f9fa;
-            border-left: 4px solid var(--accent);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            line-height: 1.6;
-            min-width: 200px;
-        }
-        .pay-info-container b { color: #555; font-size: 10px; text-transform: uppercase; }
-        .pay-value { color: #2980b9; font-family: monospace; font-size: 13px; user-select: all; background: #fff; padding: 0 4px; border-radius: 3px; }
+        .pay-details-box { font-size: 11px; line-height: 1.5; color: #444; background: #f9f9f9; padding: 8px; border-radius: 8px; border-left: 3px solid var(--accent); }
+        .pay-details-box b { color: #2980b9; }
 
-        /* Modal */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .modal-content { background: white; margin: 5% auto; padding: 25px; border-radius: 20px; width: 90%; max-width: 500px; position: relative; }
-        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; color: #999; }
+        /* Modal Style */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; position: relative; }
+        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; }
 
         @media (max-width: 768px) {
             .sidebar { display: none; }
             .mobile-nav { display: flex; }
-            .main-view { margin-left: 0; width: 100%; padding: 15px; padding-bottom: 100px; }
+            .main-view { margin-left: 0; width: 100%; padding: 20px; padding-bottom: 100px; }
             .stats-grid { grid-template-columns: 1fr 1fr; }
-            h1 { font-size: 20px; }
+            h1 { font-size: 22px; }
         }
     </style>
 </head>
@@ -149,7 +136,7 @@
         <h1 style="margin-bottom: 20px;">Withdrawal Requests</h1>
         <div class="table-card">
             <table>
-                <thead><tr><th>User ID</th><th>Amount</th><th>Payment Method & Details</th><th>Action</th></tr></thead>
+                <thead><tr><th>User ID</th><th>Amount</th><th>Method & Details</th><th>Action</th></tr></thead>
                 <tbody id="with-table-body"></tbody>
             </table>
         </div>
@@ -164,7 +151,7 @@
         <div id="user-info-box">
             <p><strong>Email/Phone:</strong> <span id="m-email"></span></p>
             <p><strong>Balance:</strong> ₹<span id="m-balance"></span></p>
-            <p><strong>Investments:</strong><br><span id="m-invest" style="font-size: 13px; color: #666;">Fetching...</span></p>
+            <p><strong>Investments:</strong> <span id="m-invest">Fetching...</span></p>
         </div>
     </div>
 </div>
@@ -172,7 +159,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp, getDocs, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -187,12 +174,10 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Auth Guard
     onAuthStateChanged(auth, (user) => {
         if (!user || user.email !== "adminkd@gmail.com") window.location.href = "adminlogin.html";
     });
 
-    // Tab Switcher
     window.switchTab = (tabId, el) => {
         document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-link, .m-link').forEach(l => l.classList.remove('active'));
@@ -200,21 +185,27 @@
         el.classList.add('active');
     };
 
-    // Real-time Stats & Deposits Logic
+    // --- DEPOSIT CALCULATION ---
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Approved")), (snap) => {
-        let totalSum = 0; let todaySum = 0;
-        const todayStart = new Date().setHours(0,0,0,0);
+        let totalSum = 0;
+        let todaySum = 0;
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
         snap.forEach(doc => {
             const data = doc.data();
             const amt = parseFloat(data.amount) || 0;
             totalSum += amt;
-            if (data.timestamp && (data.timestamp.seconds * 1000) >= todayStart) todaySum += amt;
+            if (data.timestamp) {
+                const depTime = data.timestamp.seconds * 1000;
+                if (depTime >= todayStart) todaySum += amt;
+            }
         });
         document.getElementById('total-dep-sum').innerText = "₹" + totalSum;
         document.getElementById('today-dep-sum').innerText = "₹" + todaySum;
     });
 
-    // Real-time Users List
+    // --- REALTIME USERS ---
     onSnapshot(collection(db, "users"), snap => {
         document.getElementById('total-users').innerText = snap.size;
         const userBody = document.getElementById('users-table-body');
@@ -222,7 +213,7 @@
         snap.forEach(u => {
             const userData = u.data();
             userBody.innerHTML += `<tr>
-                <td><small>${u.id.substring(0,10)}...</small></td>
+                <td>${u.id.substring(0,8)}...</td>
                 <td>${userData.email || userData.phone || 'N/A'}</td>
                 <td>₹${userData.balance || 0}</td>
                 <td><button class="btn-act btn-view" onclick="viewUser('${u.id}')">VIEW INFO</button></td>
@@ -230,27 +221,31 @@
         });
     });
 
-    // Modal Info Fetching
+    // --- VIEW USER DETAILS ---
     window.viewUser = async (uid) => {
         document.getElementById('userModal').style.display = 'block';
-        document.getElementById('m-user-id').innerText = "ID: " + uid;
+        document.getElementById('m-user-id').innerText = "User ID: " + uid;
         try {
             const userDoc = await getDoc(doc(db, "users", uid));
             if(userDoc.exists()) {
-                const d = userDoc.data();
-                document.getElementById('m-email').innerText = d.email || d.phone || 'N/A';
-                document.getElementById('m-balance').innerText = d.balance || 0;
+                const data = userDoc.data();
+                document.getElementById('m-email').innerText = data.email || data.phone || 'N/A';
+                document.getElementById('m-balance').innerText = data.balance || 0;
             }
-            const invSnap = await getDocs(query(collection(db, "investments"), where("uid", "==", uid)));
-            let invHtml = invSnap.empty ? "No Active Investments" : "";
-            invSnap.forEach(i => { invHtml += `• ${i.data().planName} (₹${i.data().amount})<br>`; });
-            document.getElementById('m-invest').innerHTML = invHtml;
+            const invQuery = query(collection(db, "investments"), where("uid", "==", uid));
+            const invSnap = await getDocs(invQuery);
+            let invText = invSnap.empty ? "No Investments found" : "";
+            invSnap.forEach(inv => {
+                const i = inv.data();
+                invText += `Plan: ${i.planName} | ₹${i.amount}<br>`;
+            });
+            document.getElementById('m-invest').innerHTML = invText;
         } catch(e) { console.error(e); }
     };
 
     window.closeModal = () => { document.getElementById('userModal').style.display = 'none'; };
 
-    // Pending Deposits
+    // --- PENDING DEPOSITS ---
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('dep-table-body');
         body.innerHTML = "";
@@ -258,9 +253,9 @@
         snap.forEach(d => {
             const row = d.data();
             body.innerHTML += `<tr>
-                <td><small>${row.uid.substring(0,8)}</small></td>
+                <td>${row.uid.substring(0,6)}..</td>
                 <td>₹${row.amount}</td>
-                <td><b style="color:#2980b9">${row.utr}</b></td>
+                <td>${row.utr}</td>
                 <td>
                     <button class="btn-act btn-approve" onclick="approveDep('${d.id}', '${row.uid}', ${row.amount})">ADD</button>
                     <button class="btn-act btn-reject" onclick="rejectReq('deposits', '${d.id}')">REJECT</button>
@@ -269,37 +264,30 @@
         });
     });
 
-    // --- WITHDRAWAL LOGIC (UPDATED & FIXED) ---
+    // --- PENDING WITHDRAWALS (100% FIXED FOR YOUR SCREENSHOT) ---
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
         snap.forEach(d => {
             const row = d.data();
+            
             let detailsHtml = "";
             const method = (row.method || "").toUpperCase();
 
-            if (method.includes("UPI")) {
-                detailsHtml = `
-                <div class="pay-info-container">
-                    <b>UPI Method</b><br>
-                    ID: <span class="pay-value">${row.upi || row.upiId || 'N/A'}</span>
-                </div>`;
-            } else if (method.includes("BANK")) {
-                detailsHtml = `
-                <div class="pay-info-container">
-                    <b>Bank Transfer</b><br>
-                    Holder: <span class="pay-value">${row.holderName || 'N/A'}</span><br>
-                    A/C: <span class="pay-value">${row.accountNo || 'N/A'}</span><br>
-                    IFSC: <span class="pay-value">${row.ifsc || 'N/A'}</span><br>
-                    Bank: <span>${row.bankName || 'N/A'}</span>
-                </div>`;
+            // Based on your screenshot fields: HOLDER NAME, ACCOUNT NUMBER, IFSC CODE
+            if(method.includes("UPI")) {
+                detailsHtml = `<div class="pay-details-box"><b>UPI:</b> ${row.upi || row.upiId || 'N/A'}</div>`;
             } else {
-                detailsHtml = `<div class="pay-info-container">Method: ${method}<br>Value: ${row.upi || row.accountNo || 'N/A'}</div>`;
+                detailsHtml = `<div class="pay-details-box">
+                    <b>Holder:</b> ${row.holderName || row.name || 'N/A'}<br>
+                    <b>A/C:</b> ${row.accountNumber || row.accountNo || 'N/A'}<br>
+                    <b>IFSC:</b> ${row.ifscCode || row.ifsc || 'N/A'}
+                </div>`;
             }
 
             body.innerHTML += `<tr>
-                <td><small>${row.uid ? row.uid.substring(0,8) : 'Error'}</small></td>
-                <td><b style="color:var(--danger)">₹${row.amount}</b></td>
+                <td>${row.uid.substring(0,6)}..</td>
+                <td>₹${row.amount}</td>
                 <td>${detailsHtml}</td>
                 <td>
                     <button class="btn-act btn-approve" onclick="doneWithdrawal('${d.id}', '${row.uid}', ${row.amount})">DONE</button>
@@ -309,40 +297,46 @@
         });
     });
 
-    // Admin Actions
+    // APPROVE DEPOSIT
     window.approveDep = async (docId, uid, amt) => {
-        if(!confirm("Approve ₹" + amt + " to User " + uid + "?")) return;
+        if(!confirm("Verify UTR? Confirm to add balance.")) return;
         try {
             const batch = writeBatch(db);
             batch.update(doc(db, "users", uid), { balance: increment(amt) });
             batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
-            batch.set(doc(collection(db, "transactions")), { uid, amount: amt, type: "Deposit", status: "Success", time: serverTimestamp() });
+            const transRef = doc(collection(db, "transactions"));
+            batch.set(transRef, { uid: uid, amount: amt, type: "Deposit", status: "Success", time: serverTimestamp() });
             await batch.commit();
-            alert("Success: Balance added!");
-        } catch(e) { alert("Error: " + e.message); }
+            alert("Deposit Added!");
+        } catch(e) { alert(e.message); }
     };
 
+    // DONE WITHDRAWAL
     window.doneWithdrawal = async (docId, uid, amt) => {
-        if(!confirm("Mark ₹" + amt + " as Paid?")) return;
+        if(!confirm("Payment done? Mark as complete?")) return;
         try {
             const batch = writeBatch(db);
             batch.update(doc(db, "withdrawals", docId), { status: "Success" });
-            batch.set(doc(collection(db, "transactions")), { uid, amount: amt, type: "Withdrawal", status: "Success", time: serverTimestamp() });
+            const transRef = doc(collection(db, "transactions"));
+            batch.set(transRef, { uid: uid, amount: amt, type: "Withdrawal", status: "Success", time: serverTimestamp() });
             await batch.commit();
-            alert("Success: Withdrawal Completed!");
-        } catch(e) { alert("Error: " + e.message); }
+            alert("Withdrawal marked as DONE!");
+        } catch(e) { alert(e.message); }
     };
 
+    // REJECT REQUEST
     window.rejectReq = async (coll, docId, uid = null, amt = 0) => {
-        const reason = prompt("Reason for rejection:");
+        const reason = prompt("Rejection Reason:");
         if (reason === null) return;
         try {
             const batch = writeBatch(db);
-            if(coll === 'withdrawals' && uid) batch.update(doc(db, "users", uid), { balance: increment(amt) });
+            if(coll === 'withdrawals' && uid) {
+                batch.update(doc(db, "users", uid), { balance: increment(amt) });
+            }
             batch.update(doc(db, coll, docId), { status: "Rejected", remark: reason });
             await batch.commit();
-            alert("Request Rejected!");
-        } catch(e) { alert("Error: " + e.message); }
+            alert("Rejected Successfully!");
+        } catch(e) { alert(e.message); }
     };
 
     window.adminLogout = () => { signOut(auth); window.location.href = "adminlogin.html"; };
