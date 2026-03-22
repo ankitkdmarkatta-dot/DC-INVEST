@@ -82,7 +82,8 @@
             font-size: 10px; font-weight: 700; padding: 2px 8px;
             border-radius: 6px; text-transform: uppercase;
         }
-        .status-success, .status-approved { background: #dcfce7; color: var(--success); }
+        /* Color fixes for different status labels */
+        .status-success, .status-approved, .status-done { background: #dcfce7; color: var(--success); }
         .status-pending { background: #fef3c7; color: var(--warning); }
         .status-failed, .status-rejected { background: #fee2e2; color: var(--danger); }
 
@@ -130,7 +131,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -156,40 +157,24 @@
             }
         });
 
+        // FIXED: Only listening to "transactions" collection to avoid duplication
         function loadHistory(uid) {
-            // Dono collections ('transactions' aur 'deposits') ko monitor karna zaroori hai
-            const qTrans = query(collection(db, "transactions"), where("uid", "==", uid));
-            const qDeps = query(collection(db, "deposits"), where("uid", "==", uid));
+            const qTrans = query(
+                collection(db, "transactions"), 
+                where("uid", "==", uid)
+            );
 
-            const syncData = () => {
-                // Sorting logic: time (transactions) aur timestamp (deposits) dono handle karein
-                allTransactions.sort((a, b) => {
-                    const valA = a.time?.seconds || a.timestamp?.seconds || 0;
-                    const valB = b.time?.seconds || b.timestamp?.seconds || 0;
-                    return valB - valA;
-                });
-                renderList();
-            };
-
-            // Listen to Transactions
             onSnapshot(qTrans, (snapshot) => {
-                const trans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                allTransactions = allTransactions.filter(t => !trans.some(nt => nt.id === t.id && !t.isDepositDoc));
-                allTransactions = [...allTransactions, ...trans];
-                syncData();
-            });
-
-            // Listen to Deposits
-            onSnapshot(qDeps, (snapshot) => {
-                const deps = snapshot.docs.map(doc => ({ 
-                    id: doc.id, 
-                    ...doc.data(), 
-                    type: 'Deposit', 
-                    isDepositDoc: true 
-                }));
-                allTransactions = allTransactions.filter(t => !deps.some(nd => nd.id === t.id));
-                allTransactions = [...allTransactions, ...deps];
-                syncData();
+                allTransactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Manual Sort because Firestore Index might not be ready
+                allTransactions.sort((a, b) => {
+                    const timeA = a.timestamp?.seconds || 0;
+                    const timeB = b.timestamp?.seconds || 0;
+                    return timeB - timeA;
+                });
+                
+                renderList();
             });
         }
 
@@ -211,10 +196,9 @@
 
             filtered.forEach((data) => {
                 const isDeposit = data.type && data.type.toLowerCase() === 'deposit';
-                const timeData = data.time || data.timestamp;
-                const date = timeData ? new Date(timeData.seconds * 1000).toLocaleString('en-IN', {
+                const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('en-IN', {
                     day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
-                }) : 'Processing...';
+                }) : 'Recently';
                 
                 const statusStr = data.status || 'Pending';
                 const statusClass = statusStr.toLowerCase();
@@ -225,7 +209,7 @@
                             <i class="fa-solid ${isDeposit ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
                         </div>
                         <div class="trans-info">
-                            <b>${isDeposit ? 'Deposit Funds' : 'Withdrawal Request'}</b>
+                            <b>${isDeposit ? 'Deposit Funds' : 'Withdrawal Funds'}</b>
                             <span>${date}</span>
                         </div>
                         <div class="trans-amt">
