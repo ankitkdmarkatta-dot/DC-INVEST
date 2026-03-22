@@ -66,8 +66,13 @@
         .tab-view { display: none; }
         .tab-view.active { display: block; }
 
-        .pay-details-box { font-size: 11px; line-height: 1.4; color: #444; }
+        /* Payment Detail Box Style */
+        .pay-details-box { 
+            font-size: 11px; line-height: 1.5; color: #333; 
+            background: #f9f9f9; padding: 8px; border-radius: 8px; border: 1px solid #eee;
+        }
         .pay-details-box b { color: #2980b9; }
+        .copyable { user-select: all; background: #fffbe6; padding: 2px 4px; border: 1px dashed #f1c40f; border-radius: 4px; }
 
         /* Modal Style */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
@@ -264,30 +269,36 @@
         });
     });
 
-    // --- PENDING WITHDRAWALS (Updated for Payment Details) ---
+    // --- PENDING WITHDRAWALS (FIXED: DETAILS NOW VISIBLE) ---
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
         snap.forEach(d => {
             const row = d.data();
             
-            // Logic to display UPI or Bank details based on method
             let detailsHtml = "";
-            if(row.method === "UPI") {
-                detailsHtml = `<div class="pay-details-box"><b>UPI:</b> ${row.upi || 'N/A'}</div>`;
-            } else if(row.method === "BANK" || row.method === "Bank Transfer") {
-                detailsHtml = `<div class="pay-details-box">
-                    <b>A/C:</b> ${row.accountNo || 'N/A'}<br>
-                    <b>IFSC:</b> ${row.ifsc || 'N/A'}<br>
-                    <b>Bank:</b> ${row.bankName || 'N/A'}<br>
-                    <b>Name:</b> ${row.holderName || 'N/A'}
-                </div>`;
+            const method = (row.method || "").toUpperCase();
+
+            if(method === "UPI") {
+                detailsHtml = `
+                    <div class="pay-details-box">
+                        <b>UPI ID:</b><br>
+                        <span class="copyable">${row.upi || 'N/A'}</span>
+                    </div>`;
+            } else if(method === "BANK" || method === "BANK TRANSFER") {
+                detailsHtml = `
+                    <div class="pay-details-box">
+                        <b>A/C:</b> <span class="copyable">${row.accountNo || 'N/A'}</span><br>
+                        <b>IFSC:</b> ${row.ifsc || 'N/A'}<br>
+                        <b>Bank:</b> ${row.bankName || 'N/A'}<br>
+                        <b>Name:</b> ${row.holderName || 'N/A'}
+                    </div>`;
             } else {
-                detailsHtml = row.method; // fallback
+                detailsHtml = `<div class="pay-details-box"><b>Method:</b> ${row.method || 'N/A'}</div>`;
             }
 
             body.innerHTML += `<tr>
-                <td>${row.uid.substring(0,6)}..</td>
+                <td>${row.uid ? row.uid.substring(0,6) : 'N/A'}..</td>
                 <td>₹${row.amount}</td>
                 <td>${detailsHtml}</td>
                 <td>
