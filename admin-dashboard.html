@@ -156,7 +156,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, query, where, writeBatch, serverTimestamp, getDocs, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBBPpHeQPokChMANXIy78BpT8DAGZQiGPw",
@@ -181,6 +181,7 @@
         document.getElementById(tabId).classList.add('active'); el.classList.add('active');
     };
 
+    // --- DEPOSIT STATS CALCULATION ---
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Approved")), (snap) => {
         let totalSum = 0; let todaySum = 0;
         const now = new Date(); const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
@@ -193,6 +194,7 @@
         document.getElementById('today-dep-sum').innerText = "₹" + todaySum;
     });
 
+    // --- USERS LIST ---
     onSnapshot(collection(db, "users"), snap => {
         document.getElementById('total-users').innerText = snap.size;
         const userBody = document.getElementById('users-table-body'); userBody.innerHTML = "";
@@ -201,6 +203,7 @@
         });
     });
 
+    // --- MODAL INFO ---
     window.viewUser = async (uid) => {
         document.getElementById('userModal').style.display = 'block';
         try {
@@ -209,19 +212,27 @@
                 document.getElementById('m-email').innerText = userDoc.data().email || userDoc.data().phone || 'N/A';
                 document.getElementById('m-balance').innerText = userDoc.data().balance || 0;
             }
+            // Fetch investments for modal
+            const invQuery = query(collection(db, "investments"), where("uid", "==", uid));
+            const invSnap = await getDocs(invQuery);
+            let invText = invSnap.empty ? "No Active Plans" : "";
+            invSnap.forEach(inv => { invText += `${inv.data().planName} (₹${inv.data().amount})<br>`; });
+            document.getElementById('m-invest').innerHTML = invText;
         } catch(e) { console.error(e); }
     };
     window.closeModal = () => { document.getElementById('userModal').style.display = 'none'; };
 
+    // --- PENDING DEPOSITS ---
     onSnapshot(query(collection(db, "deposits"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('dep-table-body'); body.innerHTML = "";
         document.getElementById('total-pending').innerText = snap.size;
         snap.forEach(d => {
-            body.innerHTML += `<tr><td>${d.data().uid.substring(0,6)}..</td><td>₹${d.data().amount}</td><td>${d.data().utr}</td><td><button class="btn-act btn-approve" onclick="approveDep('${d.id}', '${d.data().uid}', ${d.data().amount})">ADD</button></td></tr>`;
+            const row = d.data();
+            body.innerHTML += `<tr><td>${row.uid.substring(0,6)}..</td><td>₹${row.amount}</td><td>${row.utr}</td><td><button class="btn-act btn-approve" onclick="approveDep('${d.id}', '${row.uid}', ${row.amount})">ADD</button><button class="btn-act btn-reject" onclick="rejectReq('deposits', '${d.id}')">REJECT</button></td></tr>`;
         });
     });
 
-    // --- WITHDRAWAL LOGIC (ULTRA COMPATIBLE) ---
+    // --- WITHDRAWAL LOGIC (FIXED AS PER SCREENSHOT 102) ---
     onSnapshot(query(collection(db, "withdrawals"), where("status", "==", "Pending")), snap => {
         const body = document.getElementById('with-table-body');
         body.innerHTML = "";
@@ -230,11 +241,11 @@
             let detailsHtml = "";
             const method = (r.method || "").toUpperCase();
 
-            // Auto-detect fields: Check every possible name
-            const holder = r.holderName || r.name || r.accountHolder || r.HolderName || 'N/A';
-            const acc = r.accountNumber || r.accountNo || r.account || r.AccountNumber || 'N/A';
-            const ifsc = r.ifscCode || r.ifsc || r.IFSCCode || 'N/A';
-            const upi = r.upiId || r.upi || r.UPI || 'N/A';
+            // Direct mapping based on your Screenshot (102) field labels
+            const holder = r["HOLDER NAME"] || r.holderName || r.name || 'N/A';
+            const acc = r["ACCOUNT NUMBER"] || r.accountNumber || r.accountNo || 'N/A';
+            const ifsc = r["IFSC CODE"] || r.ifscCode || r.ifsc || 'N/A';
+            const upi = r.upiId || r.upi || 'N/A';
 
             if(method.includes("UPI")) {
                 detailsHtml = `<div class="pay-details-box"><b>UPI ID:</b><br>${upi}</div>`;
@@ -258,23 +269,40 @@
         });
     });
 
+    // --- ACTIONS ---
     window.approveDep = async (docId, uid, amt) => {
-        const batch = writeBatch(db);
-        batch.update(doc(db, "users", uid), { balance: increment(amt) });
-        batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
-        await batch.commit(); alert("Added!");
+        if(!confirm("Approve this deposit?")) return;
+        try {
+            const batch = writeBatch(db);
+            batch.update(doc(db, "users", uid), { balance: increment(amt) });
+            batch.update(doc(db, "deposits", docId), { status: "Approved", timestamp: serverTimestamp() });
+            // Add to transactions
+            const tRef = doc(collection(db, "transactions"));
+            batch.set(tRef, { uid, amount: amt, type: "Deposit", status: "Success", timestamp: serverTimestamp() });
+            await batch.commit(); alert("Balance Added Successfully!");
+        } catch(e) { alert("Error: " + e.message); }
     };
 
-    window.doneWithdrawal = async (docId) => {
-        await updateDoc(doc(db, "withdrawals", docId), { status: "Success" });
-        alert("Completed!");
+    window.doneWithdrawal = async (docId, uid, amt) => {
+        if(!confirm("Mark as Paid?")) return;
+        try {
+            const batch = writeBatch(db);
+            batch.update(doc(db, "withdrawals", docId), { status: "Success" });
+            const tRef = doc(collection(db, "transactions"));
+            batch.set(tRef, { uid, amount: amt, type: "Withdrawal", status: "Success", timestamp: serverTimestamp() });
+            await batch.commit(); alert("Withdrawal Marked as Success!");
+        } catch(e) { alert("Error: " + e.message); }
     };
 
     window.rejectReq = async (coll, docId, uid, amt) => {
-        const batch = writeBatch(db);
-        if(coll === 'withdrawals') batch.update(doc(db, "users", uid), { balance: increment(amt) });
-        batch.update(doc(db, coll, docId), { status: "Rejected" });
-        await batch.commit(); alert("Rejected!");
+        const reason = prompt("Enter Rejection Reason:");
+        if (reason === null) return;
+        try {
+            const batch = writeBatch(db);
+            if(coll === 'withdrawals') batch.update(doc(db, "users", uid), { balance: increment(amt) });
+            batch.update(doc(db, coll, docId), { status: "Rejected", remark: reason });
+            await batch.commit(); alert("Request Rejected!");
+        } catch(e) { alert("Error: " + e.message); }
     };
 
     window.adminLogout = () => { signOut(auth); window.location.href = "adminlogin.html"; };
